@@ -117,14 +117,14 @@ export default function Chessboard() {
     // Check if a piece has been grabbed (Must not be null)
     if (activePiece && chessboard) {
       //Getting boundries on board so pieces cant move outside
-      const minX = chessboard.offsetLeft - 25;
-      const minY = chessboard.offsetTop - 25;
-      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
-      const maxY = chessboard.offsetTop + chessboard.clientHeight - 75;
+      const minX = chessboard.offsetLeft - 10;
+      const minY = chessboard.offsetTop - 10;
+      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 90;
+      const maxY = chessboard.offsetTop + chessboard.clientHeight - 90;
 
       // Get the mouse s and y positions
-      const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
-      const y = event.clientY - 50;
+      const x = event.clientX - 60; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const y = event.clientY - 60;
       activePiece.style.position = "absolute";
 
       //If x is smaller than minimum amount
