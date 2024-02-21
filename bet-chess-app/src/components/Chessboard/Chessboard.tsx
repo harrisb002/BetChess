@@ -41,7 +41,7 @@ pieces.push({ image: "assets/images/rook_b.png", XPosition: 7, YPosition: 7 });
 // Render the Bishops
 pieces.push({
   image: "assets/images/bishop_w.png",
-  XPosition: 1,
+  XPosition: 2,
   YPosition: 0,
 });
 pieces.push({
@@ -63,7 +63,7 @@ pieces.push({
 // Render the Knights
 pieces.push({
   image: "assets/images/knight_w.png",
-  XPosition: 2,
+  XPosition: 1,
   YPosition: 0,
 });
 pieces.push({
