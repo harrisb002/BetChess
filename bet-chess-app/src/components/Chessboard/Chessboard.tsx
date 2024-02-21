@@ -47,6 +47,7 @@ for (let piece = 0; piece < 2; piece++) {
     XPosition: 7,
     YPosition,
   });
+
   pieces.push({
     image: `assets/images/bishop_${color}.png`,
     XPosition: 2,
@@ -103,7 +104,7 @@ export default function Chessboard() {
         }
       });
 
-      board.push(<Tile image={image} number={number} />);
+      board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
     }
   }
   return <div id="chessboard">{board}</div>;

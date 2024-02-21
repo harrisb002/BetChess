@@ -6,14 +6,22 @@
 }
 
 .black-tile {
-    background-color: rgb(196,216,228);
+    background-color: rgb(196, 216, 228);
 
 }
 
 .white-tile {
-    background-color: rgb(240,241,240);
+    background-color: rgb(240, 241, 240);
 }
 
 .tile img {
     width: 80px;
+}
+
+.tile .chess-piece {
+    width: 100px;
+    height: 100px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80px;
 }
