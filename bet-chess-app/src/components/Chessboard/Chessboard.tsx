@@ -85,18 +85,37 @@ pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
 // Render the Queens
 pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
 
+// Save the grabbed piece in this variable
+let activePiece: HTMLElement | null = null;
+
+// Functionality to interact with the piece
 function grabPiece(event: React.MouseEvent) {
   // Cast the class name to an HTML element
   const element = event.target as HTMLElement;
   if (element.classList.contains("chess-piece")) {
     // Get the mouse s and y positions
     const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
-    const y = event.clientY -50 ;
-
+    const y = event.clientY - 50;
     element.style.position = "absolute";
-
     element.style.left = `${x}px`;
     element.style.top = `${y}px`;
+
+    // If piece has been grabbed then set it to active
+    activePiece = element;
+  }
+}
+
+function movePiece(event: React.MouseEvent) {
+  // Only want to move the piece actually being grabbed, not just whats under the mouse
+
+  // Check if a piece has been grabbed (Must not be null)
+  if (activePiece) {
+    // Get the mouse s and y positions
+    const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
+    const y = event.clientY - 50;
+    activePiece.style.position = "absolute";
+    activePiece.style.left = `${x}px`;
+    activePiece.style.top = `${y}px`;
   }
 }
 
@@ -121,7 +140,11 @@ export default function Chessboard() {
     }
   }
   return (
-    <div onMouseDown={(event) => grabPiece(event)} id="chessboard">
+    <div
+      onMouseMove={(event) => movePiece(event)}
+      onMouseDown={(event) => grabPiece(event)}
+      id="chessboard"
+    >
       {board}
     </div>
   );
