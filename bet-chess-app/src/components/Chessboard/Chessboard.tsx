@@ -80,12 +80,25 @@ for (let piece = 0; piece < 2; piece++) {
     YPosition,
   });
 }
-
 // Render the Kings
 pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
-
 // Render the Queens
 pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
+
+function grabPiece(event: React.MouseEvent) {
+  // Cast the class name to an HTML element
+  const element = event.target as HTMLElement;
+  if (element.classList.contains("chess-piece")) {
+    // Get the mouse s and y positions
+    const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
+    const y = event.clientY -50 ;
+
+    element.style.position = "absolute";
+
+    element.style.left = `${x}px`;
+    element.style.top = `${y}px`;
+  }
+}
 
 export default function Chessboard() {
   let board = [];
@@ -107,5 +120,9 @@ export default function Chessboard() {
       board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
     }
   }
-  return <div id="chessboard">{board}</div>;
+  return (
+    <div onMouseDown={(event) => grabPiece(event)} id="chessboard">
+      {board}
+    </div>
+  );
 }
