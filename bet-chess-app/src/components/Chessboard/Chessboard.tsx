@@ -168,7 +168,25 @@ export default function Chessboard() {
   }
 
   function dropPiece(event: React.MouseEvent) {
-    if (activePiece) {
+    // Used to find the pieces position relative to the board
+    const chessboard = chessboardRef.current; 
+
+    if (activePiece && chessboard) {
+      // 0,0 is top left of board when offset with the difference of each tile being 100
+      // Finds relative position of pieces to grid
+      const Xcord = Math.floor(event.clientX - chessboard.offsetLeft) / 100;
+      const Ycord = Math.floor(event.clientY - chessboard.offsetTop) / 100;
+
+      setPieces((value) => {
+        // Map the pieces to get all the pieces and return them
+        const pieces = value.map((piece) => {
+          // Determine if a piece is present on the tile that it is being dropped
+          if (piece.XPosition === 0 && piece.YPosition === 0) {
+          }
+          return piece;
+        });
+        return pieces;
+      });
       activePiece = null; // Set it back to null
     }
   }
