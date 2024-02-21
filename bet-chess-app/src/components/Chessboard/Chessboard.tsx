@@ -14,16 +14,81 @@ interface Piece {
 // Store the starting positions for all the pieces
 const pieces: Piece[] = [];
 
+// Define the starting positions for all the White Pawns
 for (let i = 0; i < 8; i++) {
-  // Define the starting positions for all the White pieces
-  pieces.push({ image: "assets/images/pawn_b.png", XPosition: i, YPosition: 6 });
+  pieces.push({
+    image: "assets/images/pawn_b.png",
+    XPosition: i,
+    YPosition: 6,
+  });
 }
 
+// Define the starting positions for all the Black Pawns
 for (let i = 0; i < 8; i++) {
-  // Define the starting positions for all the Black pieces
-  pieces.push({ image: "assets/images/pawn_w.png", XPosition: i, YPosition: 1 });
+  pieces.push({
+    image: "assets/images/pawn_w.png",
+    XPosition: i,
+    YPosition: 1,
+  });
 }
 
+// Render the Rooks
+pieces.push({ image: "assets/images/rook_w.png", XPosition: 0, YPosition: 0 });
+pieces.push({ image: "assets/images/rook_w.png", XPosition: 7, YPosition: 0 });
+pieces.push({ image: "assets/images/rook_b.png", XPosition: 0, YPosition: 7 });
+pieces.push({ image: "assets/images/rook_b.png", XPosition: 7, YPosition: 7 });
+
+// Render the Bishops
+pieces.push({
+  image: "assets/images/bishop_w.png",
+  XPosition: 1,
+  YPosition: 0,
+});
+pieces.push({
+  image: "assets/images/bishop_w.png",
+  XPosition: 5,
+  YPosition: 0,
+});
+pieces.push({
+  image: "assets/images/bishop_b.png",
+  XPosition: 2,
+  YPosition: 7,
+});
+pieces.push({
+  image: "assets/images/bishop_b.png",
+  XPosition: 5,
+  YPosition: 7,
+});
+
+// Render the Knights
+pieces.push({
+  image: "assets/images/knight_w.png",
+  XPosition: 2,
+  YPosition: 0,
+});
+pieces.push({
+  image: "assets/images/knight_w.png",
+  XPosition: 6,
+  YPosition: 0,
+});
+pieces.push({
+  image: "assets/images/knight_b.png",
+  XPosition: 1,
+  YPosition: 7,
+});
+pieces.push({
+  image: "assets/images/knight_b.png",
+  XPosition: 6,
+  YPosition: 7,
+});
+
+// Render the Kings
+pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
+pieces.push({ image: "assets/images/king_b.png", XPosition: 4, YPosition: 7 });
+
+// Render the Queens
+pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
+pieces.push({ image: "assets/images/queen_b.png", XPosition: 3, YPosition: 7 });
 
 export default function Chessboard() {
   let board = [];
