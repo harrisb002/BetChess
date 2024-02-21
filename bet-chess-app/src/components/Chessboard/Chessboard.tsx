@@ -87,7 +87,7 @@ pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
 pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
 
 export default function Chessboard() {
-  const chessboardRef = useRef(null);
+  const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Save the grabbed piece in this variable
   let activePiece: HTMLElement | null = null;
@@ -111,16 +111,46 @@ export default function Chessboard() {
 
   // Used to actuvely move a piece when grabbed and thus "active"
   function movePiece(event: React.MouseEvent) {
-    // Only want to move the piece actually being grabbed, not just whats under the mouse
+    const chessboard = chessboardRef.current; // To check if null before accessing
 
+    // Only want to move the piece actually being grabbed, not just whats under the mouse
     // Check if a piece has been grabbed (Must not be null)
-    if (activePiece) {
+    if (activePiece && chessboard) {
+      //Getting boundries on board so pieces cant move outside
+      const minX = chessboard.offsetLeft - 25;
+      const minY = chessboard.offsetTop - 25;
+      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
+      const maxY = chessboard.offsetTop + chessboard.clientHeight - 75;
+
       // Get the mouse s and y positions
       const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
       const y = event.clientY - 50;
       activePiece.style.position = "absolute";
-      activePiece.style.left = `${x}px`;
-      activePiece.style.top = `${y}px`;
+
+      //If x is smaller than minimum amount
+      if (x < minX) {
+        activePiece.style.left = `${minX}px`;
+      }
+      //If x is bigger than maximum amount
+      else if (x > maxX) {
+        activePiece.style.left = `${maxX}px`;
+      }
+      //If x is in the constraints
+      else {
+        activePiece.style.left = `${x}px`;
+      }
+      //If y is smaller than minimum amount
+      if (y < minY) {
+        activePiece.style.top = `${minY}px`;
+      }
+      //If y is bigger than maximum amount
+      else if (y > maxY) {
+        activePiece.style.top = `${maxY}px`;
+      }
+      //If y is in the constraints
+      else {
+        activePiece.style.top = `${y}px`;
+      }
     }
   }
 
