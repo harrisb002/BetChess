@@ -16,6 +16,10 @@ interface Piece {
 const initialBoardState: Piece[] = [];
 
 export default function Chessboard() {
+  // Used to set the x and y position of the peices when dropped to snap to grid 
+  const [Xgrid, setXgrid] = useState(0);
+  const [Ygrid, setYgrid] = useState(0); 
+
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
 
@@ -107,15 +111,23 @@ export default function Chessboard() {
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
+    const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
-    if (element.classList.contains("chess-piece")) {
+    if (element.classList.contains("chess-piece") && chessboard) {
+      const Xgrid = Math.floor(event.clientX - chessboard.offsetLeft) / 100;
+      const Ygrid = Math.abs(Math.ceil(event.clientY - chessboard.offsetTop - 800) / 100); 
+
+      // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
+      setXgrid(Xgrid);
+      setYgrid(Ygrid);
+
       // Get the mouse s and y positions
-      const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
-      const y = event.clientY - 50;
+      const Xpos = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const Ypos = event.clientY - 50;
       element.style.position = "absolute";
-      element.style.left = `${x}px`;
-      element.style.top = `${y}px`;
+      element.style.left = `${Xpos}px`;
+      element.style.top = `${Ypos}px`;
 
       // If piece has been grabbed then set it to active
       activePiece = element;
@@ -175,13 +187,17 @@ export default function Chessboard() {
       // 0,0 is top left of board when offset with the difference of each tile being 100
       // Finds relative position of pieces to grid
       const Xcord = Math.floor(event.clientX - chessboard.offsetLeft) / 100;
-      const Ycord = Math.floor(event.clientY - chessboard.offsetTop) / 100;
+      // Flip y-axis so the mouse lines up with page (board is 800px so can offset it)
+      const Ycord = Math.abs(Math.ceil(event.clientY - chessboard.offsetTop - 800) / 100); 
 
       setPieces((value) => {
         // Map the pieces to get all the pieces and return them
         const pieces = value.map((piece) => {
-          // Determine if a piece is present on the tile that it is being dropped
-          if (piece.XPosition === 0 && piece.YPosition === 0) {
+          // Only grab the piece in which we have originally grabbed
+          // This is done by setting the state in the grabPiece function and comparing it here
+          if (piece.XPosition === Xcord && piece.YPosition === Ycord) { // Snapping to grid functionality
+            piece.XPosition = Xgrid;
+            piece.YPosition = Ygrid;
           }
           return piece;
         });
