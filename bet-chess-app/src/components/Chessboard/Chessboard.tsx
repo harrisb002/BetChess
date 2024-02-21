@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
@@ -13,84 +13,97 @@ interface Piece {
 }
 
 // Store the starting positions for all the pieces
-const pieces: Piece[] = [];
-
-// Define the starting positions for all the White Pawns
-for (let i = 0; i < 8; i++) {
-  pieces.push({
-    image: "assets/images/pawn_b.png",
-    XPosition: i,
-    YPosition: 6,
-  });
-}
-
-// Define the starting positions for all the Black Pawns
-for (let i = 0; i < 8; i++) {
-  pieces.push({
-    image: "assets/images/pawn_w.png",
-    XPosition: i,
-    YPosition: 1,
-  });
-}
-
-// Dynamically Render all pieces using string interpolation
-for (let piece = 0; piece < 2; piece++) {
-  const color = piece === 0 ? "b" : "w";
-  const YPosition = piece === 0 ? 7 : 0; // Make the variable name the same so it is implicit
-
-  pieces.push({
-    image: `assets/images/rook_${color}.png`,
-    XPosition: 0,
-    YPosition,
-  });
-  pieces.push({
-    image: `assets/images/rook_${color}.png`,
-    XPosition: 7,
-    YPosition,
-  });
-
-  pieces.push({
-    image: `assets/images/bishop_${color}.png`,
-    XPosition: 2,
-    YPosition,
-  });
-  pieces.push({
-    image: `assets/images/bishop_${color}.png`,
-    XPosition: 5,
-    YPosition,
-  });
-  pieces.push({
-    image: `assets/images/knight_${color}.png`,
-    XPosition: 1,
-    YPosition,
-  });
-  pieces.push({
-    image: `assets/images/knight_${color}.png`,
-    XPosition: 6,
-    YPosition,
-  });
-
-  pieces.push({
-    image: `assets/images/king_${color}.png`,
-    XPosition: 4,
-    YPosition,
-  });
-  pieces.push({
-    image: `assets/images/queen_${color}.png`,
-    XPosition: 3,
-    YPosition,
-  });
-}
-// Render the Kings
-pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
-// Render the Queens
-pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
+// const pieces: Piece[] = [];
 
 export default function Chessboard() {
+  const [pieces, setPieces] = useState<Piece[]>([]);
+
   const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Save the grabbed piece in this variable
   let activePiece: HTMLElement | null = null;
+
+  // Load the pieces when the component is loaded
+  useEffect(() => {
+    // Define the starting positions for all the White Pawns
+    for (let i = 0; i < 8; i++) {
+      pieces.push({
+        image: "assets/images/pawn_b.png",
+        XPosition: i,
+        YPosition: 6,
+      });
+    }
+
+    // Define the starting positions for all the Black Pawns
+    for (let i = 0; i < 8; i++) {
+      pieces.push({
+        image: "assets/images/pawn_w.png",
+        XPosition: i,
+        YPosition: 1,
+      });
+    }
+
+    // Dynamically Render all pieces using string interpolation
+    for (let piece = 0; piece < 2; piece++) {
+      const color = piece === 0 ? "b" : "w";
+      const YPosition = piece === 0 ? 7 : 0; // Make the variable name the same so it is implicit
+
+      pieces.push({
+        image: `assets/images/rook_${color}.png`,
+        XPosition: 0,
+        YPosition,
+      });
+      pieces.push({
+        image: `assets/images/rook_${color}.png`,
+        XPosition: 7,
+        YPosition,
+      });
+
+      pieces.push({
+        image: `assets/images/bishop_${color}.png`,
+        XPosition: 2,
+        YPosition,
+      });
+      pieces.push({
+        image: `assets/images/bishop_${color}.png`,
+        XPosition: 5,
+        YPosition,
+      });
+      pieces.push({
+        image: `assets/images/knight_${color}.png`,
+        XPosition: 1,
+        YPosition,
+      });
+      pieces.push({
+        image: `assets/images/knight_${color}.png`,
+        XPosition: 6,
+        YPosition,
+      });
+
+      pieces.push({
+        image: `assets/images/king_${color}.png`,
+        XPosition: 4,
+        YPosition,
+      });
+      pieces.push({
+        image: `assets/images/queen_${color}.png`,
+        XPosition: 3,
+        YPosition,
+      });
+    }
+    // Render the Kings
+    pieces.push({
+      image: "assets/images/king_w.png",
+      XPosition: 4,
+      YPosition: 0,
+    });
+    // Render the Queens
+    pieces.push({
+      image: "assets/images/queen_w.png",
+      XPosition: 3,
+      YPosition: 0,
+    });
+  }, []);
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
@@ -156,6 +169,7 @@ export default function Chessboard() {
 
   function dropPiece(event: React.MouseEvent) {
     if (activePiece) {
+
       activePiece = null; // Set it back to null
     }
   }
@@ -175,6 +189,7 @@ export default function Chessboard() {
         }
       });
 
+      // Push the pieces to the board
       board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
     }
   }
