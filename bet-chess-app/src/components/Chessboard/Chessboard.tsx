@@ -1,3 +1,4 @@
+import React from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
@@ -105,6 +106,7 @@ function grabPiece(event: React.MouseEvent) {
   }
 }
 
+// Used to actuvely move a piece when grabbed and thus "active"
 function movePiece(event: React.MouseEvent) {
   // Only want to move the piece actually being grabbed, not just whats under the mouse
 
@@ -116,6 +118,12 @@ function movePiece(event: React.MouseEvent) {
     activePiece.style.position = "absolute";
     activePiece.style.left = `${x}px`;
     activePiece.style.top = `${y}px`;
+  }
+}
+
+function dropPiece(event: React.MouseEvent) {
+  if (activePiece) {
+    activePiece = null; // Set it back to null
   }
 }
 
@@ -143,6 +151,7 @@ export default function Chessboard() {
     <div
       onMouseMove={(event) => movePiece(event)}
       onMouseDown={(event) => grabPiece(event)}
+      onMouseUp={(event) => dropPiece(event)}
       id="chessboard"
     >
       {board}
