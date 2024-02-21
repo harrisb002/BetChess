@@ -32,63 +32,59 @@ for (let i = 0; i < 8; i++) {
   });
 }
 
-// Render the Rooks
-pieces.push({ image: "assets/images/rook_w.png", XPosition: 0, YPosition: 0 });
-pieces.push({ image: "assets/images/rook_w.png", XPosition: 7, YPosition: 0 });
-pieces.push({ image: "assets/images/rook_b.png", XPosition: 0, YPosition: 7 });
-pieces.push({ image: "assets/images/rook_b.png", XPosition: 7, YPosition: 7 });
+// Dynamically Render all pieces using string interpolation
+for (let piece = 0; piece < 2; piece++) {
+  const color = piece === 0 ? "b" : "w";
+  const YPosition = piece === 0 ? 7 : 0; // Make the variable name the same so it is implicit
 
-// Render the Bishops
-pieces.push({
-  image: "assets/images/bishop_w.png",
-  XPosition: 2,
-  YPosition: 0,
-});
-pieces.push({
-  image: "assets/images/bishop_w.png",
-  XPosition: 5,
-  YPosition: 0,
-});
-pieces.push({
-  image: "assets/images/bishop_b.png",
-  XPosition: 2,
-  YPosition: 7,
-});
-pieces.push({
-  image: "assets/images/bishop_b.png",
-  XPosition: 5,
-  YPosition: 7,
-});
+  pieces.push({
+    image: `assets/images/rook_${color}.png`,
+    XPosition: 0,
+    YPosition,
+  });
+  pieces.push({
+    image: `assets/images/rook_${color}.png`,
+    XPosition: 7,
+    YPosition,
+  });
+  pieces.push({
+    image: `assets/images/bishop_${color}.png`,
+    XPosition: 2,
+    YPosition,
+  });
+  pieces.push({
+    image: `assets/images/bishop_${color}.png`,
+    XPosition: 5,
+    YPosition,
+  });
+  pieces.push({
+    image: `assets/images/knight_${color}.png`,
+    XPosition: 1,
+    YPosition,
+  });
+  pieces.push({
+    image: `assets/images/knight_${color}.png`,
+    XPosition: 6,
+    YPosition,
+  });
 
-// Render the Knights
-pieces.push({
-  image: "assets/images/knight_w.png",
-  XPosition: 1,
-  YPosition: 0,
-});
-pieces.push({
-  image: "assets/images/knight_w.png",
-  XPosition: 6,
-  YPosition: 0,
-});
-pieces.push({
-  image: "assets/images/knight_b.png",
-  XPosition: 1,
-  YPosition: 7,
-});
-pieces.push({
-  image: "assets/images/knight_b.png",
-  XPosition: 6,
-  YPosition: 7,
-});
+  pieces.push({
+    image: `assets/images/king_${color}.png`,
+    XPosition: 4,
+    YPosition,
+  });
+  pieces.push({
+    image: `assets/images/queen_${color}.png`,
+    XPosition: 3,
+    YPosition,
+  });
+}
 
 // Render the Kings
 pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
-pieces.push({ image: "assets/images/king_b.png", XPosition: 4, YPosition: 7 });
 
 // Render the Queens
 pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
-pieces.push({ image: "assets/images/queen_b.png", XPosition: 3, YPosition: 7 });
 
 export default function Chessboard() {
   let board = [];
