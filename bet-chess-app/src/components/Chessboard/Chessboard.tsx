@@ -11,7 +11,7 @@ export default function Chessboard() {
   for (let j = Yaxis.length - 1; j >= 0; j--) {
     for (let i = 0; i < Xaxis.length; i++) {
       const number = j + i + 2;
-      board.push(<Tile number={number}/>)
+      board.push(<Tile image="assets/images/pawn_b.png" number={number}/>)
     }
   }
   return <div id="chessboard">{board}</div>;
