@@ -1,5 +1,4 @@
-import React from "react";
-
+import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
 const Xaxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -12,22 +11,7 @@ export default function Chessboard() {
   for (let j = Yaxis.length - 1; j >= 0; j--) {
     for (let i = 0; i < Xaxis.length; i++) {
       const number = j + i + 2;
-
-      if (number % 2 === 0) {
-        board.push(
-          <div className="tile black-tile">
-            [{Xaxis[i]}
-            {Yaxis[j]}]
-          </div>
-        );
-      } else {
-        board.push(
-          <div className="tile white-tile">
-            [{Xaxis[i]}
-            {Yaxis[j]}]
-          </div>
-        );
-      }
+      board.push(<Tile number={number}/>)
     }
   }
   return <div id="chessboard">{board}</div>;
