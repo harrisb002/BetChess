@@ -1,8 +1,8 @@
-# Chess on Chain
+# Bet Chess
 
 ## Description
 
-Chess on Chain is a chess app built using ReactJS and TypeScript, leveraging the power of smart contracts written in Solidity and deployed on the Ethereum blockchain. This app will enable users to bet on games, either played personally or scheduled in tournaments. By integrating blockchain technology, Chess on Chain ensures transparency, security, and trust in every transaction, providing a seamless and engaging experience for chess enthusiasts and crypto gamers alike.
+Bet Chess is a chess app built using ReactJS and TypeScript, leveraging the power of smart contracts written in Solidity and deployed on the Ethereum blockchain. This app will enable users to bet on games, either played personally or scheduled in tournaments. By integrating blockchain technology, Chess on Chain ensures transparency, security, and trust in every transaction, providing a seamless and engaging experience for chess enthusiasts and crypto gamers alike.
 
 ### Hopefull Features
 
