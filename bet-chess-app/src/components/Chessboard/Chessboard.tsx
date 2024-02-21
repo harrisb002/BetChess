@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 
@@ -86,51 +86,52 @@ pieces.push({ image: "assets/images/king_w.png", XPosition: 4, YPosition: 0 });
 // Render the Queens
 pieces.push({ image: "assets/images/queen_w.png", XPosition: 3, YPosition: 0 });
 
-// Save the grabbed piece in this variable
-let activePiece: HTMLElement | null = null;
-
-// Functionality to interact with the piece
-function grabPiece(event: React.MouseEvent) {
-  // Cast the class name to an HTML element
-  const element = event.target as HTMLElement;
-  if (element.classList.contains("chess-piece")) {
-    // Get the mouse s and y positions
-    const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
-    const y = event.clientY - 50;
-    element.style.position = "absolute";
-    element.style.left = `${x}px`;
-    element.style.top = `${y}px`;
-
-    // If piece has been grabbed then set it to active
-    activePiece = element;
-  }
-}
-
-// Used to actuvely move a piece when grabbed and thus "active"
-function movePiece(event: React.MouseEvent) {
-  // Only want to move the piece actually being grabbed, not just whats under the mouse
-
-  // Check if a piece has been grabbed (Must not be null)
-  if (activePiece) {
-    // Get the mouse s and y positions
-    const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
-    const y = event.clientY - 50;
-    activePiece.style.position = "absolute";
-    activePiece.style.left = `${x}px`;
-    activePiece.style.top = `${y}px`;
-  }
-}
-
-function dropPiece(event: React.MouseEvent) {
-  if (activePiece) {
-    activePiece = null; // Set it back to null
-  }
-}
-
 export default function Chessboard() {
+  const chessboardRef = useRef(null);
+
+  // Save the grabbed piece in this variable
+  let activePiece: HTMLElement | null = null;
+
+  // Functionality to interact with the piece
+  function grabPiece(event: React.MouseEvent) {
+    // Cast the class name to an HTML element
+    const element = event.target as HTMLElement;
+    if (element.classList.contains("chess-piece")) {
+      // Get the mouse s and y positions
+      const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const y = event.clientY - 50;
+      element.style.position = "absolute";
+      element.style.left = `${x}px`;
+      element.style.top = `${y}px`;
+
+      // If piece has been grabbed then set it to active
+      activePiece = element;
+    }
+  }
+
+  // Used to actuvely move a piece when grabbed and thus "active"
+  function movePiece(event: React.MouseEvent) {
+    // Only want to move the piece actually being grabbed, not just whats under the mouse
+
+    // Check if a piece has been grabbed (Must not be null)
+    if (activePiece) {
+      // Get the mouse s and y positions
+      const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const y = event.clientY - 50;
+      activePiece.style.position = "absolute";
+      activePiece.style.left = `${x}px`;
+      activePiece.style.top = `${y}px`;
+    }
+  }
+
+  function dropPiece(event: React.MouseEvent) {
+    if (activePiece) {
+      activePiece = null; // Set it back to null
+    }
+  }
+
   let board = [];
 
-  //loop for c
   for (let j = Yaxis.length - 1; j >= 0; j--) {
     for (let i = 0; i < Xaxis.length; i++) {
       const number = j + i + 2;
@@ -153,6 +154,7 @@ export default function Chessboard() {
       onMouseDown={(event) => grabPiece(event)}
       onMouseUp={(event) => dropPiece(event)}
       id="chessboard"
+      ref={chessboardRef}
     >
       {board}
     </div>
