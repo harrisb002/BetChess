@@ -5,6 +5,8 @@ import "./Chessboard.css";
 const Xaxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const Yaxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
+const GRID_SIZE = 100;
+
 // Used to store the starting position for the pieces
 interface Piece {
   image: string;
@@ -16,9 +18,11 @@ interface Piece {
 const initialBoardState: Piece[] = [];
 
 export default function Chessboard() {
-  // Used to set the x and y position of the peices when dropped to snap to grid 
+  // Set active piece to allow for smooth transition of grabbing functionality
+  const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
+  // Used to set the x and y position of the peices when dropped to snap to grid
   const [Xgrid, setXgrid] = useState(0);
-  const [Ygrid, setYgrid] = useState(0); 
+  const [Ygrid, setYgrid] = useState(0);
 
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
@@ -26,13 +30,13 @@ export default function Chessboard() {
   const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Save the grabbed piece in this variable
-  let activePiece: HTMLElement | null = null;
+  // let activePiece: HTMLElement | null = null;
 
   // Load the pieces when the component is loaded
   // Store the starting positions for all the pieces
   // Define the starting positions for all the White Pawns
   for (let i = 0; i < 8; i++) {
-    pieces.push({
+    initialBoardState.push({
       image: "assets/images/pawn_b.png",
       XPosition: i,
       YPosition: 6,
@@ -41,7 +45,7 @@ export default function Chessboard() {
 
   // Define the starting positions for all the Black Pawns
   for (let i = 0; i < 8; i++) {
-    pieces.push({
+    initialBoardState.push({
       image: "assets/images/pawn_w.png",
       XPosition: i,
       YPosition: 1,
@@ -97,13 +101,13 @@ export default function Chessboard() {
     });
   }
   // Render the Kings
-  pieces.push({
+  initialBoardState.push({
     image: "assets/images/king_w.png",
     XPosition: 4,
     YPosition: 0,
   });
   // Render the Queens
-  pieces.push({
+  initialBoardState.push({
     image: "assets/images/queen_w.png",
     XPosition: 3,
     YPosition: 0,
@@ -115,22 +119,21 @@ export default function Chessboard() {
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
     if (element.classList.contains("chess-piece") && chessboard) {
-      const Xgrid = Math.floor(event.clientX - chessboard.offsetLeft) / 100;
-      const Ygrid = Math.abs(Math.ceil(event.clientY - chessboard.offsetTop - 800) / 100); 
-
       // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
-      setXgrid(Xgrid);
-      setYgrid(Ygrid);
+      setXgrid(Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE));
+      setYgrid(
+        Math.abs(Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE))
+      );
 
       // Get the mouse s and y positions
-      const Xpos = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
-      const Ypos = event.clientY - 50;
+      const Xpos = event.clientX - GRID_SIZE / 2; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const Ypos = event.clientY - GRID_SIZE / 2;
       element.style.position = "absolute";
       element.style.left = `${Xpos}px`;
       element.style.top = `${Ypos}px`;
 
       // If piece has been grabbed then set it to active
-      activePiece = element;
+      setActivePiece(element);
     }
   }
 
@@ -142,14 +145,14 @@ export default function Chessboard() {
     // Check if a piece has been grabbed (Must not be null)
     if (activePiece && chessboard) {
       //Getting boundries on board so pieces cant move outside
-      const minX = chessboard.offsetLeft - 10;
-      const minY = chessboard.offsetTop - 10;
-      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 90;
-      const maxY = chessboard.offsetTop + chessboard.clientHeight - 90;
+      const minX = chessboard.offsetLeft - 25;
+      const minY = chessboard.offsetTop - 25;
+      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
+      const maxY = chessboard.offsetTop + chessboard.clientHeight - 75;
 
       // Get the mouse s and y positions
-      const x = event.clientX - 60; // Calculate offset of where the piece is bieng grabbed from top left corner
-      const y = event.clientY - 60;
+      const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const y = event.clientY - 50;
       activePiece.style.position = "absolute";
 
       //If x is smaller than minimum amount
@@ -181,29 +184,32 @@ export default function Chessboard() {
 
   function dropPiece(event: React.MouseEvent) {
     // Used to find the pieces position relative to the board
-    const chessboard = chessboardRef.current; 
+    const chessboard = chessboardRef.current;
 
     if (activePiece && chessboard) {
       // 0,0 is top left of board when offset with the difference of each tile being 100
       // Finds relative position of pieces to grid
-      const Xcord = Math.floor(event.clientX - chessboard.offsetLeft) / 100;
+      const Xcord = Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE);
       // Flip y-axis so the mouse lines up with page (board is 800px so can offset it)
-      const Ycord = Math.abs(Math.ceil(event.clientY - chessboard.offsetTop - 800) / 100); 
+      const Ycord = Math.abs(
+        Math.abs(Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE))
+      );
 
       setPieces((value) => {
         // Map the pieces to get all the pieces and return them
         const pieces = value.map((piece) => {
           // Only grab the piece in which we have originally grabbed
           // This is done by setting the state in the grabPiece function and comparing it here
-          if (piece.XPosition === Xcord && piece.YPosition === Ycord) { // Snapping to grid functionality
-            piece.XPosition = Xgrid;
-            piece.YPosition = Ygrid;
+          if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
+            // Snapping to grid functionality
+            piece.XPosition = Xcord;
+            piece.YPosition = Ycord;
           }
           return piece;
         });
         return pieces;
       });
-      activePiece = null; // Set it back to null
+      setActivePiece(null);
     }
   }
 
