@@ -14,8 +14,16 @@ interface Piece {
 // Store the starting positions for all the pieces
 const pieces: Piece[] = [];
 
-// Define the starting positions for all the pieces
-pieces.push({ image: "assets/images/pawn_b.png", XPosition: 0, YPosition: 1 });
+for (let i = 0; i < 8; i++) {
+  // Define the starting positions for all the White pieces
+  pieces.push({ image: "assets/images/pawn_b.png", XPosition: i, YPosition: 6 });
+}
+
+for (let i = 0; i < 8; i++) {
+  // Define the starting positions for all the Black pieces
+  pieces.push({ image: "assets/images/pawn_w.png", XPosition: i, YPosition: 1 });
+}
+
 
 export default function Chessboard() {
   let board = [];
