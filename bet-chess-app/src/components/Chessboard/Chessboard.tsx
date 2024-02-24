@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
-import "../../rules/Rules";
 import Rules from "../../rules/Rules";
 
 const Xaxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
@@ -251,16 +250,36 @@ export default function Chessboard() {
         // Map the pieces to get all the pieces and return them
         const pieces = value.map((piece) => {
           // Check if the move is valid before updating the position below
-          // Since the mapping has found the current piece alreadt this will work
-          rules.isValidMove(Xgrid, Ygrid, Xcord, Ycord, piece.type, piece.side);
-
-          // Only grab the piece in which we have originally grabbed
-          // This is done by setting the state in the grabPiece function and comparing it here
+          // Since the mapping has found the current piece alreadt this will only update that pieces position
           if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
-            // Snapping to grid functionality
-            piece.XPosition = Xcord;
-            piece.YPosition = Ycord;
+            const validMove = rules.isValidMove(
+              Xgrid,
+              Ygrid,
+              Xcord,
+              Ycord,
+              piece.type,
+              piece.side
+            );
+
+            if (validMove) {
+              piece.XPosition = Xcord;
+              piece.YPosition = Ycord;
+            } else {
+              // If not valid then reset the position
+              activePiece.style.position = "relative";
+              // Strip the attributes of the piece back to 0 so it moves back to its position
+              activePiece.style.removeProperty("left");
+              activePiece.style.removeProperty("top");
+            }
           }
+
+          // // Only grab the piece in which we have originally grabbed
+          // // This is done by setting the state in the grabPiece function and comparing it here
+          // if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
+          //   // Snapping to grid functionality
+          //   piece.XPosition = Xcord;
+          //   piece.YPosition = Ycord;
+          // }
           return piece;
         });
         return pieces;
