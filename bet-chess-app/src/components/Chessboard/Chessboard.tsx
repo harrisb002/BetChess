@@ -1,4 +1,4 @@
-import React, {useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
 import "../../rules/Rules";
@@ -14,6 +14,16 @@ interface Piece {
   image: string;
   XPosition: number;
   YPosition: number;
+  type: PieceType;
+}
+
+export enum PieceType {
+  PAWN,
+  BISHOP,
+  KNIGHT,
+  ROOK,
+  QUEEN,
+  KING,
 }
 
 // Initialize the board
@@ -43,6 +53,7 @@ export default function Chessboard() {
       image: "assets/images/pawn_b.png",
       XPosition: i,
       YPosition: 6,
+      type: PieceType.PAWN,
     });
   }
 
@@ -52,6 +63,7 @@ export default function Chessboard() {
       image: "assets/images/pawn_w.png",
       XPosition: i,
       YPosition: 1,
+      type: PieceType.PAWN,
     });
   }
 
@@ -64,58 +76,66 @@ export default function Chessboard() {
       image: `assets/images/rook_${color}.png`,
       XPosition: 0,
       YPosition,
+      type: PieceType.ROOK,
     });
     initialBoardState.push({
       image: `assets/images/rook_${color}.png`,
       XPosition: 7,
       YPosition,
+      type: PieceType.ROOK,
     });
 
     initialBoardState.push({
       image: `assets/images/bishop_${color}.png`,
       XPosition: 2,
       YPosition,
+      type: PieceType.BISHOP,
     });
     initialBoardState.push({
       image: `assets/images/bishop_${color}.png`,
       XPosition: 5,
       YPosition,
+      type: PieceType.BISHOP,
     });
     initialBoardState.push({
       image: `assets/images/knight_${color}.png`,
       XPosition: 1,
       YPosition,
+      type: PieceType.KNIGHT,
     });
     initialBoardState.push({
       image: `assets/images/knight_${color}.png`,
       XPosition: 6,
       YPosition,
+      type: PieceType.KNIGHT,
     });
-
+    // Render the Queens
     initialBoardState.push({
-      image: `assets/images/king_${color}.png`,
-      XPosition: 4,
-      YPosition,
+      image: "assets/images/queen_w.png",
+      XPosition: 3,
+      YPosition: 0,
+      type: PieceType.QUEEN,
     });
     initialBoardState.push({
       image: `assets/images/queen_${color}.png`,
       XPosition: 3,
       YPosition,
+      type: PieceType.QUEEN,
+    });
+    // Render the Kings
+    initialBoardState.push({
+      image: "assets/images/king_w.png",
+      XPosition: 4,
+      YPosition: 0,
+      type: PieceType.KING,
+    });
+    initialBoardState.push({
+      image: `assets/images/king_${color}.png`,
+      XPosition: 4,
+      YPosition,
+      type: PieceType.KING,
     });
   }
-  // Render the Kings
-  initialBoardState.push({
-    image: "assets/images/king_w.png",
-    XPosition: 4,
-    YPosition: 0,
-  });
-  // Render the Queens
-  initialBoardState.push({
-    image: "assets/images/queen_w.png",
-    XPosition: 3,
-    YPosition: 0,
-  });
-
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
     const chessboard = chessboardRef.current;
@@ -125,7 +145,9 @@ export default function Chessboard() {
       // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
       setXgrid(Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE));
       setYgrid(
-        Math.abs(Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE))
+        Math.abs(
+          Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
+        )
       );
 
       // Get the mouse s and y positions
@@ -192,18 +214,24 @@ export default function Chessboard() {
     if (activePiece && chessboard) {
       // 0,0 is top left of board when offset with the difference of each tile being 100
       // Finds relative position of pieces to grid
-      const Xcord = Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE);
+      const Xcord = Math.floor(
+        (event.clientX - chessboard.offsetLeft) / GRID_SIZE
+      );
       // Flip y-axis so the mouse lines up with page (board is 800px so can offset it)
       const Ycord = Math.abs(
-        Math.abs(Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE))
+        Math.abs(
+          Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
+        )
       );
-      // Check if the move is valid before updating the position below
-
 
       // Update the piece position
       setPieces((value) => {
         // Map the pieces to get all the pieces and return them
         const pieces = value.map((piece) => {
+          // Check if the move is valid before updating the position below
+          // Since the mapping has found the current piece alreadt this will work
+          rules.isValidMove(Xgrid, Ygrid, Xcord, Ycord, piece.type);
+
           // Only grab the piece in which we have originally grabbed
           // This is done by setting the state in the grabPiece function and comparing it here
           if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
