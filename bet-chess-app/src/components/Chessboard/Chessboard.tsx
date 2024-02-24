@@ -1,6 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useRef, useState } from "react";
 import Tile from "../Tile/Tile";
 import "./Chessboard.css";
+import "../../rules/Rules";
+import Rules from "../../rules/Rules";
 
 const Xaxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const Yaxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -23,11 +25,12 @@ export default function Chessboard() {
   // Used to set the x and y position of the peices when dropped to snap to grid
   const [Xgrid, setXgrid] = useState(0);
   const [Ygrid, setYgrid] = useState(0);
-
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
-
   const chessboardRef = useRef<HTMLDivElement>(null);
+
+  // Create an Instance of the Rules class
+  const rules = new Rules();
 
   // Save the grabbed piece in this variable
   // let activePiece: HTMLElement | null = null;
@@ -194,7 +197,10 @@ export default function Chessboard() {
       const Ycord = Math.abs(
         Math.abs(Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE))
       );
+      // Check if the move is valid before updating the position below
 
+
+      // Update the piece position
       setPieces((value) => {
         // Map the pieces to get all the pieces and return them
         const pieces = value.map((piece) => {
