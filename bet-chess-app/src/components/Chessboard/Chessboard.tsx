@@ -245,49 +245,37 @@ export default function Chessboard() {
         )
       );
 
-      // If the move is valid and a piece is in the location then update the board to remove the piece being captured
-      const currPiece = pieces.find((piece) => piece.XPosition === Xgrid && piece.YPosition === Ygrid) 
-      console.log(currPiece);
+      // If the move is valid and a piece is in the location then update the board to remove this piece being captured
+      const currPiece = pieces.find((piece) => piece.XPosition === Xgrid && piece.YPosition === Ygrid);
+      // Find the piece being attacked to remove
+      // const pieceAttacked = pieces.find((piece) => piece.XPosition === Xcord && piece.YPosition === Ycord);
 
-      // Update the piece position
-      setPieces((value) => {
-        // Map the pieces to get all the pieces and return them
-        const pieces = value.map((piece) => {
-          // Check if the move is valid before updating the position below
-          // Since the mapping has found the current piece alreadt this will only update that pieces position
-          if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
-            const validMove = rules.isValidMove(
-              Xgrid,
-              Ygrid,
-              Xcord,
-              Ycord,
-              piece.type,
-              piece.side, 
-              value
-            );
+      //Only check to set pices for a valid move when there is a current piece being moved
+      if (currPiece) {
+        // Check for valid move given if a piece is being attacked
+        const validMove = rules.isValidMove(Xgrid, Ygrid, Xcord, Ycord, currPiece.type, currPiece.side, pieces);
+        // console.log("Current Piece",currPiece);
+        // console.log("Piece being attacked",pieceAttacked);      
+        if (validMove) {
 
-            if (validMove) {
-              return { ...piece, XPosition: Xcord, YPosition: Ycord };
-            } else {
-              // If not valid then reset the position
-              activePiece.style.position = "relative";
-              // Strip the attributes of the piece back to 0 so it moves back to its position
-              activePiece.style.removeProperty("left");
-              activePiece.style.removeProperty("top");
+          const updatedPieces = pieces.reduce((results, piece) => {
+            // Check if the current piece is the one being moved
+            if (piece.XPosition === currPiece.XPosition && piece.YPosition === currPiece.YPosition) {
+              results.push({...piece, XPosition: Xcord, YPosition: Ycord});
+            } else if (!(piece.XPosition === Xcord && piece.YPosition === Ycord)) {
+              results.push(piece);
             }
-          }
+            return results; // return the array of pieces after each loop
+          }, [] as Piece[])
 
-          // // Only grab the piece in which we have originally grabbed
-          // // This is done by setting the state in the grabPiece function and comparing it here
-          // if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
-          //   // Snapping to grid functionality
-          //   piece.XPosition = Xcord;
-          //   piece.YPosition = Ycord;
-          // }
-          return piece;
-        });
-        return pieces;
-      });
+          setPieces(updatedPieces);
+        } else {
+          activePiece.style.position = "relative";
+          // Strip the attributes of the piece back to 0 so it moves back to its position
+          activePiece.style.removeProperty("left");
+          activePiece.style.removeProperty("top");
+        }
+      }
       setActivePiece(null);
     }
   }

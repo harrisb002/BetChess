@@ -59,11 +59,6 @@ export default class Rules {
                 }
                 // console.log("upper/ bottom right");
             }
-
-
-
-
-
         }
         return false;
     }
