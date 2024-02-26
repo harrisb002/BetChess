@@ -9,7 +9,7 @@ const Yaxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
 const GRID_SIZE = 100;
 
 // Used to store the starting position for the pieces
-interface Piece {
+export interface Piece {
   image: string;
   XPosition: number;
   YPosition: number;
@@ -258,12 +258,12 @@ export default function Chessboard() {
               Xcord,
               Ycord,
               piece.type,
-              piece.side
+              piece.side, 
+              value
             );
 
             if (validMove) {
-              piece.XPosition = Xcord;
-              piece.YPosition = Ycord;
+              return { ...piece, XPosition: Xcord, YPosition: Ycord };
             } else {
               // If not valid then reset the position
               activePiece.style.position = "relative";
