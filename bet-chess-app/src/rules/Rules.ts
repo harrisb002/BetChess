@@ -24,10 +24,37 @@ export default class Rules {
         }
     }
 
+    isEnPassant(currX: number, currY: number, boardState: Piece[], side: Side) {
+        const pawnMovement = side === Side.WHITE ? 1 : -1;
+
+        //Check if attacking piece is pawn
+        
+
+        //Check if in upperleft/right
+
+        //Check if in bottomleft/right
+
+        //Check if piece under/above the attacked tile
+
+        //If the attacked piece has made an enPassant move in the previous turn
+
+        // If enemy piece subtract one
+        const piece = boardState.find(piece => piece.XPosition === currX && currY === currY + pawnMovement);
+
+        // Check if its an enPassant
+        if(piece) {
+            
+        } else {
+
+        }
+
+    }
+
     // Check if a move is valid by checking previous/current x,y locations
     // the type of piece passed using a defined ENUM, the side of the piece
     // The board state is also needed to determine valid moves
     isValidMove(prevX: number, prevY: number, currX: number, currY: number, type: PieceType, side: Side, boardState: Piece[]) {
+       
         // Logic for the Pawn
         if (type === PieceType.PAWN) {
             const specialRow = side === Side.WHITE ? 1 : 6;

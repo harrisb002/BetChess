@@ -255,13 +255,17 @@ export default function Chessboard() {
         // Check for valid move given if a piece is being attacked
         const validMove = rules.isValidMove(Xgrid, Ygrid, Xcord, Ycord, currPiece.type, currPiece.side, pieces);
         // console.log("Current Piece",currPiece);
-        // console.log("Piece being attacked",pieceAttacked);      
+        // console.log("Piece being attacked",pieceAttacked);     
+
+        // Check for enPassant
+        const isEnPassantMove = rules.isEnPassant(Xcord, Ycord, pieces, currPiece.side, currPiece.type);
+
         if (validMove) {
 
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
             if (piece.XPosition === currPiece.XPosition && piece.YPosition === currPiece.YPosition) {
-              results.push({...piece, XPosition: Xcord, YPosition: Ycord});
+              results.push({ ...piece, XPosition: Xcord, YPosition: Ycord });
             } else if (!(piece.XPosition === Xcord && piece.YPosition === Ycord)) {
               results.push(piece);
             }
