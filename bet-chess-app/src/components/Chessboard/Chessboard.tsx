@@ -258,7 +258,7 @@ export default function Chessboard() {
         // console.log("Piece being attacked",pieceAttacked);     
 
         // Check for enPassant
-        const isEnPassantMove = rules.isEnPassant(Xcord, Ycord, pieces, currPiece.side, currPiece.type);
+        const isEnPassantMove = rules.isEnPassant(Xgrid, Ygrid, Xcord, Ycord, currPiece.type, currPiece.side, pieces);
 
         if (validMove) {
 
