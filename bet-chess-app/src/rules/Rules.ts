@@ -12,6 +12,18 @@ export default class Rules {
         }
     }
 
+    // Checking if opponent is on a tile for attacking moves
+    opponentOnTile(currX: number, currY: number, boardState: Piece[], side: Side) : boolean {
+        // If the piece at this position is an opponent piece
+        const piece = boardState.find((piece) => piece.XPosition === currX && piece.YPosition === currY && piece.side !== side)
+
+        if(piece) {
+            return true;
+        } else {
+            return false
+        }
+    }
+
     // Check if a move is valid by checking previous/current x,y locations
     // the type of piece passed using a defined ENUM, the side of the piece
     // The board state is also needed to determine valid moves
@@ -30,6 +42,28 @@ export default class Rules {
                     return true;
                 }
             }
+
+            //Attacking logic
+            //Attacking in upper of bottom left corner
+            else if (currX - prevX === -1 && currY - prevY === pawnMovement) {
+                if(this.opponentOnTile(currX, currY, boardState, side)) {
+                    return true;
+                // console.log("attack enemy on upper/ bottom left");
+                }
+                // console.log("upper/ bottom left");
+            } //Attacking in the upper or bottom right corner
+            else if (currX - prevX === 1 && currY - prevY === pawnMovement) {
+                if(this.opponentOnTile(currX, currY, boardState, side)) {
+                    return true;
+                // console.log("attack enemy on upper/ bottom right");
+                }
+                // console.log("upper/ bottom right");
+            }
+
+
+
+
+
         }
         return false;
     }

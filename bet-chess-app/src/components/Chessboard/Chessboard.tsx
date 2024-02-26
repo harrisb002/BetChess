@@ -245,6 +245,10 @@ export default function Chessboard() {
         )
       );
 
+      // If the move is valid and a piece is in the location then update the board to remove the piece being captured
+      const currPiece = pieces.find((piece) => piece.XPosition === Xgrid && piece.YPosition === Ygrid) 
+      console.log(currPiece);
+
       // Update the piece position
       setPieces((value) => {
         // Map the pieces to get all the pieces and return them
