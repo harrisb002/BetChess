@@ -247,43 +247,97 @@ export default function Chessboard() {
       );
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
-      const currPiece = pieces.find((piece) => piece.XPosition === Xgrid && piece.YPosition === Ygrid);
+      const currPiece = pieces.find(
+        (piece) => piece.XPosition === Xgrid && piece.YPosition === Ygrid
+      );
       // Find the piece being attacked to remove
       // const pieceAttacked = pieces.find((piece) => piece.XPosition === Xcord && piece.YPosition === Ycord);
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
         // Check for valid move given if a piece is being attacked
-        const validMove = rules.isValidMove(Xgrid, Ygrid, Xcord, Ycord, currPiece.type, currPiece.side, pieces);
+        const validMove = rules.isValidMove(
+          Xgrid,
+          Ygrid,
+          Xcord,
+          Ycord,
+          currPiece.type,
+          currPiece.side,
+          pieces
+        );
         // console.log("Current Piece",currPiece);
-        // console.log("Piece being attacked",pieceAttacked);     
+        // console.log("Piece being attacked",pieceAttacked);
 
         // Check for enPassant
-        const isEnPassantMove = rules.isEnPassant(Xgrid, Ygrid, Xcord, Ycord, currPiece.type, currPiece.side, pieces);
+        const isEnPassantMove = rules.isEnPassant(
+          Xgrid,
+          Ygrid,
+          Xcord,
+          Ycord,
+          currPiece.type,
+          currPiece.side,
+          pieces
+        );
+        // Find the direction that the pawn is moving
+        const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
+
         if (isEnPassantMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
+            // Check if its the piece moved
+            if (
+              piece.XPosition === Xgrid &&
+              piece.YPosition === Ygrid
+            ) {
+              piece.XPosition = Xcord;
+              piece.YPosition = Ycord;
+              results.push(piece); // Push the updated pieces position
+            } else if (
+              !(
+                piece.XPosition === Xcord &&
+                piece.YPosition === Ycord - pawnMovement
+              )
+            ) {
+              if (piece.type === PieceType.PAWN) {
+                piece.enPassant = false;
+              }
+              results.push(piece); // Push the updated pieces position
+            }
             return results;
-          }, [] as Piece[]);  
+          }, [] as Piece[]);
+
+          // Update the state of the pieces if a EnPassant has occurredÏ
+          setPieces(updatedPieces);
+          
         } else if (validMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
-            if (piece.XPosition === currPiece.XPosition && piece.YPosition === currPiece.YPosition) {
-              if (Math.abs(Ygrid - Ycord) === 2 && piece.type === PieceType.PAWN) {
+            if (
+              piece.XPosition === currPiece.XPosition &&
+              piece.YPosition === currPiece.YPosition
+            ) {
+              if (
+                // Check if is a pawn and double jump
+                Math.abs(Ygrid - Ycord) === 2 &&
+                piece.type === PieceType.PAWN
+              ) {
                 // If this is an initial double jump
                 piece.enPassant = true;
               } else {
                 piece.enPassant = false; // Only can be enPassant if done on first turn
               }
               results.push({ ...piece, XPosition: Xcord, YPosition: Ycord });
-            } else if (!(piece.XPosition === Xcord && piece.YPosition === Ycord)) {
+            } else if (
+              !(piece.XPosition === Xcord && piece.YPosition === Ycord)
+            ) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
               }
               results.push(piece);
             }
             return results; // return the array of pieces after each loop
-          }, [] as Piece[])
+          }, [] as Piece[]);
 
+          // Update the state of the pieces after validating move ect...
           setPieces(updatedPieces);
         } else {
           activePiece.style.position = "relative";
