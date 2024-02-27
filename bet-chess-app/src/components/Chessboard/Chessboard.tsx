@@ -2,13 +2,15 @@ import React, { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
 import Rules from "../../rules/Rules";
-import { Xaxis, Yaxis, GRID_SIZE, Piece, Side, PieceType } from "../../Constants";
-
-
-
-
-// Initialize the board
-const initialBoardState: Piece[] = [];
+import {
+  Xaxis,
+  Yaxis,
+  GRID_SIZE,
+  Piece,
+  Side,
+  PieceType,
+  initialBoardState
+} from "../../Constants";
 
 export default function Chessboard() {
   // Set active piece to allow for smooth transition of grabbing functionality
@@ -23,113 +25,6 @@ export default function Chessboard() {
 
   // Create an Instance of the Rules class
   const rules = new Rules();
-
-  // Load the pieces when the component is loaded
-  // Store the starting positions for all the pieces
-  // Dynamically Render all pieces using string interpolation
-  for (let piece = 0; piece < 2; piece++) {
-    const sideChosen = piece == 0 ? Side.BLACK : Side.WHITE; // Used for Side enum and signifies who's piece is being moved
-    const color = sideChosen === Side.BLACK ? "b" : "w";
-
-    // Choose the position of the pieces based on their color
-    const YPosition = sideChosen === Side.BLACK ? 7 : 0; // Make the variable name the same so it is implicit (YPosition)
-
-    initialBoardState.push({
-      image: `assets/images/rook_${color}.png`,
-      XPosition: 0,
-      YPosition,
-      type: PieceType.ROOK,
-      side: sideChosen,
-    });
-    initialBoardState.push({
-      image: `assets/images/rook_${color}.png`,
-      XPosition: 7,
-      YPosition,
-      type: PieceType.ROOK,
-      side: sideChosen,
-    });
-
-    initialBoardState.push({
-      image: `assets/images/bishop_${color}.png`,
-      XPosition: 2,
-      YPosition,
-      type: PieceType.BISHOP,
-      side: sideChosen,
-    });
-    initialBoardState.push({
-      image: `assets/images/bishop_${color}.png`,
-      XPosition: 5,
-      YPosition,
-      type: PieceType.BISHOP,
-      side: sideChosen,
-    });
-    initialBoardState.push({
-      image: `assets/images/knight_${color}.png`,
-      XPosition: 1,
-      YPosition,
-      type: PieceType.KNIGHT,
-      side: sideChosen,
-    });
-    initialBoardState.push({
-      image: `assets/images/knight_${color}.png`,
-      XPosition: 6,
-      YPosition,
-      type: PieceType.KNIGHT,
-      side: sideChosen,
-    });
-    // Render the Queens
-    initialBoardState.push({
-      image: "assets/images/queen_w.png",
-      XPosition: 3,
-      YPosition: 0,
-      type: PieceType.QUEEN,
-      side: sideChosen,
-    });
-    initialBoardState.push({
-      image: `assets/images/queen_${color}.png`,
-      XPosition: 3,
-      YPosition,
-      type: PieceType.QUEEN,
-      side: sideChosen,
-    });
-    // Render the Kings
-    initialBoardState.push({
-      image: "assets/images/king_w.png",
-      XPosition: 4,
-      YPosition: 0,
-      type: PieceType.KING,
-      side: sideChosen,
-    });
-    initialBoardState.push({
-      image: `assets/images/king_${color}.png`,
-      XPosition: 4,
-      YPosition,
-      type: PieceType.KING,
-      side: sideChosen,
-    });
-  }
-
-  // Define the starting positions for all the White Pawns
-  for (let i = 0; i < 8; i++) {
-    initialBoardState.push({
-      image: "assets/images/pawn_w.png",
-      XPosition: i,
-      YPosition: 1,
-      type: PieceType.PAWN,
-      side: Side.WHITE,
-    });
-  }
-
-  // Define the starting positions for all the Black Pawns
-  for (let i = 0; i < 8; i++) {
-    initialBoardState.push({
-      image: "assets/images/pawn_b.png",
-      XPosition: i,
-      YPosition: 6,
-      type: PieceType.PAWN,
-      side: Side.BLACK,
-    });
-  }
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
@@ -257,10 +152,7 @@ export default function Chessboard() {
         if (isEnPassantMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if its the piece moved
-            if (
-              piece.XPosition === Xgrid &&
-              piece.YPosition === Ygrid
-            ) {
+            if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
               piece.XPosition = Xcord;
               piece.YPosition = Ycord;
               results.push(piece); // Push the updated pieces position
@@ -280,7 +172,6 @@ export default function Chessboard() {
 
           // Update the state of the pieces if a EnPassant has occurredÏ
           setPieces(updatedPieces);
-          
         } else if (validMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
