@@ -16,7 +16,6 @@ export default class Rules {
     opponentOnTile(currX: number, currY: number, boardState: Piece[], side: Side): boolean {
         // If the piece at this position is an opponent piece
         const piece = boardState.find((piece) => piece.XPosition === currX && piece.YPosition === currY && piece.side !== side)
-
         if (piece) {
             return true;
         } else {
@@ -33,24 +32,14 @@ export default class Rules {
             // Upper or bottom left corner || Upper or bottom right corner
             if ((currX - prevX === -1 || currX - prevX === 1) && currY - prevY === pawnMovement) {
                 //Check if piece under/above the attacked tile
-                
-            } 
+                //Attacked piece has made an enPassant move in the previous turn
+                const piece = boardState.find((piece) => piece.XPosition === currX && piece.YPosition === currY - pawnMovement && piece.enPassant);
+                if(piece) {
+                    return true;
+                }
+            }
         }
-
-        //If the attacked piece has made an enPassant move in the previous turn
-
-        // If enemy piece subtract one
-        const piece = boardState.find(piece => piece.XPosition === currX && currY === currY + pawnMovement);
-
-        // Check if its an enPassant
-        if (piece) {
-
-        } else {
-
-        }
-
         return false;
-
     }
 
     // Check if a move is valid by checking previous/current x,y locations

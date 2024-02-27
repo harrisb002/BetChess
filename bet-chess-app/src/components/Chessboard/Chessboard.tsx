@@ -15,6 +15,7 @@ export interface Piece {
   YPosition: number;
   type: PieceType;
   side: Side;
+  enPassant?: boolean; // This is nullable
 }
 
 // Used in piece logic in validating moves
@@ -259,14 +260,25 @@ export default function Chessboard() {
 
         // Check for enPassant
         const isEnPassantMove = rules.isEnPassant(Xgrid, Ygrid, Xcord, Ycord, currPiece.type, currPiece.side, pieces);
-
-        if (validMove) {
-
+        if (isEnPassantMove) {
+          const updatedPieces = pieces.reduce((results, piece) => {
+            return results;
+          }, [] as Piece[]);  
+        } else if (validMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
             if (piece.XPosition === currPiece.XPosition && piece.YPosition === currPiece.YPosition) {
+              if (Math.abs(Ygrid - Ycord) === 2 && piece.type === PieceType.PAWN) {
+                // If this is an initial double jump
+                piece.enPassant = true;
+              } else {
+                piece.enPassant = false; // Only can be enPassant if done on first turn
+              }
               results.push({ ...piece, XPosition: Xcord, YPosition: Ycord });
             } else if (!(piece.XPosition === Xcord && piece.YPosition === Ycord)) {
+              if (piece.type === PieceType.PAWN) {
+                piece.enPassant = false;
+              }
               results.push(piece);
             }
             return results; // return the array of pieces after each loop
