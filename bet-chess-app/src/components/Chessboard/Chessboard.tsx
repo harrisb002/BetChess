@@ -1,38 +1,11 @@
 import React, { useRef, useState } from "react";
-import Tile from "../Tile/Tile";
 import "./Chessboard.css";
+import Tile from "../Tile/Tile";
 import Rules from "../../rules/Rules";
+import { Xaxis, Yaxis, GRID_SIZE, Piece, Side, PieceType } from "../../Constants";
 
-const Xaxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const Yaxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
 
-const GRID_SIZE = 100;
 
-// Used to store the starting position for the pieces
-export interface Piece {
-  image: string;
-  XPosition: number;
-  YPosition: number;
-  type: PieceType;
-  side: Side;
-  enPassant?: boolean; // This is nullable
-}
-
-// Used in piece logic in validating moves
-export enum Side {
-  BLACK,
-  WHITE,
-}
-
-// Used in piece logic in validating moves
-export enum PieceType {
-  PAWN,
-  KNIGHT,
-  BISHOP,
-  ROOK,
-  QUEEN,
-  KING,
-}
 
 // Initialize the board
 const initialBoardState: Piece[] = [];

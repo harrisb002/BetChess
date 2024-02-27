@@ -1,4 +1,4 @@
-import { PieceType, Side, Piece } from "../components/Chessboard/Chessboard";
+import { PieceType, Side, Piece } from "../Constants"
 
 export default class Rules {
   // Check if the tile currently has a piece on it
