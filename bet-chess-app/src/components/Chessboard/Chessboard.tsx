@@ -134,7 +134,7 @@ export default function Chessboard() {
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
-        console.log("Current Piece is: ", currPiece);
+        // console.log("Current Piece is: ", currPiece);
 
         // Check for valid move given if a piece is being attacked
         const validMove = rules.isValidMove(
@@ -158,7 +158,7 @@ export default function Chessboard() {
         // Find the direction that the pawn is moving
         const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
         
-        console.log("The EnPassant move: ", isEnPassantMove);
+        // console.log("The EnPassant move: ", isEnPassantMove);
 
         if (isEnPassantMove) {
           const updatedPieces = pieces.reduce((results, piece) => {

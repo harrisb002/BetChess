@@ -48,13 +48,14 @@ export default class Rules {
     if (type === PieceType.PAWN) {
       // Same as attacking logic
       // Upper or bottom left corner || Upper or bottom right corner
-      console.log("Initial Position: ", initialPosition);
-      console.log("Desired Position: ", desiredPosition);
+      // console.log("Initial Position: ", initialPosition);
+      // console.log("Desired Position: ", desiredPosition);
 
       if (
         (desiredPosition.x - initialPosition.x === -1 || //Blacks EnPassant
           desiredPosition.x - initialPosition.x === 1) && //Whites EnPassant
-        desiredPosition.y - initialPosition.y === pawnMovement // If the spot the pawn has moved is on the same file as the opponents
+        // If the spot the pawn has moved is on the same file as the opponents
+        desiredPosition.y - initialPosition.y === pawnMovement
       ) {
         // Find the piece that has the required qualities
         const piece = boardState.find(
@@ -65,7 +66,8 @@ export default class Rules {
             piece.position.y === desiredPosition.y - pawnMovement &&
             piece.enPassant
         );
-        if (piece) { // Return it if the piece meets the criteria
+        if (piece) {
+          // Return it if the piece meets the criteria
           return true;
         }
       }
@@ -83,7 +85,7 @@ export default class Rules {
     side: Side,
     boardState: Piece[]
   ) {
-    // Logic for the Pawn
+    // PAWN LOGIC
     if (type === PieceType.PAWN) {
       const specialRow = side === Side.WHITE ? 1 : 6;
       const pawnMovement = side === Side.WHITE ? 1 : -1;
@@ -112,7 +114,8 @@ export default class Rules {
         ) {
           return true;
         }
-      } else if ( //Attacking in upper of bottom left corner
+      } else if (
+        //Attacking in upper of bottom left corner
         desiredPosition.x - initialPosition.x === -1 &&
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
@@ -145,6 +148,53 @@ export default class Rules {
           // console.log("attack enemy on upper/ bottom right");
         }
         // console.log("upper/ bottom right");
+      }
+    }
+    // KNIGHT LOGIC
+    else if (type === PieceType.KNIGHT) {
+      // Moving logic for Knight
+      // console.log("The initial position is: ", initialPosition);
+      // console.log("The desired position is: ", desiredPosition);
+
+      // For 2 up and 1 left
+      if (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === 2) {
+        // console.log("For 2 up and 1 left")
+      }
+
+      // For 2 up and 1 right
+      if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === 2) {
+        // console.log("For 2 up and 1 right")
+
+      }
+      // For 2 down and 1 left
+      if (desiredPosition.x - initialPosition.x === -1 && desiredPosition.y - initialPosition.y === -2) {
+        // console.log("For 2 down and 1 left")
+
+      }
+      // For 2 down and 1 right
+      if (desiredPosition.x - initialPosition.x === 1 && desiredPosition.y - initialPosition.y === -2) {
+        // console.log("For 2 down and 1 right")
+
+      }
+      // For 2 right and 1 up
+      if (desiredPosition.x - initialPosition.x === 2 && desiredPosition.y - initialPosition.y === 1) {
+        // console.log("For 2 right and 1 up")
+
+      }
+      // For 2 right and 1 down
+      if (desiredPosition.x - initialPosition.x === 2 && desiredPosition.y - initialPosition.y === -1) {
+        // console.log("For 2 right and 1 down")
+
+      }
+      // For 2 left and 1 up
+      if (desiredPosition.x - initialPosition.x === -2 && desiredPosition.y - initialPosition.y === 1) {
+        // console.log("For 2 left and 1 up")
+
+      }
+      // For 2 left and 1 down
+      if (desiredPosition.x - initialPosition.x === -2 && desiredPosition.y - initialPosition.y === -1) {
+        // console.log("For 2 left and 1 down")
+
       }
     }
     return false;
