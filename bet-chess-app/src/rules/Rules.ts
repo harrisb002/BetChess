@@ -157,22 +157,18 @@ export default class Rules {
       // console.log("The desired position is: ", desiredPosition);
 
       for (let i = -1; i < 2; i += 2) {
-        // For 2 up and 1 left
-        if (desiredPosition.y - initialPosition.y === 2 * i) {
-          if (desiredPosition.x - initialPosition.x === -1) {
-            console.log("For 2 up or down and 1 left");
+        for (let j = -1; j < 2; j += 2) {
+          // For 2 up and 1 left
+          if (desiredPosition.y - initialPosition.y === 2 * i) {
+            if (desiredPosition.x - initialPosition.x === j) {
+              console.log("For 2 up or down and 1 left or right");
+            }
           }
-          if (desiredPosition.x - initialPosition.x === 1) {
-            console.log("For 2 up or down and 1 right");
-          }
-        }
-        // For 2 right and 1 up
-        if (desiredPosition.x - initialPosition.x === 2 * i) {
-          if (desiredPosition.y - initialPosition.y === 1) {
-            console.log("For 2 right or left and 1 up")
-          }
-          if (desiredPosition.y - initialPosition.y === -1) {
-            console.log("For 2 right or left and 1 down")
+          // For 2 right and 1 up
+          if (desiredPosition.x - initialPosition.x === 2 * i) {
+            if (desiredPosition.y - initialPosition.y === j) {
+              console.log("For 2 right or left and 1 up or down");
+            }
           }
         }
       }
