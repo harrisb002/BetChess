@@ -1,11 +1,11 @@
-import { PieceType, Side, Piece, Position } from "../Constants";
+import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
 
 export default class Rules {
   // Check if the tile currently has a piece on it
-  tileIsEmpty(currX: number, currY: number, boardState: Piece[]): boolean {
+  tileIsEmpty(position: Position, boardState: Piece[]): boolean {
     // check if the piece found in the position is null (if there is no piece placed there)
     const piece = boardState.find(
-      (piece) => piece.position.x === currX && piece.position.y === currY
+      (piece) => samePostion(piece.position, position)
     );
     if (piece) {
       return false;
@@ -16,16 +16,14 @@ export default class Rules {
 
   // Checking if opponent is on a tile for attacking moves
   opponentOnTile(
-    currX: number,
-    currY: number,
+    position: Position,
     boardState: Piece[],
     side: Side
   ): boolean {
     // If the piece at this position is an opponent piece
     const piece = boardState.find(
       (piece) =>
-        piece.position.x === currX &&
-        piece.position.y === currY &&
+        samePostion(piece.position, position) && 
         piece.side !== side
     );
     if (piece) {
@@ -96,10 +94,10 @@ export default class Rules {
         desiredPosition.y - initialPosition.y === 2 * pawnMovement
       ) {
         if (
-          this.tileIsEmpty(desiredPosition.x, desiredPosition.y, boardState) &&
+          this.tileIsEmpty(desiredPosition, boardState) &&
           this.tileIsEmpty(
-            desiredPosition.x,
-            desiredPosition.y - pawnMovement,
+            {x: desiredPosition.x,
+            y: desiredPosition.y - pawnMovement},
             boardState
           )
         ) {
@@ -110,7 +108,7 @@ export default class Rules {
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
         if (
-          this.tileIsEmpty(desiredPosition.x, desiredPosition.y, boardState)
+          this.tileIsEmpty(desiredPosition, boardState)
         ) {
           return true;
         }
@@ -121,8 +119,7 @@ export default class Rules {
       ) {
         if (
           this.opponentOnTile(
-            desiredPosition.x,
-            desiredPosition.y,
+            desiredPosition,
             boardState,
             side
           )
@@ -138,8 +135,7 @@ export default class Rules {
       ) {
         if (
           this.opponentOnTile(
-            desiredPosition.x,
-            desiredPosition.y,
+            desiredPosition,
             boardState,
             side
           )
@@ -158,16 +154,18 @@ export default class Rules {
 
       for (let i = -1; i < 2; i += 2) {
         for (let j = -1; j < 2; j += 2) {
-          // For 2 up and 1 left
+          // For 2 up or down and 1 left or right
           if (desiredPosition.y - initialPosition.y === 2 * i) {
             if (desiredPosition.x - initialPosition.x === j) {
-              console.log("For 2 up or down and 1 left or right");
+                if(this.tileIsEmpty(desiredPosition, boardState) || this.opponentOnTile(desiredPosition, boardState, side)) {
+                  
+                }
             }
           }
-          // For 2 right and 1 up
+          // For 2 right or left and 1 up or down
           if (desiredPosition.x - initialPosition.x === 2 * i) {
             if (desiredPosition.y - initialPosition.y === j) {
-              console.log("For 2 right or left and 1 up or down");
+
             }
           }
         }
