@@ -164,9 +164,51 @@ export default class Rules {
       }
       // BISHOP LOGIC
     } else if (type === PieceType.BISHOP) {
-      // Moving up and to the right
-    }
+      // console.log("The initial position is: ", initialPosition);
+      // console.log("The desired position is: ", desiredPosition);
 
+      // Loop for each tile in the right upwards diagonal (inc. x by 1, inc. y by 1)
+      for (let i = 1; i < 8; i++) {
+        // Moving up and to the right
+        if (
+          desiredPosition.x - initialPosition.x === i &&
+          desiredPosition.y - initialPosition.y === i
+        ) {
+          console.log(`Moving ${i} squares up and right`);
+          break; // Stop looping once the sqaure to move to has been found!
+        }
+      }
+      // Loop for each tile in the right downwards diagonal (inc. x by 1, dec. y by 1)
+      for (let i = 1; i < 8; i++) {
+        if (
+          desiredPosition.x - initialPosition.x === i &&
+          desiredPosition.y - initialPosition.y === -i
+        ) {
+          console.log(`Moving ${i} squares down and right`);
+          break;
+        }
+      }
+      // Loop for each tile in the left downwards diagonal (dec. x by 1, dec. y by 1)
+      for (let i = 1; i < 8; i++) {
+        if (
+          desiredPosition.x - initialPosition.x === -i &&
+          desiredPosition.y - initialPosition.y === -i
+        ) {
+          console.log(`Moving ${i} squares down and left`);
+          break;
+        }
+      }
+      // Loop for each tile in the left downwards diagonal (dec. x by 1, inc. y by 1)
+      for (let i = 1; i < 8; i++) {
+        if (
+          desiredPosition.x - initialPosition.x === -i &&
+          desiredPosition.y - initialPosition.y === i
+        ) {
+          console.log(`Moving ${i} squares up and left`);
+          break;
+        }
+      }
+    }
     return false;
   }
 }
