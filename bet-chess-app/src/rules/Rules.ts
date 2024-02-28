@@ -1,15 +1,22 @@
 import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
 
 export default class Rules {
-  tileEmptyOrOpponent(position: Position, boardState: Piece[], side: Side) : boolean{
-    return this.tileIsEmpty(position, boardState) || this.tileEmptyOrOpponent(position, boardState, side);
+  tileEmptyOrOpponent(
+    position: Position,
+    boardState: Piece[],
+    side: Side
+  ): boolean {
+    return (
+      this.tileIsEmpty(position, boardState) ||
+      this.opponentOnTile(position, boardState, side)
+    );
   }
 
   // Check if the tile currently has a piece on it
   tileIsEmpty(position: Position, boardState: Piece[]): boolean {
     // check if the piece found in the position is null (if there is no piece placed there)
-    const piece = boardState.find(
-      (piece) => samePostion(piece.position, position)
+    const piece = boardState.find((piece) =>
+      samePostion(piece.position, position)
     );
     if (piece) {
       return false;
@@ -19,16 +26,10 @@ export default class Rules {
   }
 
   // Checking if opponent is on a tile for attacking moves
-  opponentOnTile(
-    position: Position,
-    boardState: Piece[],
-    side: Side
-  ): boolean {
+  opponentOnTile(position: Position, boardState: Piece[], side: Side): boolean {
     // If the piece at this position is an opponent piece
     const piece = boardState.find(
-      (piece) =>
-        samePostion(piece.position, position) && 
-        piece.side !== side
+      (piece) => samePostion(piece.position, position) && piece.side !== side
     );
     if (piece) {
       return true;
@@ -100,8 +101,7 @@ export default class Rules {
         if (
           this.tileIsEmpty(desiredPosition, boardState) &&
           this.tileIsEmpty(
-            {x: desiredPosition.x,
-            y: desiredPosition.y - pawnMovement},
+            { x: desiredPosition.x, y: desiredPosition.y - pawnMovement },
             boardState
           )
         ) {
@@ -111,9 +111,7 @@ export default class Rules {
         initialPosition.x === desiredPosition.x &&
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
-        if (
-          this.tileIsEmpty(desiredPosition, boardState)
-        ) {
+        if (this.tileIsEmpty(desiredPosition, boardState)) {
           return true;
         }
       } else if (
@@ -121,13 +119,7 @@ export default class Rules {
         desiredPosition.x - initialPosition.x === -1 &&
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
-        if (
-          this.opponentOnTile(
-            desiredPosition,
-            boardState,
-            side
-          )
-        ) {
+        if (this.opponentOnTile(desiredPosition, boardState, side)) {
           return true;
           // console.log("attack enemy on upper/ bottom left");
         }
@@ -137,13 +129,7 @@ export default class Rules {
         desiredPosition.x - initialPosition.x === 1 &&
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
-        if (
-          this.opponentOnTile(
-            desiredPosition,
-            boardState,
-            side
-          )
-        ) {
+        if (this.opponentOnTile(desiredPosition, boardState, side)) {
           return true;
           // console.log("attack enemy on upper/ bottom right");
         }
@@ -161,19 +147,24 @@ export default class Rules {
           // For 2 up or down and 1 left or right
           if (desiredPosition.y - initialPosition.y === 2 * i) {
             if (desiredPosition.x - initialPosition.x === j) {
-                if(this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
-                  
-                }
+              if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
+                return true; // Can move or attack the tile
+              }
             }
           }
           // For 2 right or left and 1 up or down
           if (desiredPosition.x - initialPosition.x === 2 * i) {
             if (desiredPosition.y - initialPosition.y === j) {
-
+              if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
+                return true; // Can move or attack the tile
+              }
             }
           }
         }
       }
+      // BISHOP LOGIC
+    } else if (type === PieceType.BISHOP) {
+      // Moving up and to the right
     }
 
     return false;
