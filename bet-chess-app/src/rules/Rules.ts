@@ -1,6 +1,10 @@
 import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
 
 export default class Rules {
+  tileEmptyOrOpponent(position: Position, boardState: Piece[], side: Side) : boolean{
+    return this.tileIsEmpty(position, boardState) || this.tileEmptyOrOpponent(position, boardState, side);
+  }
+
   // Check if the tile currently has a piece on it
   tileIsEmpty(position: Position, boardState: Piece[]): boolean {
     // check if the piece found in the position is null (if there is no piece placed there)
@@ -157,7 +161,7 @@ export default class Rules {
           // For 2 up or down and 1 left or right
           if (desiredPosition.y - initialPosition.y === 2 * i) {
             if (desiredPosition.x - initialPosition.x === j) {
-                if(this.tileIsEmpty(desiredPosition, boardState) || this.opponentOnTile(desiredPosition, boardState, side)) {
+                if(this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
                   
                 }
             }
