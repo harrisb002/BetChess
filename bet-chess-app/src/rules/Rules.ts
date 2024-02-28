@@ -169,37 +169,87 @@ export default class Rules {
 
       // Loop for each tile in the diagonal
       for (let i = 1; i < 8; i++) {
-        // Right upwards diagonal (inc. x by 1, inc. y by 1)
+        // Right upwards diagonal (inc. x by 1, dec. y by 1)
+        if (
+          desiredPosition.x > initialPosition.x &&
+          desiredPosition.y > initialPosition.y
+        ) {
+          // Get the squares the bishop has moved through
+          let prevSqaures: Position = {
+            x: initialPosition.x + i,
+            y: initialPosition.y + i,
+          };
+          // Now check if the tile has a piece on it
+          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+            break; // Cant move through pieces!
+          }
+          console.log(
+            `Bishop moved through: ${prevSqaures.x}, ${prevSqaures.y}`
+          );
+        }
         if (
           desiredPosition.x - initialPosition.x === i &&
           desiredPosition.y - initialPosition.y === i
         ) {
-          console.log(`Moving ${i} squares up and right`);
-          break; // Stop looping once the sqaure to move to has been found!
+          return true;
         }
         // Right downwards diagonal (inc. x by 1, dec. y by 1)
         if (
+          desiredPosition.x > initialPosition.x &&
+          desiredPosition.y < initialPosition.y
+        ) {
+          let prevSqaures: Position = {
+            x: initialPosition.x + i,
+            y: initialPosition.y - i,
+          };
+          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+            break;
+          }
+        }
+        if (
           desiredPosition.x - initialPosition.x === i &&
           desiredPosition.y - initialPosition.y === -i
         ) {
-          console.log(`Moving ${i} squares down and right`);
-          break;
+          return true;
         }
-        // Loop for each tile in the left downwards diagonal (dec. x by 1, dec. y by 1)
+        // Left downwards diagonal (dec. x by 1, dec. y by 1)
+        if (
+          desiredPosition.x < initialPosition.x &&
+          desiredPosition.y < initialPosition.y
+        ) {
+          let prevSqaures: Position = {
+            x: initialPosition.x - i,
+            y: initialPosition.y - i,
+          };
+          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+            break;
+          }
+        }
         if (
           desiredPosition.x - initialPosition.x === -i &&
           desiredPosition.y - initialPosition.y === -i
         ) {
-          console.log(`Moving ${i} squares down and left`);
+          return true;
           break;
         }
-        // Loop for each tile in the left downwards diagonal (dec. x by 1, inc. y by 1)
-
+        // Left upwards diagonal (dec. x by 1, inc. y by 1)
+        if (
+          desiredPosition.x < initialPosition.x &&
+          desiredPosition.y > initialPosition.y
+        ) {
+          let prevSqaures: Position = {
+            x: initialPosition.x - i,
+            y: initialPosition.y + i,
+          };
+          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+            break;
+          }
+        }
         if (
           desiredPosition.x - initialPosition.x === -i &&
           desiredPosition.y - initialPosition.y === i
         ) {
-          console.log(`Moving ${i} squares up and left`);
+          return true;
           break;
         }
       }
