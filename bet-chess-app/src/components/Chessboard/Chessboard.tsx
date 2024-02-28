@@ -3,13 +3,15 @@ import "./Chessboard.css";
 import Tile from "../Tile/Tile";
 import Rules from "../../rules/Rules";
 import {
-  Xaxis,
-  Yaxis,
+  X_AXIS,
+  Y_AXIS,
   GRID_SIZE,
   Piece,
   Side,
   PieceType,
-  initialBoardState
+  initialBoardState,
+  Position,
+  samePostion,
 } from "../../Constants";
 
 export default function Chessboard() {
@@ -17,8 +19,10 @@ export default function Chessboard() {
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
   // Used to set the x and y position of the peices when dropped to snap to grid
-  const [Xgrid, setXgrid] = useState(0);
-  const [Ygrid, setYgrid] = useState(0);
+  const [piecePosition, setPiecePosition] = useState<Position>({
+    x: -1,
+    y: -1,
+  });
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
   const chessboardRef = useRef<HTMLDivElement>(null);
@@ -32,15 +36,19 @@ export default function Chessboard() {
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
     if (element.classList.contains("chess-piece") && chessboard) {
-      // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
-      setXgrid(Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE));
-      setYgrid(
-        Math.abs(
-          Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
-        )
+      // Find the new x and y coordinates where the piece needs to be moved
+      const newX =
+        Math.floor(event.clientX - chessboard.offsetLeft) / GRID_SIZE;
+      const newY = Math.abs(
+        Math.ceil(event.clientY - chessboard.offsetTop - 800) / GRID_SIZE
       );
+      // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
+      setPiecePosition({
+        x: newX,
+        y: newY,
+      });
 
-      // Get the mouse s and y positions
+      // Get the mouse x and y positions
       const Xpos = event.clientX - GRID_SIZE / 2; // Calculate offset of where the piece is bieng grabbed from top left corner
       const Ypos = event.clientY - GRID_SIZE / 2;
       element.style.position = "absolute";
@@ -115,8 +123,8 @@ export default function Chessboard() {
       );
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
-      const currPiece = pieces.find(
-        (piece) => piece.position.x === Xgrid && piece.position.y === Ygrid
+      const currPiece = pieces.find((piece) =>
+        samePostion(piece.position, piecePosition)
       );
       // Find the piece being attacked to remove
       // const pieceAttacked = pieces.find((piece) => piece.XPosition === Xcord && piece.YPosition === Ycord);
@@ -125,8 +133,8 @@ export default function Chessboard() {
       if (currPiece) {
         // Check for valid move given if a piece is being attacked
         const validMove = rules.isValidMove(
-          Xgrid,
-          Ygrid,
+          piecePosition.x,
+          piecePosition.y,
           Xcord,
           Ycord,
           currPiece.type,
@@ -138,8 +146,8 @@ export default function Chessboard() {
 
         // Check for enPassant
         const isEnPassantMove = rules.isEnPassant(
-          Xgrid,
-          Ygrid,
+          piecePosition.x,
+          piecePosition.y,
           Xcord,
           Ycord,
           currPiece.type,
@@ -152,15 +160,16 @@ export default function Chessboard() {
         if (isEnPassantMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if its the piece moved
-            if (piece.position.x === Xgrid && piece.position.y === Ygrid) {
+            if (samePostion(piece.position, piecePosition)) {
+              piece.enPassant = false;
               piece.position.x = Xcord;
               piece.position.y = Ycord;
               results.push(piece); // Push the updated pieces position
             } else if (
-              !(
-                piece.position.x === Xcord &&
-                piece.position.y === Ycord - pawnMovement
-              )
+              !samePostion(piece.position, {
+                x: Xcord,
+                y: Ycord - pawnMovement,
+              })
             ) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
@@ -176,12 +185,11 @@ export default function Chessboard() {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
             if (
-              piece.position.x === currPiece.position.x &&
-              piece.position.y === currPiece.position.y
+              samePostion(piece.position, piecePosition)
             ) {
               if (
                 // Check if is a pawn and double jump
-                Math.abs(Ygrid - Ycord) === 2 &&
+                Math.abs(piecePosition.y - Ycord) === 2 &&
                 piece.type === PieceType.PAWN
               ) {
                 // If this is an initial double jump
@@ -189,9 +197,9 @@ export default function Chessboard() {
               } else {
                 piece.enPassant = false; // Only can be enPassant if done on first turn
               }
-              results.push({ ...piece, position: {x: Xcord, y: Ycord}});
+              results.push({ ...piece, position: { x: Xcord, y: Ycord } });
             } else if (
-              !(piece.position.x === Xcord && piece.position.y === Ycord)
+              !(samePostion(piece.position, piecePosition))
             ) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
@@ -216,18 +224,16 @@ export default function Chessboard() {
 
   let board = [];
 
-  for (let j = Yaxis.length - 1; j >= 0; j--) {
-    for (let i = 0; i < Xaxis.length; i++) {
+  for (let j = Y_AXIS.length - 1; j >= 0; j--) {
+    for (let i = 0; i < X_AXIS.length; i++) {
       const number = j + i + 2;
+      // Find in the pieces array each piece in its position defined and to use to place it on the Tile
+      const piece = pieces.find(
+        (piece) => piece.position.x === i && piece.position.y === j
+      );
 
-      let image = undefined;
-
-      // Loop through pieces array and place each piece in its position defined in array
-      pieces.forEach((element) => {
-        if (element.position.x === i && element.position.y === j) {
-          image = element.image;
-        }
-      });
+      // Set image if defined
+      let image = piece ? piece.image : undefined;
 
       // Push the pieces to the board
       board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
