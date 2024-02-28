@@ -118,7 +118,7 @@ export const initialBoardState: Piece[] = [
       y: 1,
     },
     type: PieceType.PAWN,
-    side: Side.BLACK,
+    side: Side.WHITE,
   },
   {
     image: `assets/images/pawn_w.png`,
@@ -127,7 +127,7 @@ export const initialBoardState: Piece[] = [
       y: 1,
     },
     type: PieceType.PAWN,
-    side: Side.BLACK,
+    side: Side.WHITE,
   },
   {
     image: `assets/images/pawn_w.png`,
@@ -136,7 +136,7 @@ export const initialBoardState: Piece[] = [
       y: 1,
     },
     type: PieceType.PAWN,
-    side: Side.BLACK,
+    side: Side.WHITE,
   },
   {
     image: `assets/images/pawn_w.png`,

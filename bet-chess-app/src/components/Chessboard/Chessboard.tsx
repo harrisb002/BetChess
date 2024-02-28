@@ -36,11 +36,10 @@ export default function Chessboard() {
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
     if (element.classList.contains("chess-piece") && chessboard) {
-      // Find the new x and y coordinates where the piece needs to be moved
-      const newX =
-        Math.floor(event.clientX - chessboard.offsetLeft) / GRID_SIZE;
+      const newX = Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE);
+      // Flip y-axis so the mouse lines up with page (board is 800px so can offset it)
       const newY = Math.abs(
-        Math.ceil(event.clientY - chessboard.offsetTop - 800) / GRID_SIZE
+        Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
       );
       // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
       setPiecePosition({
@@ -49,11 +48,11 @@ export default function Chessboard() {
       });
 
       // Get the mouse x and y positions
-      const Xpos = event.clientX - GRID_SIZE / 2; // Calculate offset of where the piece is bieng grabbed from top left corner
-      const Ypos = event.clientY - GRID_SIZE / 2;
+      const x = event.clientX - GRID_SIZE / 2; // Calculate offset of where the piece is bieng grabbed from top left corner
+      const y = event.clientY - GRID_SIZE / 2;
       element.style.position = "absolute";
-      element.style.left = `${Xpos}px`;
-      element.style.top = `${Ypos}px`;
+      element.style.left = `${x}px`;
+      element.style.top = `${y}px`;
 
       // If piece has been grabbed then set it to active
       setActivePiece(element);
@@ -64,9 +63,13 @@ export default function Chessboard() {
   function movePiece(event: React.MouseEvent) {
     const chessboard = chessboardRef.current; // To check if null before accessing
 
+    // console.log("Current Piece Position is: ", piecePosition);
+
     // Only want to move the piece actually being grabbed, not just whats under the mouse
     // Check if a piece has been grabbed (Must not be null)
     if (activePiece && chessboard) {
+      // console.log("The active piece is: ", activePiece);
+
       //Getting boundries on board so pieces cant move outside
       const minX = chessboard.offsetLeft - 25;
       const minY = chessboard.offsetTop - 25;
@@ -104,39 +107,39 @@ export default function Chessboard() {
       }
     }
   }
-
   function dropPiece(event: React.MouseEvent) {
     // Used to find the pieces position relative to the board
     const chessboard = chessboardRef.current;
+    // console.log("Active Piece is: ",activePiece);
 
     if (activePiece && chessboard) {
       // 0,0 is top left of board when offset with the difference of each tile being 100
       // Finds relative position of pieces to grid
-      const Xcord = Math.floor(
-        (event.clientX - chessboard.offsetLeft) / GRID_SIZE
-      );
+      const x = Math.floor((event.clientX - chessboard.offsetLeft) / GRID_SIZE);
       // Flip y-axis so the mouse lines up with page (board is 800px so can offset it)
-      const Ycord = Math.abs(
-        Math.abs(
-          Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
-        )
+      const y = Math.abs(
+        Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
       );
+      // console.log("x and y are: ", x, y);
+      // console.log("The piece position is: ", piecePosition);
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
       const currPiece = pieces.find((piece) =>
         samePostion(piece.position, piecePosition)
       );
+      // console.log("Current Piece is: ", currPiece);
+
       // Find the piece being attacked to remove
       // const pieceAttacked = pieces.find((piece) => piece.XPosition === Xcord && piece.YPosition === Ycord);
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
+        console.log("Current Piece is: ", currPiece);
+
         // Check for valid move given if a piece is being attacked
         const validMove = rules.isValidMove(
-          piecePosition.x,
-          piecePosition.y,
-          Xcord,
-          Ycord,
+          piecePosition,
+          { x, y },
           currPiece.type,
           currPiece.side,
           pieces
@@ -146,29 +149,29 @@ export default function Chessboard() {
 
         // Check for enPassant
         const isEnPassantMove = rules.isEnPassant(
-          piecePosition.x,
-          piecePosition.y,
-          Xcord,
-          Ycord,
+          piecePosition,
+          { x, y },
           currPiece.type,
           currPiece.side,
           pieces
         );
         // Find the direction that the pawn is moving
         const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
+        
+        console.log("The EnPassant move: ", isEnPassantMove);
 
         if (isEnPassantMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if its the piece moved
             if (samePostion(piece.position, piecePosition)) {
-              piece.enPassant = false;
-              piece.position.x = Xcord;
-              piece.position.y = Ycord;
+              piece.enPassant = true;
+              piece.position.x = x;
+              piece.position.y = y;
               results.push(piece); // Push the updated pieces position
             } else if (
               !samePostion(piece.position, {
-                x: Xcord,
-                y: Ycord - pawnMovement,
+                x: x,
+                y: y - pawnMovement,
               })
             ) {
               if (piece.type === PieceType.PAWN) {
@@ -184,23 +187,15 @@ export default function Chessboard() {
         } else if (validMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
-            if (
-              samePostion(piece.position, piecePosition)
-            ) {
-              if (
-                // Check if is a pawn and double jump
-                Math.abs(piecePosition.y - Ycord) === 2 &&
-                piece.type === PieceType.PAWN
-              ) {
-                // If this is an initial double jump
-                piece.enPassant = true;
-              } else {
-                piece.enPassant = false; // Only can be enPassant if done on first turn
-              }
-              results.push({ ...piece, position: { x: Xcord, y: Ycord } });
-            } else if (
-              !(samePostion(piece.position, piecePosition))
-            ) {
+            if (samePostion(piece.position, piecePosition)) {
+              // Check if is a pawn and double jump i.e. a special move
+              piece.enPassant =
+                Math.abs(piecePosition.y - y) === 2 &&
+                piece.type === PieceType.PAWN;
+              piece.position.x = x;
+              piece.position.y = y;
+              results.push(piece);
+            } else if (!samePostion(piece.position, { x, y })) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
               }
@@ -228,8 +223,8 @@ export default function Chessboard() {
     for (let i = 0; i < X_AXIS.length; i++) {
       const number = j + i + 2;
       // Find in the pieces array each piece in its position defined and to use to place it on the Tile
-      const piece = pieces.find(
-        (piece) => piece.position.x === i && piece.position.y === j
+      const piece = pieces.find((piece) =>
+        samePostion(piece.position, { x: i, y: j })
       );
 
       // Set image if defined

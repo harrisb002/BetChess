@@ -1,4 +1,4 @@
-import { PieceType, Side, Piece } from "../Constants"
+import { PieceType, Side, Piece, Position } from "../Constants";
 
 export default class Rules {
   // Check if the tile currently has a piece on it
@@ -36,10 +36,8 @@ export default class Rules {
   }
 
   isEnPassant(
-    prevX: number,
-    prevY: number,
-    currX: number,
-    currY: number,
+    initialPosition: Position,
+    desiredPosition: Position,
     type: PieceType,
     side: Side,
     boardState: Piece[]
@@ -50,21 +48,24 @@ export default class Rules {
     if (type === PieceType.PAWN) {
       // Same as attacking logic
       // Upper or bottom left corner || Upper or bottom right corner
+      console.log("Initial Position: ", initialPosition);
+      console.log("Desired Position: ", desiredPosition);
+
       if (
-        (currX - prevX === -1 || currX - prevX === 1) &&
-        currY - prevY === pawnMovement
+        (desiredPosition.x - initialPosition.x === -1 || //Blacks EnPassant
+          desiredPosition.x - initialPosition.x === 1) && //Whites EnPassant
+        desiredPosition.y - initialPosition.y === pawnMovement // If the spot the pawn has moved is on the same file as the opponents
       ) {
-        //Check if piece under/above on tile of the attacked tile
-        //Attacked piece has made an enPassant move in the previous turn
+        // Find the piece that has the required qualities
         const piece = boardState.find(
           (piece) =>
             // piece needs to be in the same collumn the pawn is moving to
-            piece.position.x === currX &&
+            piece.position.x === desiredPosition.x &&
             // piece also needs to be one tile behind the piece that it is hitting
-            piece.position.y === currY - pawnMovement &&
+            piece.position.y === desiredPosition.y - pawnMovement &&
             piece.enPassant
         );
-        if (piece) {
+        if (piece) { // Return it if the piece meets the criteria
           return true;
         }
       }
@@ -76,10 +77,8 @@ export default class Rules {
   // the type of piece passed using a defined ENUM, the side of the piece
   // The board state is also needed to determine valid moves
   isValidMove(
-    prevX: number,
-    prevY: number,
-    currX: number,
-    currY: number,
+    initialPosition: Position,
+    desiredPosition: Position,
     type: PieceType,
     side: Side,
     boardState: Piece[]
@@ -90,33 +89,58 @@ export default class Rules {
       const pawnMovement = side === Side.WHITE ? 1 : -1;
 
       if (
-        prevX === currX &&
-        prevY === specialRow &&
-        currY - prevY === 2 * pawnMovement
+        initialPosition.x === desiredPosition.x &&
+        initialPosition.y === specialRow &&
+        desiredPosition.y - initialPosition.y === 2 * pawnMovement
       ) {
         if (
-          this.tileIsEmpty(currX, currY, boardState) &&
-          this.tileIsEmpty(currX, currY - pawnMovement, boardState)
+          this.tileIsEmpty(desiredPosition.x, desiredPosition.y, boardState) &&
+          this.tileIsEmpty(
+            desiredPosition.x,
+            desiredPosition.y - pawnMovement,
+            boardState
+          )
         ) {
           return true;
         }
-      } else if (prevX === currX && currY - prevY === pawnMovement) {
-        if (this.tileIsEmpty(currX, currY, boardState)) {
+      } else if (
+        initialPosition.x === desiredPosition.x &&
+        desiredPosition.y - initialPosition.y === pawnMovement
+      ) {
+        if (
+          this.tileIsEmpty(desiredPosition.x, desiredPosition.y, boardState)
+        ) {
           return true;
         }
-      }
-
-      //Attacking logic
-      //Attacking in upper of bottom left corner
-      if (currX - prevX === -1 && currY - prevY === pawnMovement) {
-        if (this.opponentOnTile(currX, currY, boardState, side)) {
+      } else if ( //Attacking in upper of bottom left corner
+        desiredPosition.x - initialPosition.x === -1 &&
+        desiredPosition.y - initialPosition.y === pawnMovement
+      ) {
+        if (
+          this.opponentOnTile(
+            desiredPosition.x,
+            desiredPosition.y,
+            boardState,
+            side
+          )
+        ) {
           return true;
           // console.log("attack enemy on upper/ bottom left");
         }
         // console.log("upper/ bottom left");
       } //Attacking in the upper or bottom right corner
-      else if (currX - prevX === 1 && currY - prevY === pawnMovement) {
-        if (this.opponentOnTile(currX, currY, boardState, side)) {
+      else if (
+        desiredPosition.x - initialPosition.x === 1 &&
+        desiredPosition.y - initialPosition.y === pawnMovement
+      ) {
+        if (
+          this.opponentOnTile(
+            desiredPosition.x,
+            desiredPosition.y,
+            boardState,
+            side
+          )
+        ) {
           return true;
           // console.log("attack enemy on upper/ bottom right");
         }
