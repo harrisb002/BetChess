@@ -156,42 +156,28 @@ export default class Rules {
       // console.log("The initial position is: ", initialPosition);
       // console.log("The desired position is: ", desiredPosition);
 
-      // For 2 up and 1 left
-      if (desiredPosition.y - initialPosition.y === 2) {
-        if (desiredPosition.x - initialPosition.x === -1) {
-          // console.log("For 2 up and 1 left")
-        } else if (desiredPosition.x - initialPosition.x === 1) {
-          // console.log("For 2 up and 1 right")
+      for (let i = -1; i < 2; i += 2) {
+        // For 2 up and 1 left
+        if (desiredPosition.y - initialPosition.y === 2 * i) {
+          if (desiredPosition.x - initialPosition.x === -1) {
+            console.log("For 2 up or down and 1 left");
+          }
+          if (desiredPosition.x - initialPosition.x === 1) {
+            console.log("For 2 up or down and 1 right");
+          }
         }
-      }
-
-      // For 2 down and 1 right
-      if (desiredPosition.y - initialPosition.y === -2) {
-        if (desiredPosition.x - initialPosition.x === 1) {
-          // console.log("For 2 down and 1 right")
-        } else if (desiredPosition.x - initialPosition.x === -1) {
-          // console.log("For 2 down and 1 left")
-        }
-      }
-
-      // For 2 right and 1 up
-      if (desiredPosition.x - initialPosition.x === 2) {
-        if (desiredPosition.y - initialPosition.y === 1) {
-          // console.log("For 2 right and 1 up")
-        } else if (desiredPosition.y - initialPosition.y === -1) {
-          // console.log("For 2 right and 1 down")
-        }
-      }
-
-      // For 2 left and 1 up
-      if (desiredPosition.x - initialPosition.x === -2) {
-        if (desiredPosition.y - initialPosition.y === 1) {
-          // console.log("For 2 left and 1 up")
-        } else if (desiredPosition.y - initialPosition.y === -1) {
-          // console.log("For 2 left and 1 down")
+        // For 2 right and 1 up
+        if (desiredPosition.x - initialPosition.x === 2 * i) {
+          if (desiredPosition.y - initialPosition.y === 1) {
+            console.log("For 2 right or left and 1 up")
+          }
+          if (desiredPosition.y - initialPosition.y === -1) {
+            console.log("For 2 right or left and 1 down")
+          }
         }
       }
     }
+
     return false;
   }
 }
