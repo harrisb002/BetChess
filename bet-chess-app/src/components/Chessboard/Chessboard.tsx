@@ -116,7 +116,7 @@ export default function Chessboard() {
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
       const currPiece = pieces.find(
-        (piece) => piece.XPosition === Xgrid && piece.YPosition === Ygrid
+        (piece) => piece.position.x === Xgrid && piece.position.y === Ygrid
       );
       // Find the piece being attacked to remove
       // const pieceAttacked = pieces.find((piece) => piece.XPosition === Xcord && piece.YPosition === Ycord);
@@ -152,14 +152,14 @@ export default function Chessboard() {
         if (isEnPassantMove) {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if its the piece moved
-            if (piece.XPosition === Xgrid && piece.YPosition === Ygrid) {
-              piece.XPosition = Xcord;
-              piece.YPosition = Ycord;
+            if (piece.position.x === Xgrid && piece.position.y === Ygrid) {
+              piece.position.x = Xcord;
+              piece.position.y = Ycord;
               results.push(piece); // Push the updated pieces position
             } else if (
               !(
-                piece.XPosition === Xcord &&
-                piece.YPosition === Ycord - pawnMovement
+                piece.position.x === Xcord &&
+                piece.position.y === Ycord - pawnMovement
               )
             ) {
               if (piece.type === PieceType.PAWN) {
@@ -176,8 +176,8 @@ export default function Chessboard() {
           const updatedPieces = pieces.reduce((results, piece) => {
             // Check if the current piece is the one being moved
             if (
-              piece.XPosition === currPiece.XPosition &&
-              piece.YPosition === currPiece.YPosition
+              piece.position.x === currPiece.position.x &&
+              piece.position.y === currPiece.position.y
             ) {
               if (
                 // Check if is a pawn and double jump
@@ -189,9 +189,9 @@ export default function Chessboard() {
               } else {
                 piece.enPassant = false; // Only can be enPassant if done on first turn
               }
-              results.push({ ...piece, XPosition: Xcord, YPosition: Ycord });
+              results.push({ ...piece, position: {x: Xcord, y: Ycord}});
             } else if (
-              !(piece.XPosition === Xcord && piece.YPosition === Ycord)
+              !(piece.position.x === Xcord && piece.position.y === Ycord)
             ) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
@@ -224,7 +224,7 @@ export default function Chessboard() {
 
       // Loop through pieces array and place each piece in its position defined in array
       pieces.forEach((element) => {
-        if (element.XPosition === i && element.YPosition === j) {
+        if (element.position.x === i && element.position.y === j) {
           image = element.image;
         }
       });

@@ -5,7 +5,7 @@ export default class Rules {
   tileIsEmpty(currX: number, currY: number, boardState: Piece[]): boolean {
     // check if the piece found in the position is null (if there is no piece placed there)
     const piece = boardState.find(
-      (piece) => piece.XPosition === currX && piece.YPosition === currY
+      (piece) => piece.position.x === currX && piece.position.y === currY
     );
     if (piece) {
       return false;
@@ -24,8 +24,8 @@ export default class Rules {
     // If the piece at this position is an opponent piece
     const piece = boardState.find(
       (piece) =>
-        piece.XPosition === currX &&
-        piece.YPosition === currY &&
+        piece.position.x === currX &&
+        piece.position.y === currY &&
         piece.side !== side
     );
     if (piece) {
@@ -59,9 +59,9 @@ export default class Rules {
         const piece = boardState.find(
           (piece) =>
             // piece needs to be in the same collumn the pawn is moving to
-            piece.XPosition === currX &&
+            piece.position.x === currX &&
             // piece also needs to be one tile behind the piece that it is hitting
-            piece.YPosition === currY - pawnMovement &&
+            piece.position.y === currY - pawnMovement &&
             piece.enPassant
         );
         if (piece) {
