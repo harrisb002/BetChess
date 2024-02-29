@@ -279,6 +279,35 @@ export default class Rules {
         }
       }
     }
+    // ROOK LOGIC
+    else if (type === PieceType.ROOK) {
+      // Vertical move
+      if (initialPosition.x === desiredPosition.x) {
+        console.log("Vertical Move");
+        // Moving down
+        if(initialPosition.y < initialPosition.y) {
+          for(let i = 1; i < 8; i++) {
+            let prevPosition: Position = {
+              x: initialPosition.x,
+              y: initialPosition.y - i, // Moving downwards
+            };
+            console.log("PrevPostion", prevPosition);
+            if(prevPosition.x === desiredPosition.x && prevPosition.y === desiredPosition.y) {
+              console.log("Made it");
+              break;
+            }
+          }
+        } else if (initialPosition.y > initialPosition.y) { // Moving up
+        
+        }
+      }
+
+
+      // Horizontal move
+      if (initialPosition.y === desiredPosition.y) {
+        console.log("Horizontal Move");
+      }
+    }
     return false;
   }
 }
