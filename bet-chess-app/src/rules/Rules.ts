@@ -179,32 +179,22 @@ export default class Rules {
             x: initialPosition.x + i,
             y: initialPosition.y + i,
           };
-          // Check if the tile has a piece on it
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
-            // Check if tile occupied by opponent piece && that is where the piece is moving to
-            if (
-              this.opponentOnTile(prevPosition, boardState, side) &&
-              prevPosition.x === desiredPosition.x &&
-              prevPosition.y === desiredPosition.y
-            ) {
-              return true;
-            } else {
-              break; // Cant move through pieces!
-            }
-          }
-          // console.log("The prev position is: ", prevPosition);
-          // console.log("The desired position is: ", desiredPosition);
+          // Check if the tile is the where the piece is being moved to
           if (
             prevPosition.x === desiredPosition.x &&
             prevPosition.y === desiredPosition.y
           ) {
-            console.log("Same passed and previous positions: ", prevPosition);
-            return true;
+            //If tile has a opponent piece on it
+            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+              return true; // Capture the piece
+            }
+          } else {
+            // Must be a tile being passed
+            // Check if piece on the tile
+            if (!this.tileIsEmpty(prevPosition, boardState)) {
+              break;
+            }
           }
-
-          // console.log(
-          //   `Bishop moved through: ${prevPosition.x}, ${prevPosition.y}`
-          // );
         }
 
         // Right downwards diagonal (inc. x by 1, dec. y by 1)
@@ -216,16 +206,24 @@ export default class Rules {
             x: initialPosition.x + i,
             y: initialPosition.y - i,
           };
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
-            break;
+          // Check if the tile is the where the piece is being moved to
+          if (
+            prevPosition.x === desiredPosition.x &&
+            prevPosition.y === desiredPosition.y
+          ) {
+            //If tile has a opponent piece on it
+            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+              return true; // Capture the piece
+            }
+          } else {
+            // Must be a tile being passed
+            // Check if piece on the tile
+            if (!this.tileIsEmpty(prevPosition, boardState)) {
+              break;
+            }
           }
         }
-        if (
-          desiredPosition.x - initialPosition.x === i &&
-          desiredPosition.y - initialPosition.y === -i
-        ) {
-          return true;
-        }
+
         // Left downwards diagonal (dec. x by 1, dec. y by 1)
         if (
           desiredPosition.x < initialPosition.x &&
@@ -235,17 +233,24 @@ export default class Rules {
             x: initialPosition.x - i,
             y: initialPosition.y - i,
           };
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
-            break;
+          // Check if the tile is the where the piece is being moved to
+          if (
+            prevPosition.x === desiredPosition.x &&
+            prevPosition.y === desiredPosition.y
+          ) {
+            //If tile has a opponent piece on it
+            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+              return true; // Capture the piece
+            }
+          } else {
+            // Must be a tile being passed
+            // Check if piece on the tile
+            if (!this.tileIsEmpty(prevPosition, boardState)) {
+              break;
+            }
           }
         }
-        if (
-          desiredPosition.x - initialPosition.x === -i &&
-          desiredPosition.y - initialPosition.y === -i
-        ) {
-          return true;
-          break;
-        }
+
         // Left upwards diagonal (dec. x by 1, inc. y by 1)
         if (
           desiredPosition.x < initialPosition.x &&
@@ -255,16 +260,22 @@ export default class Rules {
             x: initialPosition.x - i,
             y: initialPosition.y + i,
           };
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
-            break;
+          // Check if the tile is the where the piece is being moved to
+          if (
+            prevPosition.x === desiredPosition.x &&
+            prevPosition.y === desiredPosition.y
+          ) {
+            //If tile has a opponent piece on it
+            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+              return true; // Capture the piece
+            }
+          } else {
+            // Must be a tile being passed
+            // Check if piece on the tile
+            if (!this.tileIsEmpty(prevPosition, boardState)) {
+              break;
+            }
           }
-        }
-        if (
-          desiredPosition.x - initialPosition.x === -i &&
-          desiredPosition.y - initialPosition.y === i
-        ) {
-          return true;
-          break;
         }
       }
     }
