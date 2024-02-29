@@ -175,34 +175,48 @@ export default class Rules {
           desiredPosition.y > initialPosition.y
         ) {
           // Get the squares the bishop has moved through
-          let prevSqaures: Position = {
+          let prevPosition: Position = {
             x: initialPosition.x + i,
             y: initialPosition.y + i,
           };
-          // Now check if the tile has a piece on it
-          if (!this.tileIsEmpty(prevSqaures, boardState)) {
-            break; // Cant move through pieces!
+          // Check if the tile has a piece on it
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
+            // Check if tile occupied by opponent piece && that is where the piece is moving to
+            if (
+              this.opponentOnTile(prevPosition, boardState, side) &&
+              prevPosition.x === desiredPosition.x &&
+              prevPosition.y === desiredPosition.y
+            ) {
+              return true;
+            } else {
+              break; // Cant move through pieces!
+            }
           }
-          console.log(
-            `Bishop moved through: ${prevSqaures.x}, ${prevSqaures.y}`
-          );
+          // console.log("The prev position is: ", prevPosition);
+          // console.log("The desired position is: ", desiredPosition);
+          if (
+            prevPosition.x === desiredPosition.x &&
+            prevPosition.y === desiredPosition.y
+          ) {
+            console.log("Same passed and previous positions: ", prevPosition);
+            return true;
+          }
+
+          // console.log(
+          //   `Bishop moved through: ${prevPosition.x}, ${prevPosition.y}`
+          // );
         }
-        if (
-          desiredPosition.x - initialPosition.x === i &&
-          desiredPosition.y - initialPosition.y === i
-        ) {
-          return true;
-        }
+
         // Right downwards diagonal (inc. x by 1, dec. y by 1)
         if (
           desiredPosition.x > initialPosition.x &&
           desiredPosition.y < initialPosition.y
         ) {
-          let prevSqaures: Position = {
+          let prevPosition: Position = {
             x: initialPosition.x + i,
             y: initialPosition.y - i,
           };
-          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -217,11 +231,11 @@ export default class Rules {
           desiredPosition.x < initialPosition.x &&
           desiredPosition.y < initialPosition.y
         ) {
-          let prevSqaures: Position = {
+          let prevPosition: Position = {
             x: initialPosition.x - i,
             y: initialPosition.y - i,
           };
-          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -237,11 +251,11 @@ export default class Rules {
           desiredPosition.x < initialPosition.x &&
           desiredPosition.y > initialPosition.y
         ) {
-          let prevSqaures: Position = {
+          let prevPosition: Position = {
             x: initialPosition.x - i,
             y: initialPosition.y + i,
           };
-          if (!this.tileIsEmpty(prevSqaures, boardState)) {
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
