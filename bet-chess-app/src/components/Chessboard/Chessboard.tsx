@@ -25,6 +25,12 @@ export default function Chessboard() {
   });
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+
+  // Create  referecne to the modal
+  const modalRef = useRef<HTMLDivElement>(null);
+  // Create state for when the promotion piece is updated
+  const [promotionPawn, setPromotionPawn] = useState<Piece>();
+
   const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Create an Instance of the Rules class
@@ -189,6 +195,8 @@ export default function Chessboard() {
               let promotionRow = piece.side === Side.WHITE ? 7 : 1;
 
               if (piece.position.y === promotionRow) {
+                modalRef.current?.classList.remove()
+                setPromotionPawn(piece);
               }
 
               results.push(piece);
@@ -240,7 +248,7 @@ export default function Chessboard() {
 
   return (
     <>
-      <div id="promotion-modal" className="hidden">
+      <div id="promotion-modal" className="hidden" ref={modalRef}>
         <div className="modal-body">
           <img
             onClick={() => promotePawn(PieceType.ROOK)}
