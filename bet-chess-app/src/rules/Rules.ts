@@ -333,21 +333,62 @@ export default class Rules {
     boardState: Piece[]
   ): boolean {
     // ON top
-    if(desiredPosition.y > initialPosition.y && desiredPosition.x === initialPosition.x) {
+    if (
+      desiredPosition.y > initialPosition.y &&
+      desiredPosition.x === initialPosition.x
+    ) {
+      console.log("ON top");
+    }
+    // ON Bottom
+    if (
+      desiredPosition.y < initialPosition.y &&
+      desiredPosition.x === initialPosition.x
+    ) {
+      console.log("ON Bottom");
+    }
+    // ON Right
+    if (
+      desiredPosition.y === initialPosition.y &&
+      desiredPosition.x > initialPosition.x
+    ) {
+      console.log("ON Right");
+    }
+    // ON Left
+    if (
+      desiredPosition.y === initialPosition.y &&
+      desiredPosition.x < initialPosition.x
+    ) {
+      console.log("ON Left");
+    }
+    // ON top Right
+    if (
+      desiredPosition.y > initialPosition.y &&
+      desiredPosition.x > initialPosition.x
+    ) {
+      console.log("ON top Right");
+    }
+    // ON top Left
+    if (
+      desiredPosition.y > initialPosition.y &&
+      desiredPosition.x < initialPosition.x
+    ) {
+      console.log("ON top Left");
+    }
+    // ON Bottom Right
+    if (
+      desiredPosition.y < initialPosition.y &&
+      desiredPosition.x > initialPosition.x
+    ) {
+      console.log("ON Bottom Right");
+    }
+    // ON Bottom Left
+    if (
+      desiredPosition.y < initialPosition.y &&
+      desiredPosition.x < initialPosition.x
+    ) {
+      console.log("ON Bottom Left");
+    }
 
-    }
-     // ON Right
-     if(desiredPosition.y === initialPosition.y && desiredPosition.x > initialPosition.x) {
-      
-     }
-      // ON Left
-    if(desiredPosition.y < initialPosition.y && desiredPosition.x === initialPosition.x) {
-      
-    }
-     // ON Bottom
-     if(desiredPosition.y === initialPosition.y && desiredPosition.x < initialPosition.x) {
-      
-     }
     return false;
   }
 
@@ -357,7 +398,6 @@ export default class Rules {
     side: Side,
     boardState: Piece[]
   ): boolean {
-   
     return false;
   }
 
