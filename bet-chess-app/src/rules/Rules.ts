@@ -326,72 +326,6 @@ export default class Rules {
     return false;
   }
 
-  queenMove(
-    initialPosition: Position,
-    desiredPosition: Position,
-    side: Side,
-    boardState: Piece[]
-  ): boolean {
-    // ON top
-    if (
-      desiredPosition.y > initialPosition.y &&
-      desiredPosition.x === initialPosition.x
-    ) {
-      console.log("ON top");
-    }
-    // ON Bottom
-    if (
-      desiredPosition.y < initialPosition.y &&
-      desiredPosition.x === initialPosition.x
-    ) {
-      console.log("ON Bottom");
-    }
-    // ON Right
-    if (
-      desiredPosition.y === initialPosition.y &&
-      desiredPosition.x > initialPosition.x
-    ) {
-      console.log("ON Right");
-    }
-    // ON Left
-    if (
-      desiredPosition.y === initialPosition.y &&
-      desiredPosition.x < initialPosition.x
-    ) {
-      console.log("ON Left");
-    }
-    // ON top Right
-    if (
-      desiredPosition.y > initialPosition.y &&
-      desiredPosition.x > initialPosition.x
-    ) {
-      console.log("ON top Right");
-    }
-    // ON top Left
-    if (
-      desiredPosition.y > initialPosition.y &&
-      desiredPosition.x < initialPosition.x
-    ) {
-      console.log("ON top Left");
-    }
-    // ON Bottom Right
-    if (
-      desiredPosition.y < initialPosition.y &&
-      desiredPosition.x > initialPosition.x
-    ) {
-      console.log("ON Bottom Right");
-    }
-    // ON Bottom Left
-    if (
-      desiredPosition.y < initialPosition.y &&
-      desiredPosition.x < initialPosition.x
-    ) {
-      console.log("ON Bottom Left");
-    }
-
-    return false;
-  }
-
   kingMove(
     initialPosition: Position,
     desiredPosition: Position,
@@ -449,14 +383,9 @@ export default class Rules {
         break;
 
       case PieceType.QUEEN:
-        validMove = this.queenMove(
-          initialPosition,
-          desiredPosition,
-          side,
-          boardState
-        );
+        validMove = (this.rookMove(initialPosition,desiredPosition,side,boardState) || this.bishopMove(initialPosition,desiredPosition,side,boardState))
         break;
-      case PieceType.KING:
+      case PieceType.KING: 
         validMove = this.kingMove(
           initialPosition,
           desiredPosition,
