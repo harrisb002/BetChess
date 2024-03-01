@@ -143,10 +143,7 @@ export default class Rules {
           y: initialPosition.y + i,
         };
         // Check if the tile is the where the piece is being moved to
-        if (
-          prevPosition.x === desiredPosition.x &&
-          prevPosition.y === desiredPosition.y
-        ) {
+        if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
           if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
@@ -169,11 +166,7 @@ export default class Rules {
           x: initialPosition.x + i,
           y: initialPosition.y - i,
         };
-        // Check if the tile is the where the piece is being moved to
-        if (
-          prevPosition.x === desiredPosition.x &&
-          prevPosition.y === desiredPosition.y
-        ) {
+        if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
           if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
@@ -197,10 +190,7 @@ export default class Rules {
           y: initialPosition.y - i,
         };
         // Check if the tile is the where the piece is being moved to
-        if (
-          prevPosition.x === desiredPosition.x &&
-          prevPosition.y === desiredPosition.y
-        ) {
+        if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
           if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
@@ -224,10 +214,7 @@ export default class Rules {
           y: initialPosition.y + i,
         };
         // Check if the tile is the where the piece is being moved to
-        if (
-          prevPosition.x === desiredPosition.x &&
-          prevPosition.y === desiredPosition.y
-        ) {
+        if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
           if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
@@ -287,10 +274,7 @@ export default class Rules {
         x: initialPosition.x,
         y: initialPosition.y + i * factor,
       };
-      if (
-        prevPosition.x === desiredPosition.x &&
-        prevPosition.y === desiredPosition.y
-      ) {
+      if (samePostion(prevPosition, desiredPosition)) {
         if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true;
         }
@@ -309,10 +293,7 @@ export default class Rules {
           x: initialPosition.x + i * factor,
           y: initialPosition.y,
         };
-        if (
-          prevPosition.x === desiredPosition.x &&
-          prevPosition.y === desiredPosition.y
-        ) {
+        if (samePostion(prevPosition, desiredPosition)) {
           if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true;
           }
@@ -351,10 +332,7 @@ export default class Rules {
         x: initialPosition.x + i * Xfactor,
         y: initialPosition.y + i * Yfactor,
       };
-      if (
-        prevPosition.x === desiredPosition.x &&
-        prevPosition.y === desiredPosition.y
-      ) {
+      if (samePostion(prevPosition, desiredPosition)) {
         if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true;
         }
