@@ -184,8 +184,17 @@ export default function Chessboard() {
                 piece.type === PieceType.PAWN;
               piece.position.x = x;
               piece.position.y = y;
+
+              // Determine if the piece should be promoted based on the row
+              let promotionRow = (piece.side === Side.WHITE) ? 7 : 1;
+
+              if(piece.position.y === promotionRow) {
+
+              }
+
               results.push(piece);
-            } else if (!samePostion(piece.position, { x, y })) {
+            } // If the piece was not the piece grabbed
+            else if (!samePostion(piece.position, { x, y })) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
               }
