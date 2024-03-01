@@ -49,11 +49,7 @@ export default class Rules {
 
     //Check if attacking piece is pawn
     if (type === PieceType.PAWN) {
-      // Same as attacking logic
       // Upper or bottom left corner || Upper or bottom right corner
-      // console.log("Initial Position: ", initialPosition);
-      // console.log("Desired Position: ", desiredPosition);
-
       if (
         (desiredPosition.x - initialPosition.x === -1 || //Blacks EnPassant
           desiredPosition.x - initialPosition.x === 1) && //Whites EnPassant
@@ -83,8 +79,7 @@ export default class Rules {
     desiredPosition: Position,
     side: Side,
     boardState: Piece[]
-  ) {
-  // PAWN LOGIC
+  ): boolean {
     const specialRow = side === Side.WHITE ? 1 : 6;
     const pawnMovement = side === Side.WHITE ? 1 : -1;
 
@@ -116,9 +111,7 @@ export default class Rules {
     ) {
       if (this.opponentOnTile(desiredPosition, boardState, side)) {
         return true;
-        // console.log("attack enemy on upper/ bottom left");
       }
-      // console.log("upper/ bottom left");
     } //Attacking in the upper or bottom right corner
     else if (
       desiredPosition.x - initialPosition.x === 1 &&
@@ -126,189 +119,196 @@ export default class Rules {
     ) {
       if (this.opponentOnTile(desiredPosition, boardState, side)) {
         return true;
-        // console.log("attack enemy on upper/ bottom right");
       }
-      // console.log("upper/ bottom right");
     }
+    return false;
   }
 
-  // Check if a move is valid by checking previous/current x,y locations
-  // the type of piece passed using a defined ENUM, the side of the piece
-  // The board state is also needed to determine valid moves
-  isValidMove(
+  bishopMove(
     initialPosition: Position,
     desiredPosition: Position,
-    type: PieceType,
     side: Side,
     boardState: Piece[]
-  ) {
-    switch (type) {
-      case PieceType.PAWN:
-        this.pawnMove(initialPosition, desiredPosition, side, boardState);
-        break;
-      case PieceType.BISHOP:
-        break;
-
-      case PieceType.KNIGHT:
-        break;
-
-      case PieceType.ROOK:
-    }
-   
-    // KNIGHT LOGIC
-    if (type === PieceType.KNIGHT) {
-      // Moving logic for Knight
-      // console.log("The initial position is: ", initialPosition);
-      // console.log("The desired position is: ", desiredPosition);
-
-      for (let i = -1; i < 2; i += 2) {
-        for (let j = -1; j < 2; j += 2) {
-          // For 2 up or down and 1 left or right
-          if (desiredPosition.y - initialPosition.y === 2 * i) {
-            if (desiredPosition.x - initialPosition.x === j) {
-              if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
-                return true; // Can move or attack the tile
-              }
-            }
-          }
-          // For 2 right or left and 1 up or down
-          if (desiredPosition.x - initialPosition.x === 2 * i) {
-            if (desiredPosition.y - initialPosition.y === j) {
-              if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
-                return true; // Can move or attack the tile
-              }
-            }
-          }
-        }
-      }
-      // BISHOP LOGIC
-    } else if (type === PieceType.BISHOP) {
-      // console.log("The initial position is: ", initialPosition);
-      // console.log("The desired position is: ", desiredPosition);
-
-      // Loop for each tile in the diagonal
-      for (let i = 1; i < 8; i++) {
-        // Right upwards diagonal (inc. x by 1, dec. y by 1)
-        if (
-          desiredPosition.x > initialPosition.x &&
-          desiredPosition.y > initialPosition.y
-        ) {
-          // Get the squares the bishop has moved through
-          let prevPosition: Position = {
-            x: initialPosition.x + i,
-            y: initialPosition.y + i,
-          };
-          // Check if the tile is the where the piece is being moved to
-          if (
-            prevPosition.x === desiredPosition.x &&
-            prevPosition.y === desiredPosition.y
-          ) {
-            //If tile has a opponent piece on it
-            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
-              return true; // Capture the piece
-            }
-          } else {
-            // Must be a tile being passed
-            // Check if piece on the tile
-            if (!this.tileIsEmpty(prevPosition, boardState)) {
-              break;
-            }
-          }
-        }
-
-        // Right downwards diagonal (inc. x by 1, dec. y by 1)
-        if (
-          desiredPosition.x > initialPosition.x &&
-          desiredPosition.y < initialPosition.y
-        ) {
-          let prevPosition: Position = {
-            x: initialPosition.x + i,
-            y: initialPosition.y - i,
-          };
-          // Check if the tile is the where the piece is being moved to
-          if (
-            prevPosition.x === desiredPosition.x &&
-            prevPosition.y === desiredPosition.y
-          ) {
-            //If tile has a opponent piece on it
-            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
-              return true; // Capture the piece
-            }
-          } else {
-            // Must be a tile being passed
-            // Check if piece on the tile
-            if (!this.tileIsEmpty(prevPosition, boardState)) {
-              break;
-            }
-          }
-        }
-
-        // Left downwards diagonal (dec. x by 1, dec. y by 1)
-        if (
-          desiredPosition.x < initialPosition.x &&
-          desiredPosition.y < initialPosition.y
-        ) {
-          let prevPosition: Position = {
-            x: initialPosition.x - i,
-            y: initialPosition.y - i,
-          };
-          // Check if the tile is the where the piece is being moved to
-          if (
-            prevPosition.x === desiredPosition.x &&
-            prevPosition.y === desiredPosition.y
-          ) {
-            //If tile has a opponent piece on it
-            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
-              return true; // Capture the piece
-            }
-          } else {
-            // Must be a tile being passed
-            // Check if piece on the tile
-            if (!this.tileIsEmpty(prevPosition, boardState)) {
-              break;
-            }
-          }
-        }
-
-        // Left upwards diagonal (dec. x by 1, inc. y by 1)
-        if (
-          desiredPosition.x < initialPosition.x &&
-          desiredPosition.y > initialPosition.y
-        ) {
-          let prevPosition: Position = {
-            x: initialPosition.x - i,
-            y: initialPosition.y + i,
-          };
-          // Check if the tile is the where the piece is being moved to
-          if (
-            prevPosition.x === desiredPosition.x &&
-            prevPosition.y === desiredPosition.y
-          ) {
-            //If tile has a opponent piece on it
-            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
-              return true; // Capture the piece
-            }
-          } else {
-            // Must be a tile being passed
-            // Check if piece on the tile
-            if (!this.tileIsEmpty(prevPosition, boardState)) {
-              break;
-            }
-          }
-        }
-      }
-    }
-    // ROOK LOGIC
-    else if (type === PieceType.ROOK) {
-      // Vertical moves
-      for (let i = 1; i < 8; i++) {
-        // If goin down then = -1 else 1
-        let factor = desiredPosition.y < initialPosition.y ? -1 : 1;
+  ): boolean {
+    // Loop for each tile in the diagonal
+    for (let i = 1; i < 8; i++) {
+      // Right upwards diagonal (inc. x by 1, dec. y by 1)
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y > initialPosition.y
+      ) {
+        // Get the squares the bishop has moved through
         let prevPosition: Position = {
-          x: initialPosition.x,
-          y: initialPosition.y + i * factor,
+          x: initialPosition.x + i,
+          y: initialPosition.y + i,
         };
-        console.log("PrevPostion", prevPosition);
+        // Check if the tile is the where the piece is being moved to
+        if (
+          prevPosition.x === desiredPosition.x &&
+          prevPosition.y === desiredPosition.y
+        ) {
+          //If tile has a opponent piece on it
+          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+            return true; // Capture the piece
+          }
+        } else {
+          // Must be a tile being passed
+          // Check if piece on the tile
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
+            break;
+          }
+        }
+      }
+
+      // Right downwards diagonal (inc. x by 1, dec. y by 1)
+      if (
+        desiredPosition.x > initialPosition.x &&
+        desiredPosition.y < initialPosition.y
+      ) {
+        let prevPosition: Position = {
+          x: initialPosition.x + i,
+          y: initialPosition.y - i,
+        };
+        // Check if the tile is the where the piece is being moved to
+        if (
+          prevPosition.x === desiredPosition.x &&
+          prevPosition.y === desiredPosition.y
+        ) {
+          //If tile has a opponent piece on it
+          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+            return true; // Capture the piece
+          }
+        } else {
+          // Must be a tile being passed
+          // Check if piece on the tile
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
+            break;
+          }
+        }
+      }
+
+      // Left downwards diagonal (dec. x by 1, dec. y by 1)
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y < initialPosition.y
+      ) {
+        let prevPosition: Position = {
+          x: initialPosition.x - i,
+          y: initialPosition.y - i,
+        };
+        // Check if the tile is the where the piece is being moved to
+        if (
+          prevPosition.x === desiredPosition.x &&
+          prevPosition.y === desiredPosition.y
+        ) {
+          //If tile has a opponent piece on it
+          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+            return true; // Capture the piece
+          }
+        } else {
+          // Must be a tile being passed
+          // Check if piece on the tile
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
+            break;
+          }
+        }
+      }
+
+      // Left upwards diagonal (dec. x by 1, inc. y by 1)
+      if (
+        desiredPosition.x < initialPosition.x &&
+        desiredPosition.y > initialPosition.y
+      ) {
+        let prevPosition: Position = {
+          x: initialPosition.x - i,
+          y: initialPosition.y + i,
+        };
+        // Check if the tile is the where the piece is being moved to
+        if (
+          prevPosition.x === desiredPosition.x &&
+          prevPosition.y === desiredPosition.y
+        ) {
+          //If tile has a opponent piece on it
+          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+            return true; // Capture the piece
+          }
+        } else {
+          // Must be a tile being passed
+          // Check if piece on the tile
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
+            break;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  knightMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    side: Side,
+    boardState: Piece[]
+  ): boolean {
+    for (let i = -1; i < 2; i += 2) {
+      for (let j = -1; j < 2; j += 2) {
+        // For 2 up or down and 1 left or right
+        if (desiredPosition.y - initialPosition.y === 2 * i) {
+          if (desiredPosition.x - initialPosition.x === j) {
+            if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
+              return true; // Can move or attack the tile
+            }
+          }
+        }
+        // For 2 right or left and 1 up or down
+        if (desiredPosition.x - initialPosition.x === 2 * i) {
+          if (desiredPosition.y - initialPosition.y === j) {
+            if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
+              return true; // Can move or attack the tile
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  rookMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    side: Side,
+    boardState: Piece[]
+  ): boolean {
+    // Vertical moves
+    for (let i = 1; i < 8; i++) {
+      // If goin down then = -1 else 1
+      let factor = desiredPosition.y < initialPosition.y ? -1 : 1;
+      let prevPosition: Position = {
+        x: initialPosition.x,
+        y: initialPosition.y + i * factor,
+      };
+      if (
+        prevPosition.x === desiredPosition.x &&
+        prevPosition.y === desiredPosition.y
+      ) {
+        if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          return true;
+        }
+      } else {
+        if (!this.tileIsEmpty(prevPosition, boardState)) {
+          break;
+        }
+      }
+    }
+
+    // Horizontal move
+    if (initialPosition.y === desiredPosition.y) {
+      for (let i = 1; i < 8; i++) {
+        let factor = desiredPosition.x < initialPosition.x ? -1 : 1;
+        let prevPosition: Position = {
+          x: initialPosition.x + i * factor,
+          y: initialPosition.y,
+        };
         if (
           prevPosition.x === desiredPosition.x &&
           prevPosition.y === desiredPosition.y
@@ -322,30 +322,56 @@ export default class Rules {
           }
         }
       }
-
-      // Horizontal move
-      if (initialPosition.y === desiredPosition.y) {
-        for (let i = 1; i < 8; i++) {
-          let factor = desiredPosition.x < initialPosition.x ? -1 : 1;
-          let prevPosition: Position = {
-            x: initialPosition.x + i * factor,
-            y: initialPosition.y,
-          };
-          if (
-            prevPosition.x === desiredPosition.x &&
-            prevPosition.y === desiredPosition.y
-          ) {
-            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
-              return true;
-            }
-          } else {
-            if (!this.tileIsEmpty(prevPosition, boardState)) {
-              break;
-            }
-          }
-        }
-      }
     }
     return false;
+  }
+
+  // Check if a move is valid by checking previous/current x,y locations
+  // the type of piece passed using a defined ENUM, the side of the piece
+  // The board state is also needed to determine valid moves
+  isValidMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    type: PieceType,
+    side: Side,
+    boardState: Piece[]
+  ) {
+    let validMove = false;
+    switch (type) {
+      case PieceType.PAWN:
+        validMove = this.pawnMove(
+          initialPosition,
+          desiredPosition,
+          side,
+          boardState
+        );
+        break;
+      case PieceType.BISHOP:
+        validMove = this.bishopMove(
+          initialPosition,
+          desiredPosition,
+          side,
+          boardState
+        );
+        break;
+
+      case PieceType.KNIGHT:
+        validMove = this.knightMove(
+          initialPosition,
+          desiredPosition,
+          side,
+          boardState
+        );
+        break;
+
+      case PieceType.ROOK:
+        validMove = this.rookMove(
+          initialPosition,
+          desiredPosition,
+          side,
+          boardState
+        );
+    }
+    return validMove;
   }
 }
