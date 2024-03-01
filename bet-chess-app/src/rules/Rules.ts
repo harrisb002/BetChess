@@ -326,6 +326,41 @@ export default class Rules {
     return false;
   }
 
+  queenMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    side: Side,
+    boardState: Piece[]
+  ): boolean {
+    // ON top
+    if(desiredPosition.y > initialPosition.y && desiredPosition.x === initialPosition.x) {
+
+    }
+     // ON Right
+     if(desiredPosition.y === initialPosition.y && desiredPosition.x > initialPosition.x) {
+      
+     }
+      // ON Left
+    if(desiredPosition.y < initialPosition.y && desiredPosition.x === initialPosition.x) {
+      
+    }
+     // ON Bottom
+     if(desiredPosition.y === initialPosition.y && desiredPosition.x < initialPosition.x) {
+      
+     }
+    return false;
+  }
+
+  kingMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    side: Side,
+    boardState: Piece[]
+  ): boolean {
+   
+    return false;
+  }
+
   // Check if a move is valid by checking previous/current x,y locations
   // the type of piece passed using a defined ENUM, the side of the piece
   // The board state is also needed to determine valid moves
@@ -371,6 +406,24 @@ export default class Rules {
           side,
           boardState
         );
+        break;
+
+      case PieceType.QUEEN:
+        validMove = this.queenMove(
+          initialPosition,
+          desiredPosition,
+          side,
+          boardState
+        );
+        break;
+      case PieceType.KING:
+        validMove = this.kingMove(
+          initialPosition,
+          desiredPosition,
+          side,
+          boardState
+        );
+        break;
     }
     return validMove;
   }
