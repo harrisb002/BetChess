@@ -1,42 +1,9 @@
 import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
+import { tileEmptyOrOpponent, tileIsEmpty } from "./rules/GenralRules";
+import { pawnMove } from "./rules/PawnRules";
 
 export default class Rules {
-  tileEmptyOrOpponent(
-    position: Position,
-    boardState: Piece[],
-    side: Side
-  ): boolean {
-    return (
-      this.tileIsEmpty(position, boardState) ||
-      this.opponentOnTile(position, boardState, side)
-    );
-  }
 
-  // Check if the tile currently has a piece on it
-  tileIsEmpty(position: Position, boardState: Piece[]): boolean {
-    // check if the piece found in the position is null (if there is no piece placed there)
-    const piece = boardState.find((piece) =>
-      samePostion(piece.position, position)
-    );
-    if (piece) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-
-  // Checking if opponent is on a tile for attacking moves
-  opponentOnTile(position: Position, boardState: Piece[], side: Side): boolean {
-    // If the piece at this position is an opponent piece
-    const piece = boardState.find(
-      (piece) => samePostion(piece.position, position) && piece.side !== side
-    );
-    if (piece) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   isEnPassant(
     initialPosition: Position,
@@ -74,56 +41,6 @@ export default class Rules {
     return false;
   }
 
-  pawnMove(
-    initialPosition: Position,
-    desiredPosition: Position,
-    side: Side,
-    boardState: Piece[]
-  ): boolean {
-    const specialRow = side === Side.WHITE ? 1 : 6;
-    const pawnMovement = side === Side.WHITE ? 1 : -1;
-
-    if (
-      initialPosition.x === desiredPosition.x &&
-      initialPosition.y === specialRow &&
-      desiredPosition.y - initialPosition.y === 2 * pawnMovement
-    ) {
-      if (
-        this.tileIsEmpty(desiredPosition, boardState) &&
-        this.tileIsEmpty(
-          { x: desiredPosition.x, y: desiredPosition.y - pawnMovement },
-          boardState
-        )
-      ) {
-        return true;
-      }
-    } else if (
-      initialPosition.x === desiredPosition.x &&
-      desiredPosition.y - initialPosition.y === pawnMovement
-    ) {
-      if (this.tileIsEmpty(desiredPosition, boardState)) {
-        return true;
-      }
-    } else if (
-      //Attacking in upper of bottom left corner
-      desiredPosition.x - initialPosition.x === -1 &&
-      desiredPosition.y - initialPosition.y === pawnMovement
-    ) {
-      if (this.opponentOnTile(desiredPosition, boardState, side)) {
-        return true;
-      }
-    } //Attacking in the upper or bottom right corner
-    else if (
-      desiredPosition.x - initialPosition.x === 1 &&
-      desiredPosition.y - initialPosition.y === pawnMovement
-    ) {
-      if (this.opponentOnTile(desiredPosition, boardState, side)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   bishopMove(
     initialPosition: Position,
     desiredPosition: Position,
@@ -145,13 +62,13 @@ export default class Rules {
         // Check if the tile is the where the piece is being moved to
         if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
-          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
           }
         } else {
           // Must be a tile being passed
           // Check if piece on the tile
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
+          if (!tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -168,13 +85,13 @@ export default class Rules {
         };
         if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
-          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
           }
         } else {
           // Must be a tile being passed
           // Check if piece on the tile
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
+          if (!tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -192,13 +109,13 @@ export default class Rules {
         // Check if the tile is the where the piece is being moved to
         if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
-          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
           }
         } else {
           // Must be a tile being passed
           // Check if piece on the tile
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
+          if (!tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -216,13 +133,13 @@ export default class Rules {
         // Check if the tile is the where the piece is being moved to
         if (samePostion(prevPosition, desiredPosition)) {
           //If tile has a opponent piece on it
-          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true; // Capture the piece
           }
         } else {
           // Must be a tile being passed
           // Check if piece on the tile
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
+          if (!tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -242,7 +159,7 @@ export default class Rules {
         // For 2 up or down and 1 left or right
         if (desiredPosition.y - initialPosition.y === 2 * i) {
           if (desiredPosition.x - initialPosition.x === j) {
-            if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
+            if (tileEmptyOrOpponent(desiredPosition, boardState, side)) {
               return true; // Can move or attack the tile
             }
           }
@@ -250,7 +167,7 @@ export default class Rules {
         // For 2 right or left and 1 up or down
         if (desiredPosition.x - initialPosition.x === 2 * i) {
           if (desiredPosition.y - initialPosition.y === j) {
-            if (this.tileEmptyOrOpponent(desiredPosition, boardState, side)) {
+            if (tileEmptyOrOpponent(desiredPosition, boardState, side)) {
               return true; // Can move or attack the tile
             }
           }
@@ -275,11 +192,11 @@ export default class Rules {
         y: initialPosition.y + i * factor,
       };
       if (samePostion(prevPosition, desiredPosition)) {
-        if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+        if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true;
         }
       } else {
-        if (!this.tileIsEmpty(prevPosition, boardState)) {
+        if (!tileIsEmpty(prevPosition, boardState)) {
           break;
         }
       }
@@ -294,11 +211,11 @@ export default class Rules {
           y: initialPosition.y,
         };
         if (samePostion(prevPosition, desiredPosition)) {
-          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
             return true;
           }
         } else {
-          if (!this.tileIsEmpty(prevPosition, boardState)) {
+          if (!tileIsEmpty(prevPosition, boardState)) {
             break;
           }
         }
@@ -314,7 +231,6 @@ export default class Rules {
     boardState: Piece[]
   ): boolean {
     for (let i = 1; i < 2; i++) {
-      //Diagonal
       let Xfactor =
         desiredPosition.x < initialPosition.x
           ? -1
@@ -333,11 +249,11 @@ export default class Rules {
         y: initialPosition.y + i * Yfactor,
       };
       if (samePostion(prevPosition, desiredPosition)) {
-        if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+        if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true;
         }
       } else {
-        if (!this.tileIsEmpty(prevPosition, boardState)) {
+        if (!tileIsEmpty(prevPosition, boardState)) {
           break;
         }
       }
@@ -358,7 +274,7 @@ export default class Rules {
     let validMove = false;
     switch (type) {
       case PieceType.PAWN:
-        validMove = this.pawnMove(
+        validMove = pawnMove(
           initialPosition,
           desiredPosition,
           side,
