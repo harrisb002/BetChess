@@ -1,9 +1,5 @@
 import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
-import { pawnMove } from "./rules/PawnRules";
-import { knightMove } from "./rules/KnightRules";
-import { bishopMove } from "./rules/BishopRules";
-import { rookMove } from "./rules/RookRules";
-import { kingMove } from "./rules/KingRules";
+import { pawnMove, knightMove, bishopMove, rookMove, kingMove } from "./rules";
 
 export default class Rules {
   isEnPassant(
