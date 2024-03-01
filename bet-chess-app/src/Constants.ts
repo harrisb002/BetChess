@@ -186,8 +186,8 @@ export const initialBoardState: Piece[] = [
   {
     image: `assets/images/rook_b.png`,
     position: {
-      x: 0,
-      y: 7,
+      x: 4,
+      y: 4,
     },
     type: PieceType.ROOK,
     side: Side.BLACK,

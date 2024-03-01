@@ -294,15 +294,20 @@ export default class Rules {
           prevPosition.x === desiredPosition.x &&
           prevPosition.y === desiredPosition.y
         ) {
-          console.log("Made it.");
-          break;
+          if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+            return true;
+          }
+        } else {
+          if (!this.tileIsEmpty(prevPosition, boardState)) {
+            break;
+          }
         }
       }
 
       // Horizontal move
       if (initialPosition.y === desiredPosition.y) {
         for (let i = 1; i < 8; i++) {
-          let factor = desiredPosition.y < initialPosition.y ? -1 : 1;
+          let factor = desiredPosition.x < initialPosition.x ? -1 : 1;
           let prevPosition: Position = {
             x: initialPosition.x + i * factor,
             y: initialPosition.y,
@@ -311,8 +316,13 @@ export default class Rules {
             prevPosition.x === desiredPosition.x &&
             prevPosition.y === desiredPosition.y
           ) {
-            console.log("Made it.");
-            break;
+            if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+              return true;
+            }
+          } else {
+            if (!this.tileIsEmpty(prevPosition, boardState)) {
+              break;
+            }
           }
         }
       }
