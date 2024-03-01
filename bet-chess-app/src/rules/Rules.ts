@@ -332,6 +332,38 @@ export default class Rules {
     side: Side,
     boardState: Piece[]
   ): boolean {
+    for (let i = 1; i < 2; i++) {
+      //Diagonal
+      let Xfactor =
+        desiredPosition.x < initialPosition.x
+          ? -1
+          : desiredPosition.x > initialPosition.x
+          ? 1
+          : 0;
+      let Yfactor =
+        desiredPosition.y < initialPosition.y
+          ? -1
+          : desiredPosition.y > initialPosition.y
+          ? 1
+          : 0;
+
+      let prevPosition: Position = {
+        x: initialPosition.x + i * Xfactor,
+        y: initialPosition.y + i * Yfactor,
+      };
+      if (
+        prevPosition.x === desiredPosition.x &&
+        prevPosition.y === desiredPosition.y
+      ) {
+        if (this.tileEmptyOrOpponent(prevPosition, boardState, side)) {
+          return true;
+        }
+      } else {
+        if (!this.tileIsEmpty(prevPosition, boardState)) {
+          break;
+        }
+      }
+    }
     return false;
   }
 
@@ -383,9 +415,11 @@ export default class Rules {
         break;
 
       case PieceType.QUEEN:
-        validMove = (this.rookMove(initialPosition,desiredPosition,side,boardState) || this.bishopMove(initialPosition,desiredPosition,side,boardState))
+        validMove =
+          this.rookMove(initialPosition, desiredPosition, side, boardState) ||
+          this.bishopMove(initialPosition, desiredPosition, side, boardState);
         break;
-      case PieceType.KING: 
+      case PieceType.KING:
         validMove = this.kingMove(
           initialPosition,
           desiredPosition,
