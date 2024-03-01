@@ -43,7 +43,7 @@ export const initialBoardState: Piece[] = [
     image: `assets/images/pawn_b.png`,
     position: {
       x: 0,
-      y: 6,
+      y: 1,
     },
     type: PieceType.PAWN,
     side: Side.BLACK,

@@ -186,10 +186,9 @@ export default function Chessboard() {
               piece.position.y = y;
 
               // Determine if the piece should be promoted based on the row
-              let promotionRow = (piece.side === Side.WHITE) ? 7 : 1;
+              let promotionRow = piece.side === Side.WHITE ? 7 : 1;
 
-              if(piece.position.y === promotionRow) {
-
+              if (piece.position.y === promotionRow) {
               }
 
               results.push(piece);
@@ -216,6 +215,11 @@ export default function Chessboard() {
     }
   }
 
+  function promotePawn(pieceType: PieceType) {
+    console.log(`Promoting into ${pieceType}`);
+    console.log(promotePawn)
+  }
+
   let board = [];
 
   for (let j = Y_AXIS.length - 1; j >= 0; j--) {
@@ -233,15 +237,38 @@ export default function Chessboard() {
       board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
     }
   }
+
   return (
-    <div
-      onMouseMove={(event) => movePiece(event)}
-      onMouseDown={(event) => grabPiece(event)}
-      onMouseUp={(event) => dropPiece(event)}
-      id="chessboard"
-      ref={chessboardRef}
-    >
-      {board}
-    </div>
+    <>
+      <div id="promotion-modal" className="hidden">
+        <div className="modal-body">
+          <img
+            onClick={() => promotePawn(PieceType.ROOK)}
+            src={`/assets/images/rook_b.png`}
+          />
+          <img
+            onClick={() => promotePawn(PieceType.BISHOP)}
+            src={`/assets/images/bishop_b.png`}
+          />
+          <img
+            onClick={() => promotePawn(PieceType.KNIGHT)}
+            src={`/assets/images/knight_b.png`}
+          />
+          <img
+            onClick={() => promotePawn(PieceType.QUEEN)}
+            src={`/assets/images/queen_b.png`}
+          />
+        </div>
+      </div>
+      <div
+        onMouseMove={(event) => movePiece(event)}
+        onMouseDown={(event) => grabPiece(event)}
+        onMouseUp={(event) => dropPiece(event)}
+        id="chessboard"
+        ref={chessboardRef}
+      >
+        {board}
+      </div>
+    </>
   );
 }
