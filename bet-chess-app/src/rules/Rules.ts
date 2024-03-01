@@ -78,6 +78,60 @@ export default class Rules {
     return false;
   }
 
+  pawnMove(
+    initialPosition: Position,
+    desiredPosition: Position,
+    side: Side,
+    boardState: Piece[]
+  ) {
+  // PAWN LOGIC
+    const specialRow = side === Side.WHITE ? 1 : 6;
+    const pawnMovement = side === Side.WHITE ? 1 : -1;
+
+    if (
+      initialPosition.x === desiredPosition.x &&
+      initialPosition.y === specialRow &&
+      desiredPosition.y - initialPosition.y === 2 * pawnMovement
+    ) {
+      if (
+        this.tileIsEmpty(desiredPosition, boardState) &&
+        this.tileIsEmpty(
+          { x: desiredPosition.x, y: desiredPosition.y - pawnMovement },
+          boardState
+        )
+      ) {
+        return true;
+      }
+    } else if (
+      initialPosition.x === desiredPosition.x &&
+      desiredPosition.y - initialPosition.y === pawnMovement
+    ) {
+      if (this.tileIsEmpty(desiredPosition, boardState)) {
+        return true;
+      }
+    } else if (
+      //Attacking in upper of bottom left corner
+      desiredPosition.x - initialPosition.x === -1 &&
+      desiredPosition.y - initialPosition.y === pawnMovement
+    ) {
+      if (this.opponentOnTile(desiredPosition, boardState, side)) {
+        return true;
+        // console.log("attack enemy on upper/ bottom left");
+      }
+      // console.log("upper/ bottom left");
+    } //Attacking in the upper or bottom right corner
+    else if (
+      desiredPosition.x - initialPosition.x === 1 &&
+      desiredPosition.y - initialPosition.y === pawnMovement
+    ) {
+      if (this.opponentOnTile(desiredPosition, boardState, side)) {
+        return true;
+        // console.log("attack enemy on upper/ bottom right");
+      }
+      // console.log("upper/ bottom right");
+    }
+  }
+
   // Check if a move is valid by checking previous/current x,y locations
   // the type of piece passed using a defined ENUM, the side of the piece
   // The board state is also needed to determine valid moves
@@ -88,56 +142,21 @@ export default class Rules {
     side: Side,
     boardState: Piece[]
   ) {
-    // PAWN LOGIC
-    if (type === PieceType.PAWN) {
-      const specialRow = side === Side.WHITE ? 1 : 6;
-      const pawnMovement = side === Side.WHITE ? 1 : -1;
+    switch (type) {
+      case PieceType.PAWN:
+        this.pawnMove(initialPosition, desiredPosition, side, boardState);
+        break;
+      case PieceType.BISHOP:
+        break;
 
-      if (
-        initialPosition.x === desiredPosition.x &&
-        initialPosition.y === specialRow &&
-        desiredPosition.y - initialPosition.y === 2 * pawnMovement
-      ) {
-        if (
-          this.tileIsEmpty(desiredPosition, boardState) &&
-          this.tileIsEmpty(
-            { x: desiredPosition.x, y: desiredPosition.y - pawnMovement },
-            boardState
-          )
-        ) {
-          return true;
-        }
-      } else if (
-        initialPosition.x === desiredPosition.x &&
-        desiredPosition.y - initialPosition.y === pawnMovement
-      ) {
-        if (this.tileIsEmpty(desiredPosition, boardState)) {
-          return true;
-        }
-      } else if (
-        //Attacking in upper of bottom left corner
-        desiredPosition.x - initialPosition.x === -1 &&
-        desiredPosition.y - initialPosition.y === pawnMovement
-      ) {
-        if (this.opponentOnTile(desiredPosition, boardState, side)) {
-          return true;
-          // console.log("attack enemy on upper/ bottom left");
-        }
-        // console.log("upper/ bottom left");
-      } //Attacking in the upper or bottom right corner
-      else if (
-        desiredPosition.x - initialPosition.x === 1 &&
-        desiredPosition.y - initialPosition.y === pawnMovement
-      ) {
-        if (this.opponentOnTile(desiredPosition, boardState, side)) {
-          return true;
-          // console.log("attack enemy on upper/ bottom right");
-        }
-        // console.log("upper/ bottom right");
-      }
+      case PieceType.KNIGHT:
+        break;
+
+      case PieceType.ROOK:
     }
+   
     // KNIGHT LOGIC
-    else if (type === PieceType.KNIGHT) {
+    if (type === PieceType.KNIGHT) {
       // Moving logic for Knight
       // console.log("The initial position is: ", initialPosition);
       // console.log("The desired position is: ", desiredPosition);
