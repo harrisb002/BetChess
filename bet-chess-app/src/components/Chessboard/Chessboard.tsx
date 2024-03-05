@@ -1,7 +1,6 @@
 import React, { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
-import Rules from "../../referee/Referee";
 import {
   X_AXIS,
   Y_AXIS,
@@ -13,6 +12,7 @@ import {
   Position,
   samePostion,
 } from "../../Constants";
+import Referee from "../../referee/Referee";
 
 export default function Chessboard() {
   // Set active piece to allow for smooth transition of grabbing functionality
@@ -25,17 +25,24 @@ export default function Chessboard() {
   });
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
-
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
-
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
-
   const chessboardRef = useRef<HTMLDivElement>(null);
+  // Create an Instance of the Referee class
+  const referee = new Referee();
 
-  // Create an Instance of the Rules class
-  const rules = new Rules();
+  function updateValidMoves() {
+    //Find the possible moves for the piece grab to render them on the board
+    setPieces((currPieces) => {
+      return currPieces.map((piece) => {
+        // Set all possible moves to the valid moves given the piece with the board state
+        piece.possibleMoves = referee.getValidMoves(piece, currPieces);
+        return piece;
+      });
+    });
+  }
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
@@ -138,7 +145,7 @@ export default function Chessboard() {
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
         // Check for valid move given if a piece is being attacked
-        const validMove = rules.isValidMove(
+        const validMove = referee.isValidMove(
           piecePosition,
           { x, y },
           currPiece.type,
@@ -147,7 +154,7 @@ export default function Chessboard() {
         );
 
         // Check for enPassant
-        const isEnPassantMove = rules.isEnPassant(
+        const isEnPassantMove = referee.isEnPassant(
           piecePosition,
           { x, y },
           currPiece.type,
@@ -195,7 +202,10 @@ export default function Chessboard() {
               // Determine if the piece should be promoted based on the row
               let promotionRow = piece.side === Side.WHITE ? 7 : 0;
 
-              if (piece.position.y === promotionRow && piece.type === PieceType.PAWN) {
+              if (
+                piece.position.y === promotionRow &&
+                piece.type === PieceType.PAWN
+              ) {
                 // Remove hidden class for when promotion square is reached, thus showing modal
                 modalRef.current?.classList.remove("hidden");
                 setPromotionPawn(piece);
@@ -226,20 +236,20 @@ export default function Chessboard() {
   }
 
   function promote(pieceType: PieceType) {
-    if(promotionPawn == undefined) {
+    if (promotionPawn == undefined) {
       return;
     }
 
     // Need to loop through pieces and update them
     const newPieces = pieces.reduce((pieces, piece) => {
       //Check if the current piece being updated it the promotion piece
-      if(samePostion(piece.position, promotionPawn.position)) {
+      if (samePostion(piece.position, promotionPawn.position)) {
         piece.type = pieceType;
         // Determine the color of the piece being updated to choose correct image
-        const side = (piece.side === Side.WHITE) ? "w" : "b";
+        const side = piece.side === Side.WHITE ? "w" : "b";
         // Determine the piece type
         let imageType = "";
-        switch(pieceType) {
+        switch (pieceType) {
           case PieceType.KNIGHT: {
             imageType = "knight";
             break;
@@ -257,11 +267,11 @@ export default function Chessboard() {
             break;
           }
         }
-        piece.image = `assets/images/${imageType}_${side}.png`
+        piece.image = `assets/images/${imageType}_${side}.png`;
       }
       pieces.push(piece);
       return pieces;
-    }, [] as Piece[])
+    }, [] as Piece[]);
 
     setPieces(newPieces); //Set the new pieces
 
@@ -269,7 +279,7 @@ export default function Chessboard() {
   }
 
   function promotionSide() {
-    return (promotionPawn?.side === Side.WHITE) ? "w" : "b";
+    return promotionPawn?.side === Side.WHITE ? "w" : "b";
   }
 
   let board = [];
@@ -285,8 +295,14 @@ export default function Chessboard() {
       // Set image if defined
       let image = piece ? piece.image : undefined;
 
+      // Find the current piece to determine its possible moves
+      let currPiece = pieces.find(piece => samePostion(piece.position, piecePosition));
+
+      // If the current piece is not null then check if the tile is in the possible moves for the piece
+      let highlights = currPiece?.possibleMoves ? currPiece.possibleMoves.some(piece => samePostion(piece, {x:i, y: j})) : false;
+     
       // Push the pieces to the board
-      board.push(<Tile key={`${j},${i}`} image={image} number={number} />);
+      board.push(<Tile key={`${j},${i}`} image={image} number={number} highlights={highlights}/>);
     }
   }
 
