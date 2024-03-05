@@ -13,6 +13,7 @@ export interface Piece {
   type: PieceType;
   side: Side;
   enPassant?: boolean; // This is nullable
+  possibleMoves?: Position[];
 }
 
 // Used to store the position of the pieces
@@ -43,7 +44,7 @@ export const initialBoardState: Piece[] = [
     image: `assets/images/pawn_b.png`,
     position: {
       x: 0,
-      y: 1,
+      y: 6,
     },
     type: PieceType.PAWN,
     side: Side.BLACK,
