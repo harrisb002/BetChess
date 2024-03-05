@@ -26,8 +26,9 @@ export default function Chessboard() {
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
 
-  // Create  referecne to the modal
+  // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
+
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
 
@@ -157,13 +158,13 @@ export default function Chessboard() {
         const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
 
         if (isEnPassantMove) {
-          const updatedPieces = pieces.reduce((results, piece) => {
+          const updatedPieces = pieces.reduce((pieces, piece) => {
             // Check if its the piece moved
             if (samePostion(piece.position, piecePosition)) {
               piece.enPassant = true;
               piece.position.x = x;
               piece.position.y = y;
-              results.push(piece); // Push the updated pieces position
+              pieces.push(piece); // Push the updated pieces position
             } else if (
               !samePostion(piece.position, {
                 x: x,
@@ -173,15 +174,15 @@ export default function Chessboard() {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
               }
-              results.push(piece); // Push the updated pieces position
+              pieces.push(piece); // Push the updated pieces position
             }
-            return results;
+            return pieces;
           }, [] as Piece[]);
 
           // Update the state of the pieces if a EnPassant has occurredÏ
           setPieces(updatedPieces);
         } else if (validMove) {
-          const updatedPieces = pieces.reduce((results, piece) => {
+          const updatedPieces = pieces.reduce((pieces, piece) => {
             // Check if the current piece is the one being moved
             if (samePostion(piece.position, piecePosition)) {
               // Check if is a pawn and double jump i.e. a special move
@@ -192,22 +193,23 @@ export default function Chessboard() {
               piece.position.y = y;
 
               // Determine if the piece should be promoted based on the row
-              let promotionRow = piece.side === Side.WHITE ? 7 : 1;
+              let promotionRow = piece.side === Side.WHITE ? 7 : 0;
 
-              if (piece.position.y === promotionRow) {
-                modalRef.current?.classList.remove()
+              if (piece.position.y === promotionRow && piece.type === PieceType.PAWN) {
+                // Remove hidden class for when promotion square is reached, thus showing modal
+                modalRef.current?.classList.remove("hidden");
                 setPromotionPawn(piece);
               }
 
-              results.push(piece);
+              pieces.push(piece);
             } // If the piece was not the piece grabbed
             else if (!samePostion(piece.position, { x, y })) {
               if (piece.type === PieceType.PAWN) {
                 piece.enPassant = false;
               }
-              results.push(piece);
+              pieces.push(piece);
             }
-            return results; // return the array of pieces after each loop
+            return pieces; // return the array of pieces after each loop
           }, [] as Piece[]);
 
           // Update the state of the pieces after validating move ect...
@@ -223,9 +225,51 @@ export default function Chessboard() {
     }
   }
 
-  function promotePawn(pieceType: PieceType) {
-    console.log(`Promoting into ${pieceType}`);
-    console.log(promotePawn)
+  function promote(pieceType: PieceType) {
+    if(promotionPawn == undefined) {
+      return;
+    }
+
+    // Need to loop through pieces and update them
+    const newPieces = pieces.reduce((pieces, piece) => {
+      //Check if the current piece being updated it the promotion piece
+      if(samePostion(piece.position, promotionPawn.position)) {
+        piece.type = pieceType;
+        // Determine the color of the piece being updated to choose correct image
+        const side = (piece.side === Side.WHITE) ? "w" : "b";
+        // Determine the piece type
+        let imageType = "";
+        switch(pieceType) {
+          case PieceType.KNIGHT: {
+            imageType = "knight";
+            break;
+          }
+          case PieceType.BISHOP: {
+            imageType = "bishop";
+            break;
+          }
+          case PieceType.ROOK: {
+            imageType = "rook";
+            break;
+          }
+          case PieceType.QUEEN: {
+            imageType = "queen";
+            break;
+          }
+        }
+        piece.image = `assets/images/${imageType}_${side}.png`
+      }
+      pieces.push(piece);
+      return pieces;
+    }, [] as Piece[])
+
+    setPieces(newPieces); //Set the new pieces
+
+    modalRef.current?.classList.add("hidden"); //Hide the modal
+  }
+
+  function promotionSide() {
+    return (promotionPawn?.side === Side.WHITE) ? "w" : "b";
   }
 
   let board = [];
@@ -251,20 +295,20 @@ export default function Chessboard() {
       <div id="promotion-modal" className="hidden" ref={modalRef}>
         <div className="modal-body">
           <img
-            onClick={() => promotePawn(PieceType.ROOK)}
-            src={`/assets/images/rook_b.png`}
+            onClick={() => promote(PieceType.QUEEN)}
+            src={`/assets/images/queen_${promotionSide()}.png`}
           />
           <img
-            onClick={() => promotePawn(PieceType.BISHOP)}
-            src={`/assets/images/bishop_b.png`}
+            onClick={() => promote(PieceType.ROOK)}
+            src={`/assets/images/rook_${promotionSide()}.png`}
           />
           <img
-            onClick={() => promotePawn(PieceType.KNIGHT)}
-            src={`/assets/images/knight_b.png`}
+            onClick={() => promote(PieceType.BISHOP)}
+            src={`/assets/images/bishop_${promotionSide()}.png`}
           />
           <img
-            onClick={() => promotePawn(PieceType.QUEEN)}
-            src={`/assets/images/queen_b.png`}
+            onClick={() => promote(PieceType.KNIGHT)}
+            src={`/assets/images/knight_${promotionSide()}.png`}
           />
         </div>
       </div>
