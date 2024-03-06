@@ -54,10 +54,20 @@ export const pawnMove = (
 export const getAllPawnMoves = (piece: Piece, boardState: Piece[]) : Position[] => {
   const possibleMoves: Position[] = [];
 
+  const specialRow = piece.side === Side.WHITE ? 1 : 6;
   const pawnMovement = piece.side === Side.WHITE ? 1 : -1;
 
   if(tileIsEmpty({x: piece.position.x, y: piece.position.y + pawnMovement}, boardState)) {
     possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement})
+
+    // For double jumps
+    if(piece.position.y === specialRow && tileIsEmpty({x: piece.position.x, y: piece.position.y + pawnMovement * 2}, boardState)) {
+      possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement * 2});
+    }
+
+    if(piece.enPassant) {
+      possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement});
+    }
   }
   return possibleMoves;
 
