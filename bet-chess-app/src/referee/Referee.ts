@@ -9,6 +9,7 @@ import {
   getAllKnightMoves,
   getAllBishopMoves,
   getAllRookMoves,
+  getAllKingMoves,
 } from "./rules";
 
 export default class Rules {
@@ -125,6 +126,10 @@ export default class Rules {
         break;
       case PieceType.QUEEN:
         return ([...getAllBishopMoves(piece, boardState), ...getAllRookMoves(piece, boardState)])
+        break;
+
+      case PieceType.KING:
+        return getAllKingMoves(piece, boardState);
         break;
     }
 
