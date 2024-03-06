@@ -109,33 +109,4 @@ export default class Rules {
     }
     return validMove;
   }
-
-  getValidMoves(piece: Piece, boardState: Piece[]): Position[] {
-    switch (piece.type) {
-      case PieceType.PAWN:
-        return getAllPawnMoves(piece, boardState);
-        break;
-      case PieceType.KNIGHT:
-        return getAllKnightMoves(piece, boardState);
-        break;
-      case PieceType.BISHOP:
-        return getAllBishopMoves(piece, boardState);
-        break;
-      case PieceType.ROOK:
-        return getAllRookMoves(piece, boardState);
-        break;
-      case PieceType.QUEEN:
-        return [
-          ...getAllBishopMoves(piece, boardState),
-          ...getAllRookMoves(piece, boardState),
-        ];
-        break;
-
-      case PieceType.KING:
-        return getAllKingMoves(piece, boardState);
-        break;
-    }
-
-    return [];
-  }
 }

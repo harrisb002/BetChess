@@ -17,7 +17,7 @@ import {
 
 
 interface Props {
-  getAllMoves: () => Position[];
+  updateAllMoves: () => void; // Update the pieces in referee and pass into the chessboard
   makeMove: () => void;
   pieces: Piece[];
 }
@@ -40,21 +40,13 @@ export default function Chessboard({getAllMoves, makeMove, pieces} : Props) {
   // Create an Instance of the Referee class
   const referee = new Referee();
 
-  function updateValidMoves() {
-    //Find the possible moves for the piece grab to render them on the board
-    setPieces((currPieces) => {
-      return currPieces.map((piece) => {
-        // Set all possible moves to the valid moves given the piece with the board state
-        piece.possibleMoves = referee.getValidMoves(piece, currPieces);
-        return piece;
-      });
-    });
-  }
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
 
-    updateValidMoves();
+    // Update the possible moves inside Referee class
+    updateAllMoves();
+    
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
