@@ -1,6 +1,8 @@
 import React, { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
+import Referee from "../../referee/Referee";
+
 import {
   X_AXIS,
   Y_AXIS,
@@ -12,9 +14,15 @@ import {
   Position,
   samePostion,
 } from "../../Constants";
-import Referee from "../../referee/Referee";
 
-export default function Chessboard() {
+
+interface Props {
+  getAllMoves: () => Position[];
+  makeMove: () => void;
+  pieces: Piece[];
+}
+
+export default function Chessboard({getAllMoves, makeMove, pieces} : Props) {
   // Set active piece to allow for smooth transition of grabbing functionality
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
@@ -23,8 +31,7 @@ export default function Chessboard() {
     x: -1,
     y: -1,
   });
-  // Pass initial board state to be called when component first rendered
-  const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
   // Create state for when the promotion piece is updated
@@ -46,6 +53,7 @@ export default function Chessboard() {
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
+
     updateValidMoves();
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
