@@ -1,5 +1,5 @@
-import { Piece, Position, Side } from "../../Constants";
-import { opponentOnTile, tileIsEmpty } from "./GenralRules";
+import { Piece, PieceType, Position, Side, samePostion } from "../../Constants";
+import { opponentOnTile, tileEmptyOrOpponent, tileIsEmpty } from "./GenralRules";
 
 export const pawnMove = (
   initialPosition: Position,
@@ -57,18 +57,42 @@ export const getAllPawnMoves = (piece: Piece, boardState: Piece[]) : Position[] 
   const specialRow = piece.side === Side.WHITE ? 1 : 6;
   const pawnMovement = piece.side === Side.WHITE ? 1 : -1;
 
-  if(tileIsEmpty({x: piece.position.x, y: piece.position.y + pawnMovement}, boardState)) {
-    possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement})
+  const regularMove : Position = { x: piece.position.x, y: piece.position.y + pawnMovement};
+  const doubleJump : Position = { x: regularMove.x, y: regularMove.y + pawnMovement};
+  const attackLeft : Position = { x: piece.position.x - 1, y: piece.position.y + pawnMovement};
+  const attackRight : Position = { x: piece.position.x + 1, y: piece.position.y + pawnMovement};
+  const leftPosition : Position = { x: piece.position.x - 1, y: piece.position.y};
+  const rightPosition : Position = { x: piece.position.x + 1, y: piece.position.y};
 
-    // For double jumps
-    if(piece.position.y === specialRow && tileIsEmpty({x: piece.position.x, y: piece.position.y + pawnMovement * 2}, boardState)) {
-      possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement * 2});
-    }
+  if (tileIsEmpty(regularMove, boardState)) {
+    possibleMoves.push(regularMove);
 
-    if(piece.enPassant) {
-      possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement});
+    if (piece.position.y === specialRow &&
+      tileIsEmpty(doubleJump, boardState)) {
+      possibleMoves.push(doubleJump)
     }
   }
-  return possibleMoves;
 
+  // Checking to Attack left for both regular attack as well as enPassant
+  if (opponentOnTile(attackLeft, boardState, piece.side)) {
+    possibleMoves.push(attackLeft); // Can regular attack opponent to the left
+  } else if (tileIsEmpty(attackLeft, boardState)) { 
+    // Get the opponent piece to the left and see if it made an enPassant move to allow special attack
+    const leftPiece = boardState.find(piece => samePostion(piece.position, leftPosition));
+    if (leftPiece != null && leftPiece.enPassant) {
+      possibleMoves.push(attackLeft);
+    }
+  }
+
+  // Checking to Attack right for both regular attack as well as enPassant
+  if (opponentOnTile(attackRight, boardState, piece.side)) {
+    possibleMoves.push(attackRight);
+  } else if (tileIsEmpty(attackRight, boardState)) {
+    const rightPiece = boardState.find(piece => samePostion(piece.position, rightPosition));
+    if (rightPiece != null && rightPiece.enPassant) {
+      possibleMoves.push(attackRight);
+    }
+  }
+
+  return possibleMoves;
 }
