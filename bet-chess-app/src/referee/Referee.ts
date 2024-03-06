@@ -112,6 +112,9 @@ export default class Rules {
       case PieceType.PAWN:
         return getAllPawnMoves(piece, boardState);
         break;
+      case PieceType.KNIGHT:
+        return getAllKnightMoves(piece, boardState);
+        break;
     }
 
     return [];
