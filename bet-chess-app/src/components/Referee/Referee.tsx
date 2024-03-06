@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import {
   Piece,
@@ -24,6 +24,11 @@ import {
 export default function Referee() {
   // Pass initial board state to be called when component first rendered
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+  // Create state for when the promotion piece is updated
+  const [promotionPawn, setPromotionPawn] = useState<Piece>();
+
+  // Create referecne to the modal to open/hide it
+  const modalRef = useRef<HTMLDivElement>(null);
 
   function updateAllMoves(): Position[] {
     //Find the possible moves for the piece grab to render them on the board
@@ -88,7 +93,7 @@ export default function Referee() {
         if (samePostion(piece.position, piece.position)) {
           // Check if is a pawn and double jump i.e. a special move
           piece.enPassant =
-            Math.abs(piece.position.y - y) === 2 &&
+            Math.abs(piece.position.y - destination.y) === 2 &&
             piece.type === PieceType.PAWN;
           piece.position.x = destination.x;
           piece.position.y = destination.y;
@@ -107,7 +112,9 @@ export default function Referee() {
 
           pieces.push(piece);
         } // If the piece was not the piece grabbed
-        else if (!samePostion(piece.position, { x, y })) {
+        else if (
+          !samePostion(piece.position, { x: destination.x, y: destination.y })
+        ) {
           if (piece.type === PieceType.PAWN) {
             piece.enPassant = false;
           }
@@ -223,8 +230,75 @@ export default function Referee() {
     return [];
   }
 
+  function promote(pieceType: PieceType) {
+    if (promotionPawn == undefined) {
+      return;
+    }
+
+    // Need to loop through pieces and update them
+    const newPieces = pieces.reduce((pieces, piece) => {
+      //Check if the current piece being updated it the promotion piece
+      if (samePostion(piece.position, promotionPawn.position)) {
+        piece.type = pieceType;
+        // Determine the color of the piece being updated to choose correct image
+        const side = piece.side === Side.WHITE ? "w" : "b";
+        // Determine the piece type
+        let imageType = "";
+        switch (pieceType) {
+          case PieceType.KNIGHT: {
+            imageType = "knight";
+            break;
+          }
+          case PieceType.BISHOP: {
+            imageType = "bishop";
+            break;
+          }
+          case PieceType.ROOK: {
+            imageType = "rook";
+            break;
+          }
+          case PieceType.QUEEN: {
+            imageType = "queen";
+            break;
+          }
+        }
+        piece.image = `assets/images/${imageType}_${side}.png`;
+      }
+      pieces.push(piece);
+      return pieces;
+    }, [] as Piece[]);
+
+    setPieces(newPieces); //Set the new pieces
+
+    modalRef.current?.classList.add("hidden"); //Hide the modal
+  }
+
+  function promotionSide() {
+    return promotionPawn?.side === Side.WHITE ? "w" : "b";
+  }
+
   return (
     <>
+      <div id="promotion-modal" className="hidden" ref={modalRef}>
+        <div className="modal-body">
+          <img
+            onClick={() => promote(PieceType.QUEEN)}
+            src={`/assets/images/queen_${promotionSide()}.png`}
+          />
+          <img
+            onClick={() => promote(PieceType.ROOK)}
+            src={`/assets/images/rook_${promotionSide()}.png`}
+          />
+          <img
+            onClick={() => promote(PieceType.BISHOP)}
+            src={`/assets/images/bishop_${promotionSide()}.png`}
+          />
+          <img
+            onClick={() => promote(PieceType.KNIGHT)}
+            src={`/assets/images/knight_${promotionSide()}.png`}
+          />
+        </div>
+      </div>
       <Chessboard
         updateAllMoves={updateAllMoves}
         makeMove={makeMove}

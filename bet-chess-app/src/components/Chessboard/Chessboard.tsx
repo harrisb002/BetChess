@@ -35,10 +35,8 @@ export default function Chessboard({
     y: -1,
   });
 
-  // Create referecne to the modal to open/hide it
-  const modalRef = useRef<HTMLDivElement>(null);
-  // Create state for when the promotion piece is updated
-  const [promotionPawn, setPromotionPawn] = useState<Piece>();
+ 
+
   const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Functionality to interact with the piece
@@ -158,53 +156,6 @@ export default function Chessboard({
     }
   }
 
-  function promote(pieceType: PieceType) {
-    if (promotionPawn == undefined) {
-      return;
-    }
-
-    // Need to loop through pieces and update them
-    const newPieces = pieces.reduce((pieces, piece) => {
-      //Check if the current piece being updated it the promotion piece
-      if (samePostion(piece.position, promotionPawn.position)) {
-        piece.type = pieceType;
-        // Determine the color of the piece being updated to choose correct image
-        const side = piece.side === Side.WHITE ? "w" : "b";
-        // Determine the piece type
-        let imageType = "";
-        switch (pieceType) {
-          case PieceType.KNIGHT: {
-            imageType = "knight";
-            break;
-          }
-          case PieceType.BISHOP: {
-            imageType = "bishop";
-            break;
-          }
-          case PieceType.ROOK: {
-            imageType = "rook";
-            break;
-          }
-          case PieceType.QUEEN: {
-            imageType = "queen";
-            break;
-          }
-        }
-        piece.image = `assets/images/${imageType}_${side}.png`;
-      }
-      pieces.push(piece);
-      return pieces;
-    }, [] as Piece[]);
-
-    setPieces(newPieces); //Set the new pieces
-
-    modalRef.current?.classList.add("hidden"); //Hide the modal
-  }
-
-  function promotionSide() {
-    return promotionPawn?.side === Side.WHITE ? "w" : "b";
-  }
-
   let board = [];
 
   for (let j = Y_AXIS.length - 1; j >= 0; j--) {
@@ -246,26 +197,6 @@ export default function Chessboard({
 
   return (
     <>
-      <div id="promotion-modal" className="hidden" ref={modalRef}>
-        <div className="modal-body">
-          <img
-            onClick={() => promote(PieceType.QUEEN)}
-            src={`/assets/images/queen_${promotionSide()}.png`}
-          />
-          <img
-            onClick={() => promote(PieceType.ROOK)}
-            src={`/assets/images/rook_${promotionSide()}.png`}
-          />
-          <img
-            onClick={() => promote(PieceType.BISHOP)}
-            src={`/assets/images/bishop_${promotionSide()}.png`}
-          />
-          <img
-            onClick={() => promote(PieceType.KNIGHT)}
-            src={`/assets/images/knight_${promotionSide()}.png`}
-          />
-        </div>
-      </div>
       <div
         onMouseMove={(event) => movePiece(event)}
         onMouseDown={(event) => grabPiece(event)}
