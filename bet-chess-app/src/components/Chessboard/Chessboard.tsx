@@ -1,28 +1,22 @@
 import React, { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
-import Referee from "../../referee/Referee";
 
 import {
   X_AXIS,
   Y_AXIS,
   GRID_SIZE,
   Piece,
-  Side,
-  PieceType,
-  initialBoardState,
   Position,
   samePostion,
 } from "../../Constants";
 
 interface Props {
-  updateAllMoves: () => void; // Update the pieces in referee and pass into the chessboard
   makeMove: (piece: Piece, position: Position) => boolean;
   pieces: Piece[];
 }
 
 export default function Chessboard({
-  updateAllMoves,
   makeMove,
   pieces,
 }: Props) {
@@ -35,15 +29,10 @@ export default function Chessboard({
     y: -1,
   });
 
- 
-
   const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
-    // Update the possible moves inside Referee class
-    updateAllMoves();
-
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;

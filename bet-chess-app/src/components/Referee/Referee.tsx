@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import {
   Piece,
@@ -26,51 +26,52 @@ export default function Referee() {
   const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
-
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
 
-  function updateAllMoves(): Position[] {
+  useEffect(() => {
+    updateAllMoves();
+  }, []); // Execute when component loads for the first time
+
+  function updateAllMoves() {
     //Find the possible moves for the piece grab to render them on the board
     setPieces((currPieces) => {
-      return currPieces.map((piece) => {
+      return currPieces.map(piece => {
         // Set all possible moves to the valid moves given the piece with the board state
         piece.possibleMoves = getValidMoves(piece, currPieces);
         return piece;
       });
     });
-
-    return [];
   }
 
   // Returns the styling needed after a move has been made
-  function makeMove(piece: Piece, destination: Position): boolean {
+  function makeMove(pieceInPlay: Piece, destination: Position): boolean {
     // Check for valid move given if a piece is being attacked
     const validMove = isValidMove(
-      piece.position,
+      pieceInPlay.position,
       destination,
-      piece.type,
-      piece.side
+      pieceInPlay.type,
+      pieceInPlay.side
     );
 
     // Check for enPassant
     const isEnPassantMove = isEnPassant(
-      piece.position,
+      pieceInPlay.position,
       destination,
-      piece.type,
-      piece.side
+      pieceInPlay.type,
+      pieceInPlay.side
     );
     // Find the direction that the pawn is moving
-    const pawnMovement = piece.side === Side.WHITE ? 1 : -1;
+    const pawnMovement = pieceInPlay.side === Side.WHITE ? 1 : -1;
 
     if (isEnPassantMove) {
-      const updatedPieces = pieces.reduce((pieces, piece) => {
+      const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if its the piece moved
-        if (samePostion(piece.position, destination)) {
+        if (samePostion(piece.position, pieceInPlay.position)) {
           piece.enPassant = true;
           piece.position.x = destination.x;
           piece.position.y = destination.y;
-          pieces.push(piece); // Push the updated pieces position
+          currPieces.push(piece); // Push the updated pieces position
         } else if (
           !samePostion(piece.position, {
             x: destination.x,
@@ -80,20 +81,22 @@ export default function Referee() {
           if (piece.type === PieceType.PAWN) {
             piece.enPassant = false;
           }
-          pieces.push(piece); // Push the updated pieces position
+          currPieces.push(piece); // Push the updated pieces position
         }
-        return pieces;
+        return currPieces;
       }, [] as Piece[]);
 
+      // Update the possible moves inside Referee class
+      updateAllMoves();
       // Update the state of the pieces if a EnPassant has occurredÏ
       setPieces(updatedPieces);
     } else if (validMove) {
-      const updatedPieces = pieces.reduce((pieces, piece) => {
+      const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if the current piece is the one being moved
-        if (samePostion(piece.position, piece.position)) {
+        if (samePostion(piece.position, pieceInPlay.position)) {
           // Check if is a pawn and double jump i.e. a special move
           piece.enPassant =
-            Math.abs(piece.position.y - destination.y) === 2 &&
+            Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
             piece.type === PieceType.PAWN;
           piece.position.x = destination.x;
           piece.position.y = destination.y;
@@ -110,7 +113,7 @@ export default function Referee() {
             setPromotionPawn(piece);
           }
 
-          pieces.push(piece);
+          currPieces.push(piece);
         } // If the piece was not the piece grabbed
         else if (
           !samePostion(piece.position, { x: destination.x, y: destination.y })
@@ -118,17 +121,19 @@ export default function Referee() {
           if (piece.type === PieceType.PAWN) {
             piece.enPassant = false;
           }
-          pieces.push(piece);
+          currPieces.push(piece);
         }
-        return pieces; // return the array of pieces after each loop
+        return currPieces; // return the array of pieces after each loop
       }, [] as Piece[]);
 
+      // Update the possible moves inside Referee class
+      updateAllMoves();
       // Update the state of the pieces after validating move ect...
-      setPieces(updatedPieces);
+      setPieces(updatedPieces); 
     } else {
       return false;
     }
-    return false;
+    return true;
   }
 
   function isEnPassant(
@@ -149,7 +154,7 @@ export default function Referee() {
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
         // Find the piece that has the required qualities
-        const piece = pieces.find(
+        const currPiece = pieces.find(
           (piece) =>
             // piece needs to be in the same collumn the pawn is moving to
             piece.position.x === desiredPosition.x &&
@@ -157,7 +162,7 @@ export default function Referee() {
             piece.position.y === desiredPosition.y - pawnMovement &&
             piece.enPassant
         );
-        if (piece) {
+        if (currPiece) {
           // Return it if the piece meets the criteria
           return true;
         }
@@ -236,7 +241,7 @@ export default function Referee() {
     }
 
     // Need to loop through pieces and update them
-    const newPieces = pieces.reduce((pieces, piece) => {
+    const newPieces = pieces.reduce((currPieces, piece) => {
       //Check if the current piece being updated it the promotion piece
       if (samePostion(piece.position, promotionPawn.position)) {
         piece.type = pieceType;
@@ -264,10 +269,11 @@ export default function Referee() {
         }
         piece.image = `assets/images/${imageType}_${side}.png`;
       }
-      pieces.push(piece);
-      return pieces;
+      currPieces.push(piece);
+      return currPieces;
     }, [] as Piece[]);
 
+    
     setPieces(newPieces); //Set the new pieces
 
     modalRef.current?.classList.add("hidden"); //Hide the modal
@@ -299,11 +305,7 @@ export default function Referee() {
           />
         </div>
       </div>
-      <Chessboard
-        updateAllMoves={updateAllMoves}
-        makeMove={makeMove}
-        pieces={pieces}
-      />
+      <Chessboard makeMove={makeMove} pieces={pieces} />
     </>
   );
 }
