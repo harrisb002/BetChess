@@ -57,9 +57,8 @@ export const getAllPawnMoves = (piece: Piece, boardState: Piece[]) : Position[] 
   const pawnMovement = piece.side === Side.WHITE ? 1 : -1;
 
   if(tileIsEmpty({x: piece.position.x, y: piece.position.y + pawnMovement}, boardState)) {
-    possibleMoves.push({x: piece.position.x, y: piece.position.y})
+    possibleMoves.push({x: piece.position.x, y: piece.position.y + pawnMovement})
   }
-
-  return [];
+  return possibleMoves;
 
 }

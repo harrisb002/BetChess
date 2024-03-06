@@ -1,5 +1,5 @@
 import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
-import { pawnMove, knightMove, bishopMove, rookMove, kingMove, getPossibleMoves } from "./rules";
+import { pawnMove, knightMove, bishopMove, rookMove, kingMove, getAllPawnMoves } from "./rules";
 
 export default class Rules {
   isEnPassant(
@@ -100,10 +100,9 @@ export default class Rules {
   }
 
   getValidMoves(piece: Piece, boardState: Piece[]): Position[] {
-
-    switch(PieceType) {
+    switch(piece.type) {
       case PieceType.PAWN: 
-      return getAllPawnMoves(piece, boardState);
+        return getAllPawnMoves(piece, boardState);
       break;
     }
 

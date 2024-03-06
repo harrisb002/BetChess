@@ -46,6 +46,7 @@ export default function Chessboard() {
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
+    updateValidMoves();
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
@@ -296,7 +297,8 @@ export default function Chessboard() {
       let image = piece ? piece.image : undefined;
 
       // Find the current piece to determine its possible moves
-      let currPiece = pieces.find(piece => samePostion(piece.position, piecePosition));
+      // set active piece if not null and if it is then to undefined so that the highlights are removed when piece is inactive (dropped)
+      let currPiece = activePiece != null ? pieces.find(piece => samePostion(piece.position, piecePosition)) : undefined;
 
       // If the current piece is not null then check if the tile is in the possible moves for the piece
       let highlights = currPiece?.possibleMoves ? currPiece.possibleMoves.some(piece => samePostion(piece, {x:i, y: j})) : false;

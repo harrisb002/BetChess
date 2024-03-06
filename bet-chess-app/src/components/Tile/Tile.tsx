@@ -14,32 +14,21 @@ export default function Tile({ number, image, highlights }: Props) {
     number % 2 !== 0 && "white-tile",
     highlights && "tile-highlight",
   ]
-    .filter(Boolean)
+    // Evaluate the elements in the array and determines which are true and returns them
+    .filter(Boolean) 
+    // Then join the class attributes together
     .join(" ");
 
-  if (number % 2 === 0) {
-    return (
-      <div className={className}>
-        {/* Make the image a background so when clicked it is not attached to image */}
-        {/* Also only render the piece if not null */}
-        {image && (
-          <div
-            style={{ backgroundImage: `url(${image})` }}
-            className="chess-piece"
-          ></div>
-        )}
-      </div>
-    );
-  } else {
-    return (
-      <div className={className}>
-        {image && (
-          <div
-            style={{ backgroundImage: `url(${image})` }}
-            className="chess-piece"
-          ></div>
-        )}
-      </div>
-    );
-  }
+  return (
+    <div className={className}>
+      {/* Make the image a background so when clicked it is not attached to image */}
+      {/* Also only render the piece if not null */}
+      {image && (
+        <div
+          style={{ backgroundImage: `url(${image})` }}
+          className="chess-piece"
+        ></div>
+      )}
+    </div>
+  );
 }
