@@ -111,3 +111,77 @@ export const bishopMove = (
   }
   return false;
 };
+
+export const getAllBishopMoves = (
+  bishop: Piece,
+  boardState: Piece[]
+): Position[] => {
+  // Store the possible moves in a Position array
+  const possibleMoves: Position[] = [];
+
+  // Moving up and to the Right
+  for (let i = 1; i < 8; i++) {
+    const destination: Position = {
+      x: bishop.position.x + i,
+      y: bishop.position.y + i,
+    };
+    if (tileIsEmpty(destination, boardState)) {
+      // No piece in the way
+      possibleMoves.push(destination);
+    } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {
+      // Opponent piece in the way to capture
+      possibleMoves.push(destination);
+      break;
+    } else {
+      // Must be occupied by same team, thus cannot move through it
+      break;
+    }
+  }
+
+  // Moving up and to the Left
+  for (let i = 1; i < 8; i++) {
+    const destination: Position = {
+      x: bishop.position.x - i,
+      y: bishop.position.y + i,
+    };
+    if (tileIsEmpty(destination, boardState)) {
+      possibleMoves.push(destination);
+    } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {
+      possibleMoves.push(destination);
+      break;
+    } else {
+      break;
+    }
+  }
+  // Moving down and to the Right
+  for (let i = 1; i < 8; i++) {
+    const destination: Position = {
+      x: bishop.position.x + i,
+      y: bishop.position.y - i,
+    };
+    if (tileIsEmpty(destination, boardState)) {
+      possibleMoves.push(destination);
+    } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {
+      possibleMoves.push(destination);
+      break;
+    } else {
+      break;
+    }
+  }
+  // Moving down and to the Left
+  for (let i = 1; i < 8; i++) {
+    const destination: Position = {
+      x: bishop.position.x - i,
+      y: bishop.position.y - i,
+    };
+    if (tileIsEmpty(destination, boardState)) {
+      possibleMoves.push(destination);
+    } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {
+      possibleMoves.push(destination);
+      break;
+    } else {
+      break;
+    }
+  }
+  return possibleMoves;
+};
