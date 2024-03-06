@@ -18,11 +18,11 @@ import {
 
 interface Props {
   updateAllMoves: () => void; // Update the pieces in referee and pass into the chessboard
-  makeMove: () => void;
+  makeMove: (piece: Piece, position: Position) => void;
   pieces: Piece[];
 }
 
-export default function Chessboard({getAllMoves, makeMove, pieces} : Props) {
+export default function Chessboard({updateAllMoves, makeMove, pieces} : Props) {
   // Set active piece to allow for smooth transition of grabbing functionality
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
@@ -37,16 +37,13 @@ export default function Chessboard({getAllMoves, makeMove, pieces} : Props) {
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
   const chessboardRef = useRef<HTMLDivElement>(null);
-  // Create an Instance of the Referee class
-  const referee = new Referee();
-
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
 
     // Update the possible moves inside Referee class
     updateAllMoves();
-    
+
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
@@ -145,93 +142,9 @@ export default function Chessboard({getAllMoves, makeMove, pieces} : Props) {
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
-        // Check for valid move given if a piece is being attacked
-        const validMove = referee.isValidMove(
-          piecePosition,
-          { x, y },
-          currPiece.type,
-          currPiece.side,
-          pieces
-        );
 
-        // Check for enPassant
-        const isEnPassantMove = referee.isEnPassant(
-          piecePosition,
-          { x, y },
-          currPiece.type,
-          currPiece.side,
-          pieces
-        );
-        // Find the direction that the pawn is moving
-        const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
-
-        if (isEnPassantMove) {
-          const updatedPieces = pieces.reduce((pieces, piece) => {
-            // Check if its the piece moved
-            if (samePostion(piece.position, piecePosition)) {
-              piece.enPassant = true;
-              piece.position.x = x;
-              piece.position.y = y;
-              pieces.push(piece); // Push the updated pieces position
-            } else if (
-              !samePostion(piece.position, {
-                x: x,
-                y: y - pawnMovement,
-              })
-            ) {
-              if (piece.type === PieceType.PAWN) {
-                piece.enPassant = false;
-              }
-              pieces.push(piece); // Push the updated pieces position
-            }
-            return pieces;
-          }, [] as Piece[]);
-
-          // Update the state of the pieces if a EnPassant has occurredÏ
-          setPieces(updatedPieces);
-        } else if (validMove) {
-          const updatedPieces = pieces.reduce((pieces, piece) => {
-            // Check if the current piece is the one being moved
-            if (samePostion(piece.position, piecePosition)) {
-              // Check if is a pawn and double jump i.e. a special move
-              piece.enPassant =
-                Math.abs(piecePosition.y - y) === 2 &&
-                piece.type === PieceType.PAWN;
-              piece.position.x = x;
-              piece.position.y = y;
-
-              // Determine if the piece should be promoted based on the row
-              let promotionRow = piece.side === Side.WHITE ? 7 : 0;
-
-              if (
-                piece.position.y === promotionRow &&
-                piece.type === PieceType.PAWN
-              ) {
-                // Remove hidden class for when promotion square is reached, thus showing modal
-                modalRef.current?.classList.remove("hidden");
-                setPromotionPawn(piece);
-              }
-
-              pieces.push(piece);
-            } // If the piece was not the piece grabbed
-            else if (!samePostion(piece.position, { x, y })) {
-              if (piece.type === PieceType.PAWN) {
-                piece.enPassant = false;
-              }
-              pieces.push(piece);
-            }
-            return pieces; // return the array of pieces after each loop
-          }, [] as Piece[]);
-
-          // Update the state of the pieces after validating move ect...
-          setPieces(updatedPieces);
-        } else {
-          activePiece.style.position = "relative";
-          // Strip the attributes of the piece back to 0 so it moves back to its position
-          activePiece.style.removeProperty("left");
-          activePiece.style.removeProperty("top");
-        }
-      }
+        makeMove(currPiece, {x, y})
+       
       setActivePiece(null);
     }
   }
