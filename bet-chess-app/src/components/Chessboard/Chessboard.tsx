@@ -15,14 +15,17 @@ import {
   samePostion,
 } from "../../Constants";
 
-
 interface Props {
   updateAllMoves: () => void; // Update the pieces in referee and pass into the chessboard
-  makeMove: (piece: Piece, position: Position) => void;
+  makeMove: (piece: Piece, position: Position) => boolean;
   pieces: Piece[];
 }
 
-export default function Chessboard({updateAllMoves, makeMove, pieces} : Props) {
+export default function Chessboard({
+  updateAllMoves,
+  makeMove,
+  pieces,
+}: Props) {
   // Set active piece to allow for smooth transition of grabbing functionality
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
@@ -40,7 +43,6 @@ export default function Chessboard({updateAllMoves, makeMove, pieces} : Props) {
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
-
     // Update the possible moves inside Referee class
     updateAllMoves();
 
@@ -142,9 +144,16 @@ export default function Chessboard({updateAllMoves, makeMove, pieces} : Props) {
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
+        // Returns whether a move has been made indicating style update needed
+        var moveMade = makeMove(currPiece, { x, y });
 
-        makeMove(currPiece, {x, y})
-       
+        if (!moveMade) {
+          activePiece.style.position = "relative";
+          // Strip the attributes of the piece back to 0 so it moves back to its position
+          activePiece.style.removeProperty("left");
+          activePiece.style.removeProperty("top");
+        }
+      }
       setActivePiece(null);
     }
   }
