@@ -55,58 +55,52 @@ export const pawnMove = (
   return false;
 };
 
-export const getAllPawnMoves = (
-  piece: Piece,
-  boardState: Piece[]
-): Position[] => {
+export const getAllPawnMoves = (pawn: Piece, boardState: Piece[]): Position[] => {
   const possibleMoves: Position[] = [];
 
-  const specialRow = piece.side === Side.WHITE ? 1 : 6;
-  const pawnMovement = piece.side === Side.WHITE ? 1 : -1;
+  const specialRow = pawn.side === Side.WHITE ? 1 : 6;
+  const pawnMovement = pawn.side === Side.WHITE ? 1 : -1;
 
   const regularMove: Position = {
-    x: piece.position.x,
-    y: piece.position.y + pawnMovement,
+    x: pawn.position.x,
+    y: pawn.position.y + pawnMovement,
   };
   const doubleJump: Position = {
     x: regularMove.x,
     y: regularMove.y + pawnMovement,
   };
   const attackLeft: Position = {
-    x: piece.position.x - 1,
-    y: piece.position.y + pawnMovement,
+    x: pawn.position.x - 1,
+    y: pawn.position.y + pawnMovement,
   };
   const attackRight: Position = {
-    x: piece.position.x + 1,
-    y: piece.position.y + pawnMovement,
+    x: pawn.position.x + 1,
+    y: pawn.position.y + pawnMovement,
   };
   const leftPosition: Position = {
-    x: piece.position.x - 1,
-    y: piece.position.y,
+    x: pawn.position.x - 1,
+    y: pawn.position.y,
   };
   const rightPosition: Position = {
-    x: piece.position.x + 1,
-    y: piece.position.y,
+    x: pawn.position.x + 1,
+    y: pawn.position.y,
   };
 
   if (tileIsEmpty(regularMove, boardState)) {
     possibleMoves.push(regularMove);
 
-    if (
-      piece.position.y === specialRow &&
-      tileIsEmpty(doubleJump, boardState)
-    ) {
+    if (pawn.position.y === specialRow && tileIsEmpty(doubleJump, boardState)) {
       possibleMoves.push(doubleJump);
     }
   }
 
   // Checking to Attack left for both regular attack as well as enPassant
-  if (opponentOnTile(attackLeft, boardState, piece.side)) {
+  if (opponentOnTile(attackLeft, boardState, pawn.side)) {
     possibleMoves.push(attackLeft); // Can regular attack opponent to the left
   } else if (tileIsEmpty(attackLeft, boardState)) {
-    // Get the opponent piece to the left and see if it made an enPassant move to allow special attack
-    const leftPiece = boardState.find((piece) =>
-      samePostion(piece.position, leftPosition)
+    // Get the opponent pawn to the left and see if it made an enPassant move to allow special attack
+    const leftPiece = boardState.find((pawn) =>
+      samePostion(pawn.position, leftPosition)
     );
     if (leftPiece != null && leftPiece.enPassant) {
       possibleMoves.push(attackLeft);
@@ -114,11 +108,11 @@ export const getAllPawnMoves = (
   }
 
   // Checking to Attack right for both regular attack as well as enPassant
-  if (opponentOnTile(attackRight, boardState, piece.side)) {
+  if (opponentOnTile(attackRight, boardState, pawn.side)) {
     possibleMoves.push(attackRight);
   } else if (tileIsEmpty(attackRight, boardState)) {
-    const rightPiece = boardState.find((piece) =>
-      samePostion(piece.position, rightPosition)
+    const rightPiece = boardState.find((pawn) =>
+      samePostion(pawn.position, rightPosition)
     );
     if (rightPiece != null && rightPiece.enPassant) {
       possibleMoves.push(attackRight);
