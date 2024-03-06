@@ -33,3 +33,13 @@ export const knightMove = (
   }
   return false;
 };
+
+export const getAllKnightMoves = (
+  knight: Piece,
+  boardState: Piece[]
+): Position[] => {
+  for (let i = -1; i < 2; i += 2) {
+    for (let j = -1; j < 2; j += 2) {}
+  }
+  return [];
+};
