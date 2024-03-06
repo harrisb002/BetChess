@@ -82,7 +82,6 @@ export const getAllKingMoves = (
       y: king.position.y - i,
     };
 
-    
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -109,7 +108,6 @@ export const getAllKingMoves = (
       y: king.position.y,
     };
 
-    
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -136,7 +134,6 @@ export const getAllKingMoves = (
       y: king.position.y,
     };
 
-    
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -163,7 +160,6 @@ export const getAllKingMoves = (
       y: king.position.y + i,
     };
 
-    
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -189,7 +185,7 @@ export const getAllKingMoves = (
       x: king.position.x - i,
       y: king.position.y + i,
     };
-    
+
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -216,7 +212,6 @@ export const getAllKingMoves = (
       y: king.position.y - i,
     };
 
-    
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -243,7 +238,6 @@ export const getAllKingMoves = (
       y: king.position.y - i,
     };
 
-    
     if (
       destination.x < 0 ||
       destination.x > 7 ||

@@ -3,7 +3,7 @@ export const Y_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export const GRID_SIZE = 100;
 
 export function samePostion(pos1: Position, pos2: Position) {
-    return pos1.x === pos2.x && pos1.y === pos2.y;
+  return pos1.x === pos2.x && pos1.y === pos2.y;
 }
 
 // Used to store the starting position for the pieces
@@ -18,9 +18,9 @@ export interface Piece {
 
 // Used to store the position of the pieces
 export interface Position {
-    x: number;
-    y: number;
-  }
+  x: number;
+  y: number;
+}
 
 // Used in piece logic in validating moves
 export enum Side {

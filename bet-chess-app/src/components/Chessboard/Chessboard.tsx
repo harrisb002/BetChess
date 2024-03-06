@@ -298,13 +298,27 @@ export default function Chessboard() {
 
       // Find the current piece to determine its possible moves
       // set active piece if not null and if it is then to undefined so that the highlights are removed when piece is inactive (dropped)
-      let currPiece = activePiece != null ? pieces.find(piece => samePostion(piece.position, piecePosition)) : undefined;
+      let currPiece =
+        activePiece != null
+          ? pieces.find((piece) => samePostion(piece.position, piecePosition))
+          : undefined;
 
       // If the current piece is not null then check if the tile is in the possible moves for the piece
-      let highlights = currPiece?.possibleMoves ? currPiece.possibleMoves.some(piece => samePostion(piece, {x:i, y: j})) : false;
-     
+      let highlights = currPiece?.possibleMoves
+        ? currPiece.possibleMoves.some((piece) =>
+            samePostion(piece, { x: i, y: j })
+          )
+        : false;
+
       // Push the pieces to the board
-      board.push(<Tile key={`${j},${i}`} image={image} number={number} highlights={highlights}/>);
+      board.push(
+        <Tile
+          key={`${j},${i}`}
+          image={image}
+          number={number}
+          highlights={highlights}
+        />
+      );
     }
   }
 

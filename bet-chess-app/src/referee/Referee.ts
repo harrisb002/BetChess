@@ -125,7 +125,10 @@ export default class Rules {
         return getAllRookMoves(piece, boardState);
         break;
       case PieceType.QUEEN:
-        return ([...getAllBishopMoves(piece, boardState), ...getAllRookMoves(piece, boardState)])
+        return [
+          ...getAllBishopMoves(piece, boardState),
+          ...getAllRookMoves(piece, boardState),
+        ];
         break;
 
       case PieceType.KING:

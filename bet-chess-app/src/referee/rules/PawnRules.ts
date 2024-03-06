@@ -55,7 +55,10 @@ export const pawnMove = (
   return false;
 };
 
-export const getAllPawnMoves = (pawn: Piece, boardState: Piece[]): Position[] => {
+export const getAllPawnMoves = (
+  pawn: Piece,
+  boardState: Piece[]
+): Position[] => {
   const possibleMoves: Position[] = [];
 
   const specialRow = pawn.side === Side.WHITE ? 1 : 6;
