@@ -8,7 +8,7 @@ import {
   GRID_SIZE,
   Piece,
   Position,
-  samePostion,
+  samePosition,
 } from "../../Constants";
 
 interface Props {
@@ -123,7 +123,7 @@ export default function Chessboard({
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
       const currPiece = pieces.find((piece) =>
-        samePostion(piece.position, piecePosition)
+        samePosition(piece.position, piecePosition)
       );
 
       // Find the piece being attacked to remove
@@ -131,10 +131,87 @@ export default function Chessboard({
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
-        // Returns whether a move has been made indicating style update needed
-        var moveMade = makeMove(currPiece, { x, y });
+        // Check for valid move given if a piece is being attacked
+        const validMove = referee.isValidMove(
+          piecePosition,
+          { x, y },
+          currPiece.type,
+          currPiece.side,
+          pieces
+        );
 
-        if (!moveMade) {
+        // Check for enPassant
+        const isEnPassantMove = referee.isEnPassant(
+          piecePosition,
+          { x, y },
+          currPiece.type,
+          currPiece.side,
+          pieces
+        );
+        // Find the direction that the pawn is moving
+        const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
+
+        if (isEnPassantMove) {
+          const updatedPieces = pieces.reduce((pieces, piece) => {
+            // Check if its the piece moved
+            if (samePosition(piece.position, piecePosition)) {
+              piece.enPassant = true;
+              piece.position.x = x;
+              piece.position.y = y;
+              pieces.push(piece); // Push the updated pieces position
+            } else if (
+              !samePosition(piece.position, {
+                x: x,
+                y: y - pawnMovement,
+              })
+            ) {
+              if (piece.type === PieceType.PAWN) {
+                piece.enPassant = false;
+              }
+              pieces.push(piece); // Push the updated pieces position
+            }
+            return pieces;
+          }, [] as Piece[]);
+
+          // Update the state of the pieces if a EnPassant has occurredÏ
+          setPieces(updatedPieces);
+        } else if (validMove) {
+          const updatedPieces = pieces.reduce((pieces, piece) => {
+            // Check if the current piece is the one being moved
+            if (samePosition(piece.position, piecePosition)) {
+              // Check if is a pawn and double jump i.e. a special move
+              piece.enPassant =
+                Math.abs(piecePosition.y - y) === 2 &&
+                piece.type === PieceType.PAWN;
+              piece.position.x = x;
+              piece.position.y = y;
+
+              // Determine if the piece should be promoted based on the row
+              let promotionRow = piece.side === Side.WHITE ? 7 : 0;
+
+              if (
+                piece.position.y === promotionRow &&
+                piece.type === PieceType.PAWN
+              ) {
+                // Remove hidden class for when promotion square is reached, thus showing modal
+                modalRef.current?.classList.remove("hidden");
+                setPromotionPawn(piece);
+              }
+
+              pieces.push(piece);
+            } // If the piece was not the piece grabbed
+            else if (!samePosition(piece.position, { x, y })) {
+              if (piece.type === PieceType.PAWN) {
+                piece.enPassant = false;
+              }
+              pieces.push(piece);
+            }
+            return pieces; // return the array of pieces after each loop
+          }, [] as Piece[]);
+
+          // Update the state of the pieces after validating move ect...
+          setPieces(updatedPieces);
+        } else {
           activePiece.style.position = "relative";
           // Strip the attributes of the piece back to 0 so it moves back to its position
           activePiece.style.removeProperty("left");
@@ -145,6 +222,53 @@ export default function Chessboard({
     }
   }
 
+  function promote(pieceType: PieceType) {
+    if (promotionPawn == undefined) {
+      return;
+    }
+
+    // Need to loop through pieces and update them
+    const newPieces = pieces.reduce((pieces, piece) => {
+      //Check if the current piece being updated it the promotion piece
+      if (samePosition(piece.position, promotionPawn.position)) {
+        piece.type = pieceType;
+        // Determine the color of the piece being updated to choose correct image
+        const side = piece.side === Side.WHITE ? "w" : "b";
+        // Determine the piece type
+        let imageType = "";
+        switch (pieceType) {
+          case PieceType.KNIGHT: {
+            imageType = "knight";
+            break;
+          }
+          case PieceType.BISHOP: {
+            imageType = "bishop";
+            break;
+          }
+          case PieceType.ROOK: {
+            imageType = "rook";
+            break;
+          }
+          case PieceType.QUEEN: {
+            imageType = "queen";
+            break;
+          }
+        }
+        piece.image = `assets/images/${imageType}_${side}.png`;
+      }
+      pieces.push(piece);
+      return pieces;
+    }, [] as Piece[]);
+
+    setPieces(newPieces); //Set the new pieces
+
+    modalRef.current?.classList.add("hidden"); //Hide the modal
+  }
+
+  function promotionSide() {
+    return promotionPawn?.side === Side.WHITE ? "w" : "b";
+  }
+
   let board = [];
 
   for (let j = Y_AXIS.length - 1; j >= 0; j--) {
@@ -152,7 +276,7 @@ export default function Chessboard({
       const number = j + i + 2;
       // Find in the pieces array each piece in its position defined and to use to place it on the Tile
       const piece = pieces.find((piece) =>
-        samePostion(piece.position, { x: i, y: j })
+        samePosition(piece.position, { x: i, y: j })
       );
 
       // Set image if defined
@@ -162,13 +286,13 @@ export default function Chessboard({
       // set active piece if not null and if it is then to undefined so that the highlights are removed when piece is inactive (dropped)
       let currPiece =
         activePiece != null
-          ? pieces.find((piece) => samePostion(piece.position, piecePosition))
+          ? pieces.find((piece) => samePosition(piece.position, piecePosition))
           : undefined;
 
       // If the current piece is not null then check if the tile is in the possible moves for the piece
       let highlights = currPiece?.possibleMoves
         ? currPiece.possibleMoves.some((piece) =>
-            samePostion(piece, { x: i, y: j })
+            samePosition(piece, { x: i, y: j })
           )
         : false;
 

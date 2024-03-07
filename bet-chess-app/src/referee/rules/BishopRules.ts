@@ -1,4 +1,4 @@
-import { Piece, Position, Side, samePostion } from "../../Constants";
+import { Piece, Position, Side, samePosition } from "../../Constants";
 import {
   opponentOnTile,
   tileEmptyOrOpponent,
@@ -24,7 +24,7 @@ export const bishopMove = (
         y: initialPosition.y + i,
       };
       // Check if the tile is the where the piece is being moved to
-      if (samePostion(prevPosition, desiredPosition)) {
+      if (samePosition(prevPosition, desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -47,7 +47,7 @@ export const bishopMove = (
         x: initialPosition.x + i,
         y: initialPosition.y - i,
       };
-      if (samePostion(prevPosition, desiredPosition)) {
+      if (samePosition(prevPosition, desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -71,7 +71,7 @@ export const bishopMove = (
         y: initialPosition.y - i,
       };
       // Check if the tile is the where the piece is being moved to
-      if (samePostion(prevPosition, desiredPosition)) {
+      if (samePosition(prevPosition, desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -95,7 +95,7 @@ export const bishopMove = (
         y: initialPosition.y + i,
       };
       // Check if the tile is the where the piece is being moved to
-      if (samePostion(prevPosition, desiredPosition)) {
+      if (samePosition(prevPosition, desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece

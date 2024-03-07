@@ -1,4 +1,4 @@
-import { Piece, Position, Side, samePostion } from "../../Constants";
+import { Piece, Position, Side, samePosition } from "../../Constants";
 import {
   opponentOnTile,
   tileEmptyOrOpponent,
@@ -29,7 +29,7 @@ export const kingMove = (
       x: initialPosition.x + i * Xfactor,
       y: initialPosition.y + i * Yfactor,
     };
-    if (samePostion(prevPosition, desiredPosition)) {
+    if (samePosition(prevPosition, desiredPosition)) {
       if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
         return true;
       }
