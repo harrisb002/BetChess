@@ -3,7 +3,7 @@ import {
   tileEmptyOrOpponent,
   tileIsEmpty,
 } from "./GenralRules";
-import { Piece, Position, Side, samePostion } from "../../Constants";
+import { Piece, Position, Side, samePosition } from "../../Constants";
 
 export const rookMove = (
   initialPosition: Position,
@@ -19,7 +19,7 @@ export const rookMove = (
       x: initialPosition.x,
       y: initialPosition.y + i * factor,
     };
-    if (samePostion(prevPosition, desiredPosition)) {
+    if (samePosition(prevPosition, desiredPosition)) {
       if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
         return true;
       }
@@ -38,7 +38,7 @@ export const rookMove = (
         x: initialPosition.x + i * factor,
         y: initialPosition.y,
       };
-      if (samePostion(prevPosition, desiredPosition)) {
+      if (samePosition(prevPosition, desiredPosition)) {
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true;
         }

@@ -1,4 +1,4 @@
-import { Piece, Position, samePostion, Side } from "../../Constants";
+import { Piece, Position, samePosition, Side } from "../../Constants";
 
 // Check if the tile currently has a piece on it
 export const tileIsEmpty = (
@@ -7,7 +7,7 @@ export const tileIsEmpty = (
 ): boolean => {
   // check if the piece found in the position is null (if there is no piece placed there)
   const piece = boardState.find((piece) =>
-    samePostion(piece.position, position)
+    samePosition(piece.position, position)
   );
   if (piece) {
     return false;
@@ -24,7 +24,7 @@ export const opponentOnTile = (
 ): boolean => {
   // If the piece at this position is an opponent piece
   const piece = boardState.find(
-    (piece) => samePostion(piece.position, position) && piece.side !== side
+    (piece) => samePosition(piece.position, position) && piece.side !== side
   );
   if (piece) {
     return true;

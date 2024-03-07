@@ -1,4 +1,4 @@
-import { PieceType, Side, Piece, Position, samePostion } from "../Constants";
+import { PieceType, Side, Piece, Position, samePosition } from "../Constants";
 import {
   pawnMove,
   knightMove,

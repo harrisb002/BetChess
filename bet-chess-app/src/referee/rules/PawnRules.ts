@@ -1,4 +1,4 @@
-import { Piece, PieceType, Position, Side, samePostion } from "../../Constants";
+import { Piece, PieceType, Position, Side, samePosition } from "../../Constants";
 import {
   opponentOnTile,
   tileEmptyOrOpponent,
@@ -103,7 +103,7 @@ export const getAllPawnMoves = (
   } else if (tileIsEmpty(attackLeft, boardState)) {
     // Get the opponent pawn to the left and see if it made an enPassant move to allow special attack
     const leftPiece = boardState.find((pawn) =>
-      samePostion(pawn.position, leftPosition)
+      samePosition(pawn.position, leftPosition)
     );
     if (leftPiece != null && leftPiece.enPassant) {
       possibleMoves.push(attackLeft);
@@ -115,7 +115,7 @@ export const getAllPawnMoves = (
     possibleMoves.push(attackRight);
   } else if (tileIsEmpty(attackRight, boardState)) {
     const rightPiece = boardState.find((pawn) =>
-      samePostion(pawn.position, rightPosition)
+      samePosition(pawn.position, rightPosition)
     );
     if (rightPiece != null && rightPiece.enPassant) {
       possibleMoves.push(attackRight);
