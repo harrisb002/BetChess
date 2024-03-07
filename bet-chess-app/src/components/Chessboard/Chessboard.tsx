@@ -1,25 +1,20 @@
 import React, { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
-
 import {
   X_AXIS,
   Y_AXIS,
   GRID_SIZE,
   Piece,
+  Side,
+  PieceType,
+  initialBoardState,
   Position,
   samePosition,
 } from "../../Constants";
+import Referee from "../../referee/Referee";
 
-interface Props {
-  makeMove: (piece: Piece, position: Position) => boolean;
-  pieces: Piece[];
-}
-
-export default function Chessboard({
-  makeMove,
-  pieces,
-}: Props) {
+export default function Chessboard() {
   // Set active piece to allow for smooth transition of grabbing functionality
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
@@ -28,11 +23,30 @@ export default function Chessboard({
     x: -1,
     y: -1,
   });
-
+  // Pass initial board state to be called when component first rendered
+  const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+  // Create referecne to the modal to open/hide it
+  const modalRef = useRef<HTMLDivElement>(null);
+  // Create state for when the promotion piece is updated
+  const [promotionPawn, setPromotionPawn] = useState<Piece>();
   const chessboardRef = useRef<HTMLDivElement>(null);
+  // Create an Instance of the Referee class
+  const referee = new Referee();
+
+  function updateValidMoves() {
+    //Find the possible moves for the piece grab to render them on the board
+    setPieces((currPieces) => {
+      return currPieces.map((piece) => {
+        // Set all possible moves to the valid moves given the piece with the board state
+        piece.possibleMoves = referee.getValidMoves(piece, currPieces);
+        return piece;
+      });
+    });
+  }
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
+    updateValidMoves();
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
@@ -310,6 +324,26 @@ export default function Chessboard({
 
   return (
     <>
+      <div id="promotion-modal" className="hidden" ref={modalRef}>
+        <div className="modal-body">
+          <img
+            onClick={() => promote(PieceType.QUEEN)}
+            src={`/assets/images/queen_${promotionSide()}.png`}
+          />
+          <img
+            onClick={() => promote(PieceType.ROOK)}
+            src={`/assets/images/rook_${promotionSide()}.png`}
+          />
+          <img
+            onClick={() => promote(PieceType.BISHOP)}
+            src={`/assets/images/bishop_${promotionSide()}.png`}
+          />
+          <img
+            onClick={() => promote(PieceType.KNIGHT)}
+            src={`/assets/images/knight_${promotionSide()}.png`}
+          />
+        </div>
+      </div>
       <div
         onMouseMove={(event) => movePiece(event)}
         onMouseDown={(event) => grabPiece(event)}
