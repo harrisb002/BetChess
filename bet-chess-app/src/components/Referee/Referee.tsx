@@ -6,7 +6,7 @@ import {
   Position,
   Side,
   initialBoardState,
-  samePostion,
+  samePosition,
 } from "../../Constants";
 import {
   bishopMove,
@@ -36,7 +36,7 @@ export default function Referee() {
   function updateAllMoves() {
     //Find the possible moves for the piece grab to render them on the board
     setPieces((currPieces) => {
-      return currPieces.map(piece => {
+      return currPieces.map((piece) => {
         // Set all possible moves to the valid moves given the piece with the board state
         piece.possibleMoves = getValidMoves(piece, currPieces);
         return piece;
@@ -67,13 +67,13 @@ export default function Referee() {
     if (isEnPassantMove) {
       const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if its the piece moved
-        if (samePostion(piece.position, pieceInPlay.position)) {
-          piece.enPassant = true;
+        if (samePosition(piece.position, pieceInPlay.position)) {
+          piece.enPassant = false;
           piece.position.x = destination.x;
           piece.position.y = destination.y;
           currPieces.push(piece); // Push the updated pieces position
         } else if (
-          !samePostion(piece.position, {
+          !samePosition(piece.position, {
             x: destination.x,
             y: destination.y - pawnMovement,
           })
@@ -93,7 +93,7 @@ export default function Referee() {
     } else if (validMove) {
       const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if the current piece is the one being moved
-        if (samePostion(piece.position, pieceInPlay.position)) {
+        if (samePosition(piece.position, pieceInPlay.position)) {
           // Check if is a pawn and double jump i.e. a special move
           piece.enPassant =
             Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
@@ -104,10 +104,7 @@ export default function Referee() {
           // Determine if the piece should be promoted based on the row
           let promotionRow = piece.side === Side.WHITE ? 7 : 0;
 
-          if (
-            piece.position.y === promotionRow &&
-            piece.type === PieceType.PAWN
-          ) {
+          if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
             // Remove hidden class for when promotion square is reached, thus showing modal
             modalRef.current?.classList.remove("hidden");
             setPromotionPawn(piece);
@@ -116,7 +113,7 @@ export default function Referee() {
           currPieces.push(piece);
         } // If the piece was not the piece grabbed
         else if (
-          !samePostion(piece.position, { x: destination.x, y: destination.y })
+          !samePosition(piece.position, { x: destination.x, y: destination.y })
         ) {
           if (piece.type === PieceType.PAWN) {
             piece.enPassant = false;
@@ -129,7 +126,7 @@ export default function Referee() {
       // Update the possible moves inside Referee class
       updateAllMoves();
       // Update the state of the pieces after validating move ect...
-      setPieces(updatedPieces); 
+      setPieces(updatedPieces);
     } else {
       return false;
     }
@@ -243,7 +240,7 @@ export default function Referee() {
     // Need to loop through pieces and update them
     const newPieces = pieces.reduce((currPieces, piece) => {
       //Check if the current piece being updated it the promotion piece
-      if (samePostion(piece.position, promotionPawn.position)) {
+      if (samePosition(piece.position, promotionPawn.position)) {
         piece.type = pieceType;
         // Determine the color of the piece being updated to choose correct image
         const side = piece.side === Side.WHITE ? "w" : "b";
@@ -273,7 +270,6 @@ export default function Referee() {
       return currPieces;
     }, [] as Piece[]);
 
-    
     setPieces(newPieces); //Set the new pieces
 
     modalRef.current?.classList.add("hidden"); //Hide the modal

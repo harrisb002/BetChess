@@ -14,7 +14,12 @@ import {
 } from "../../Constants";
 import Referee from "../../referee/Referee";
 
-export default function Chessboard() {
+interface Props {
+  makeMove: (piece: Piece, position: Position) => boolean;
+  pieces: Piece[];
+}
+
+export default function Chessboard({ makeMove, pieces }: Props) {
   // Set active piece to allow for smooth transition of grabbing functionality
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
@@ -23,30 +28,12 @@ export default function Chessboard() {
     x: -1,
     y: -1,
   });
-  // Pass initial board state to be called when component first rendered
-  const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
-  // Create referecne to the modal to open/hide it
-  const modalRef = useRef<HTMLDivElement>(null);
-  // Create state for when the promotion piece is updated
-  const [promotionPawn, setPromotionPawn] = useState<Piece>();
   const chessboardRef = useRef<HTMLDivElement>(null);
   // Create an Instance of the Referee class
   const referee = new Referee();
 
-  function updateValidMoves() {
-    //Find the possible moves for the piece grab to render them on the board
-    setPieces((currPieces) => {
-      return currPieces.map((piece) => {
-        // Set all possible moves to the valid moves given the piece with the board state
-        piece.possibleMoves = referee.getValidMoves(piece, currPieces);
-        return piece;
-      });
-    });
-  }
-
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
-    updateValidMoves();
     const chessboard = chessboardRef.current;
     // Cast the class name to an HTML element
     const element = event.target as HTMLElement;
@@ -145,142 +132,17 @@ export default function Chessboard() {
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
-        // Check for valid move given if a piece is being attacked
-        const validMove = referee.isValidMove(
-          piecePosition,
-          { x, y },
-          currPiece.type,
-          currPiece.side,
-          pieces
-        );
+        var success = makeMove(currPiece, { x, y });
 
-        // Check for enPassant
-        const isEnPassantMove = referee.isEnPassant(
-          piecePosition,
-          { x, y },
-          currPiece.type,
-          currPiece.side,
-          pieces
-        );
-        // Find the direction that the pawn is moving
-        const pawnMovement = currPiece.side === Side.WHITE ? 1 : -1;
-
-        if (isEnPassantMove) {
-          const updatedPieces = pieces.reduce((pieces, piece) => {
-            // Check if its the piece moved
-            if (samePosition(piece.position, piecePosition)) {
-              piece.enPassant = true;
-              piece.position.x = x;
-              piece.position.y = y;
-              pieces.push(piece); // Push the updated pieces position
-            } else if (
-              !samePosition(piece.position, {
-                x: x,
-                y: y - pawnMovement,
-              })
-            ) {
-              if (piece.type === PieceType.PAWN) {
-                piece.enPassant = false;
-              }
-              pieces.push(piece); // Push the updated pieces position
-            }
-            return pieces;
-          }, [] as Piece[]);
-
-          // Update the state of the pieces if a EnPassant has occurredÏ
-          setPieces(updatedPieces);
-        } else if (validMove) {
-          const updatedPieces = pieces.reduce((pieces, piece) => {
-            // Check if the current piece is the one being moved
-            if (samePosition(piece.position, piecePosition)) {
-              // Check if is a pawn and double jump i.e. a special move
-              piece.enPassant =
-                Math.abs(piecePosition.y - y) === 2 &&
-                piece.type === PieceType.PAWN;
-              piece.position.x = x;
-              piece.position.y = y;
-
-              // Determine if the piece should be promoted based on the row
-              let promotionRow = piece.side === Side.WHITE ? 7 : 0;
-
-              if (
-                piece.position.y === promotionRow &&
-                piece.type === PieceType.PAWN
-              ) {
-                // Remove hidden class for when promotion square is reached, thus showing modal
-                modalRef.current?.classList.remove("hidden");
-                setPromotionPawn(piece);
-              }
-
-              pieces.push(piece);
-            } // If the piece was not the piece grabbed
-            else if (!samePosition(piece.position, { x, y })) {
-              if (piece.type === PieceType.PAWN) {
-                piece.enPassant = false;
-              }
-              pieces.push(piece);
-            }
-            return pieces; // return the array of pieces after each loop
-          }, [] as Piece[]);
-
-          // Update the state of the pieces after validating move ect...
-          setPieces(updatedPieces);
-        } else {
+        if (!success) {
+          // reset the peice position if the piece was not actually moved
           activePiece.style.position = "relative";
-          // Strip the attributes of the piece back to 0 so it moves back to its position
-          activePiece.style.removeProperty("left");
           activePiece.style.removeProperty("top");
+          activePiece.style.removeProperty("left");
         }
       }
       setActivePiece(null);
     }
-  }
-
-  function promote(pieceType: PieceType) {
-    if (promotionPawn == undefined) {
-      return;
-    }
-
-    // Need to loop through pieces and update them
-    const newPieces = pieces.reduce((pieces, piece) => {
-      //Check if the current piece being updated it the promotion piece
-      if (samePosition(piece.position, promotionPawn.position)) {
-        piece.type = pieceType;
-        // Determine the color of the piece being updated to choose correct image
-        const side = piece.side === Side.WHITE ? "w" : "b";
-        // Determine the piece type
-        let imageType = "";
-        switch (pieceType) {
-          case PieceType.KNIGHT: {
-            imageType = "knight";
-            break;
-          }
-          case PieceType.BISHOP: {
-            imageType = "bishop";
-            break;
-          }
-          case PieceType.ROOK: {
-            imageType = "rook";
-            break;
-          }
-          case PieceType.QUEEN: {
-            imageType = "queen";
-            break;
-          }
-        }
-        piece.image = `assets/images/${imageType}_${side}.png`;
-      }
-      pieces.push(piece);
-      return pieces;
-    }, [] as Piece[]);
-
-    setPieces(newPieces); //Set the new pieces
-
-    modalRef.current?.classList.add("hidden"); //Hide the modal
-  }
-
-  function promotionSide() {
-    return promotionPawn?.side === Side.WHITE ? "w" : "b";
   }
 
   let board = [];
@@ -324,26 +186,6 @@ export default function Chessboard() {
 
   return (
     <>
-      <div id="promotion-modal" className="hidden" ref={modalRef}>
-        <div className="modal-body">
-          <img
-            onClick={() => promote(PieceType.QUEEN)}
-            src={`/assets/images/queen_${promotionSide()}.png`}
-          />
-          <img
-            onClick={() => promote(PieceType.ROOK)}
-            src={`/assets/images/rook_${promotionSide()}.png`}
-          />
-          <img
-            onClick={() => promote(PieceType.BISHOP)}
-            src={`/assets/images/bishop_${promotionSide()}.png`}
-          />
-          <img
-            onClick={() => promote(PieceType.KNIGHT)}
-            src={`/assets/images/knight_${promotionSide()}.png`}
-          />
-        </div>
-      </div>
       <div
         onMouseMove={(event) => movePiece(event)}
         onMouseDown={(event) => grabPiece(event)}
