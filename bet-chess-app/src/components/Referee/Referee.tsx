@@ -63,7 +63,7 @@ export default function Referee() {
     );
     // Find the direction that the pawn is moving
     const pawnMovement = pieceInPlay.side === Side.WHITE ? 1 : -1;
-
+    console.log(pieceInPlay)
     if (isEnPassantMove) {
       const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if its the piece moved
@@ -91,48 +91,51 @@ export default function Referee() {
       // Update the state of the pieces if a EnPassant has occurredÏ
       setPieces(updatedPieces);
     } else if (validMove) {
-      const updatedPieces = pieces.reduce((currPieces, piece) => {
-        // Check if the current piece is the one being moved
+      // Find if there's a piece at the destination (which would be captured if present).
+      const destinationPieceIndex = pieces.findIndex(piece => samePosition(piece.position, destination));
+
+      const updatedPieces = pieces.reduce((currPieces, piece, index) => {
+        if (index === destinationPieceIndex) {
+          // If the current piece is the one at the destination (to be captured), skip adding it to the updated array.
+          // This effectively removes the captured piece from the game state.
+          return currPieces;
+        }
+
         if (samePosition(piece.position, pieceInPlay.position)) {
-          // Check if is a pawn and double jump i.e. a special move
+          // If the current piece is the one being moved, update its position and enPassant status if it's a pawn.
           piece.enPassant =
             Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
             piece.type === PieceType.PAWN;
-          piece.position.x = destination.x;
-          piece.position.y = destination.y;
+          piece.position = { ...destination }; // Update to the new destination.
 
-          // Determine if the piece should be promoted based on the row
+          // Check for pawn promotion.
           let promotionRow = piece.side === Side.WHITE ? 7 : 0;
-
           if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
-            // Remove hidden class for when promotion square is reached, thus showing modal
+            // If the pawn reaches the opposite end, trigger the promotion modal.
             modalRef.current?.classList.remove("hidden");
             setPromotionPawn(piece);
           }
-
-          currPieces.push(piece);
-        } // If the piece was not the piece grabbed
-        else if (
-          !samePosition(piece.position, { x: destination.x, y: destination.y })
-        ) {
-          if (piece.type === PieceType.PAWN) {
-            piece.enPassant = false;
-          }
-          currPieces.push(piece);
+        } else if (piece.type === PieceType.PAWN) {
+          // Reset enPassant status for all other pawns on the move.
+          piece.enPassant = false;
         }
-        return currPieces; // return the array of pieces after each loop
+
+        // Add the current piece to the updated array, whether it was modified or not.
+        currPieces.push(piece);
+        return currPieces;
       }, [] as Piece[]);
 
-      // Update the possible moves inside Referee class
-      updateAllMoves();
-      // Update the state of the pieces after validating move ect...
+      // Update the state with the new array of pieces, reflecting any captures and position changes.
       setPieces(updatedPieces);
+      // After updating the pieces, recalculate all possible moves based on the new board state.
+      updateAllMoves();
     } else {
+      // If the move isn't valid, do not update the board state and indicate the move was not successful.
       return false;
     }
+    // If the function reaches this point, the move was successful.
     return true;
   }
-
   function isEnPassant(
     initialPosition: Position,
     desiredPosition: Position,
@@ -165,7 +168,7 @@ export default function Referee() {
         }
       }
     }
-    return true;
+    return false;
   }
 
   function isValidMove(
@@ -207,33 +210,26 @@ export default function Referee() {
     switch (piece.type) {
       case PieceType.PAWN:
         return getAllPawnMoves(piece, boardState);
-        break;
       case PieceType.KNIGHT:
         return getAllKnightMoves(piece, boardState);
-        break;
       case PieceType.BISHOP:
         return getAllBishopMoves(piece, boardState);
-        break;
       case PieceType.ROOK:
         return getAllRookMoves(piece, boardState);
-        break;
       case PieceType.QUEEN:
         return [
           ...getAllBishopMoves(piece, boardState),
           ...getAllRookMoves(piece, boardState),
         ];
-        break;
-
       case PieceType.KING:
         return getAllKingMoves(piece, boardState);
-        break;
+      default:
+        return [];
     }
-
-    return [];
   }
 
   function promote(pieceType: PieceType) {
-    if (promotionPawn == undefined) {
+    if (promotionPawn === undefined) {
       return;
     }
 
@@ -270,6 +266,7 @@ export default function Referee() {
       return currPieces;
     }, [] as Piece[]);
 
+    updateAllMoves();
     setPieces(newPieces); //Set the new pieces
 
     modalRef.current?.classList.add("hidden"); //Hide the modal

@@ -13,11 +13,7 @@ export default function Tile({ number, image, highlights }: Props) {
     number % 2 === 0 && "black-tile",
     number % 2 !== 0 && "white-tile",
     highlights && "tile-highlight",
-  ]
-    // Evaluate the elements in the array and determines which are true and returns them
-    .filter(Boolean) 
-    // Then join the class attributes together
-    .join(" ");
+    image && "chess-piece-tile"].filter(Boolean).join(' ');
 
   return (
     <div className={className}>

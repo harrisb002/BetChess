@@ -6,13 +6,9 @@ import {
   Y_AXIS,
   GRID_SIZE,
   Piece,
-  Side,
-  PieceType,
-  initialBoardState,
   Position,
   samePosition,
 } from "../../Constants";
-import Referee from "../../referee/Referee";
 
 interface Props {
   makeMove: (piece: Piece, position: Position) => boolean;
@@ -29,8 +25,6 @@ export default function Chessboard({ makeMove, pieces }: Props) {
     y: -1,
   });
   const chessboardRef = useRef<HTMLDivElement>(null);
-  // Create an Instance of the Referee class
-  const referee = new Referee();
 
   // Functionality to interact with the piece
   function grabPiece(event: React.MouseEvent) {
