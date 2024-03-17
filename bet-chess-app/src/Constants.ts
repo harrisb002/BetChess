@@ -1,4 +1,5 @@
 import { PieceType, Side } from "./Types";
+import { Chessboard } from "./models/Chessboard";
 import { Pawn } from "./models/Pawn";
 import { Piece } from "./models/Piece";
 import { Position } from "./models/Position";
@@ -8,7 +9,7 @@ export const Y_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export const GRID_SIZE = 100;
 
 // Initialize the board
-export const initialBoardState: Piece[] = [
+export const initialBoard: Chessboard = new Chessboard( [
   //White Pawns
   new Pawn(new Position(0, 1), Side.WHITE),
   new Pawn(new Position(1, 1), Side.WHITE),
@@ -60,4 +61,4 @@ export const initialBoardState: Piece[] = [
   //Kings
   new Piece(new Position(4, 0), PieceType.KING, Side.WHITE),
   new Piece(new Position(4, 7), PieceType.KING, Side.BLACK),
-];
+]);

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import {
-  initialBoardState,
+  initialBoard,
 } from "../../Constants";
 import {
   bishopMove,
@@ -21,7 +21,7 @@ import { Pawn } from "../../models/Pawn";
 
 export default function Referee() {
   // Pass initial board state to be called when component first rendered
-  const [pieces, setPieces] = useState<Piece[]>(initialBoardState);
+  const [pieces, setPieces] = useState<Piece[]>(initialBoard);
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
   // Create referecne to the modal to open/hide it
@@ -106,12 +106,12 @@ export default function Referee() {
 
           // Check for pawn promotion.
           let promotionRow = piece.side === Side.WHITE ? 7 : 0;
-          if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
+          if (destination.y === promotionRow && (piece as Pawn)) {
             // If the pawn reaches the opposite end, trigger the promotion modal.
             modalRef.current?.classList.remove("hidden");
             setPromotionPawn(piece);
           }
-        } else if (piece.type === PieceType.PAWN) {
+        } else if ((piece as Pawn)) {
           // Reset enPassant status for all other pawns on the move.
           (piece as Pawn).enPassant = false;
         }
