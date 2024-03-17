@@ -8,7 +8,7 @@ export class Piece {
     enPassant?: boolean; // This is nullable
     possibleMoves?: Position[];
 
-    constructor(image: string, position: Position, type: PieceType, side: Side) {
+    constructor(position: Position, type: PieceType, side: Side) {
         this.image = `assets/images/${type}_${side}.png`;
         this.position = position;
         this.type = type;
