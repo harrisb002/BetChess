@@ -6,7 +6,6 @@ export class Piece {
     position: Position;
     type: PieceType;
     side: Side;
-    enPassant?: boolean; // This is nullable
     possibleMoves?: Position[];
 
     constructor(position: Position, type: PieceType, side: Side) {
