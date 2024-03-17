@@ -32,286 +32,55 @@ export enum PieceType {
 
 // Initialize the board
 export const initialBoardState: Piece[] = [
+  //White Pawns
+  new Piece('assets/images/pawn_w.png', { x: 0, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 1, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 2, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 3, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 4, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 5, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 6, y: 1 }, PieceType.PAWN, Side.WHITE),
+  new Piece('assets/images/pawn_w.png', { x: 7, y: 1 }, PieceType.PAWN, Side.WHITE),
+  
+  //Black Pawns
   new Piece('assets/images/pawn_b.png', { x: 0, y: 6 }, PieceType.PAWN, Side.BLACK),
-  new Piece('assets/images/pawn_b.png', { x: 1, y: 6 }, PieceType.ROOK, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 1, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 2, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 3, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 4, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 5, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 6, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 7, y: 6 }, PieceType.PAWN, Side.BLACK),
+  
+  //White rooks
+  new Piece('assets/images/rook_w.png', { x: 0, y: 0 }, PieceType.ROOK, Side.BLACK),
+  new Piece('assets/images/rook_w.png', { x: 7, y: 0 }, PieceType.ROOK, Side.BLACK),
+    
+  //Black rooks
+  new Piece('assets/images/rook_b.png', { x: 0, y: 7 }, PieceType.ROOK, Side.BLACK),
+  new Piece('assets/images/rook_b.png', { x: 7, y: 7 }, PieceType.ROOK, Side.BLACK),
 
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 1,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 2,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 3,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 4,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 5,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 6,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 7,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 0,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 1,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 2,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 3,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 4,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 5,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 6,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/pawn_w.png`,
-    position: {
-      x: 7,
-      y: 1,
-    },
-    type: PieceType.PAWN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/rook_b.png`,
-    position: {
-      x: 0,
-      y: 7,
-    },
-    type: PieceType.ROOK,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/rook_b.png`,
-    position: {
-      x: 7,
-      y: 7,
-    },
-    type: PieceType.ROOK,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/rook_w.png`,
-    position: {
-      x: 0,
-      y: 0,
-    },
-    type: PieceType.ROOK,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/knight_b.png`,
-    position: {
-      x: 1,
-      y: 7,
-    },
-    type: PieceType.KNIGHT,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/knight_b.png`,
-    position: {
-      x: 6,
-      y: 7,
-    },
-    type: PieceType.KNIGHT,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/knight_w.png`,
-    position: {
-      x: 1,
-      y: 0,
-    },
-    type: PieceType.KNIGHT,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/knight_w.png`,
-    position: {
-      x: 6,
-      y: 0,
-    },
-    type: PieceType.KNIGHT,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/rook_w.png`,
-    position: {
-      x: 7,
-      y: 0,
-    },
-    type: PieceType.ROOK,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/bishop_b.png`,
-    position: {
-      x: 2,
-      y: 7,
-    },
-    type: PieceType.BISHOP,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/bishop_b.png`,
-    position: {
-      x: 5,
-      y: 7,
-    },
-    type: PieceType.BISHOP,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/bishop_w.png`,
-    position: {
-      x: 2,
-      y: 0,
-    },
-    type: PieceType.BISHOP,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/bishop_w.png`,
-    position: {
-      x: 5,
-      y: 0,
-    },
-    type: PieceType.BISHOP,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/queen_b.png`,
-    position: {
-      x: 3,
-      y: 7,
-    },
-    type: PieceType.QUEEN,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/queen_w.png`,
-    position: {
-      x: 3,
-      y: 0,
-    },
-    type: PieceType.QUEEN,
-    side: Side.WHITE,
-  },
-  {
-    image: `assets/images/king_b.png`,
-    position: {
-      x: 4,
-      y: 7,
-    },
-    type: PieceType.KING,
-    side: Side.BLACK,
-  },
-  {
-    image: `assets/images/king_w.png`,
-    position: {
-      x: 4,
-      y: 0,
-    },
-    type: PieceType.KING,
-    side: Side.WHITE,
-  },
+  //White knights
+  new Piece('assets/images/knight_w.png', { x: 1, y: 0 }, PieceType.KNIGHT, Side.WHITE),
+  new Piece('assets/images/knight_w.png', { x: 6, y: 0 }, PieceType.KNIGHT, Side.WHITE),
+
+  //Black knights
+  new Piece('assets/images/knight_b.png', { x: 1, y: 7 }, PieceType.KNIGHT, Side.BLACK),
+  new Piece('assets/images/knight_b.png', { x: 6, y: 7 }, PieceType.KNIGHT, Side.BLACK),
+
+  //White bishops
+  new Piece('assets/images/bishop_w.png', { x: 2, y: 0 }, PieceType.BISHOP, Side.WHITE),
+  new Piece('assets/images/bishop_w.png', { x: 5, y: 0 }, PieceType.BISHOP, Side.WHITE),
+
+  //Black bishops
+  new Piece('assets/images/bishop_b.png', { x: 2, y: 7 }, PieceType.BISHOP, Side.BLACK),
+  new Piece('assets/images/bishop_b.png', { x: 5, y: 7 }, PieceType.BISHOP, Side.BLACK),
+
+  //Queens
+  new Piece('assets/images/queen_w.png', { x: 3, y: 0 }, PieceType.QUEEN, Side.WHITE),
+  new Piece('assets/images/queen_b.png', { x: 3, y: 7 }, PieceType.QUEEN, Side.BLACK),
+
+  //Kings
+  new Piece('assets/images/king_w.png', { x: 4, y: 0 }, PieceType.KING, Side.WHITE),
+  new Piece('assets/images/king_b.png', { x: 4, y: 7 }, PieceType.KING, Side.BLACK),
 ];
