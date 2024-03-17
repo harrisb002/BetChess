@@ -15,34 +15,37 @@ export class Piece {
         this.side = side;
     }
 
-    get isPawn() : boolean {
+    // Used to return a copy of a piece to create a copy of the board to update UI
+    clone(): Piece {
+        return new Piece(this.position, this.type, this.side);
+    }
+
+    get isPawn(): boolean {
         return this.type === PieceType.PAWN;
     }
-    get isKnight() : boolean {
+    get isKnight(): boolean {
         return this.type === PieceType.KNIGHT;
     }
-    get isBishop() : boolean {
+    get isBishop(): boolean {
         return this.type === PieceType.BISHOP;
     }
-    get isRook() : boolean {
+    get isRook(): boolean {
         return this.type === PieceType.ROOK;
     }
-    get isQueen() : boolean {
+    get isQueen(): boolean {
         return this.type === PieceType.QUEEN;
     }
-    get isKing() : boolean {
+    get isKing(): boolean {
         return this.type === PieceType.KING
     }
 
-
-
     // Compares two piece positions
-    samePiecePosition(otherPiece: Piece) : boolean {
+    samePiecePosition(otherPiece: Piece): boolean {
         return this.position.samePosition(otherPiece.position);
     }
-    
+
     // Overload to compare two positions
-    samePosition(otherPosition: Position) : boolean {
+    samePosition(otherPosition: Position): boolean {
         return this.position.samePosition(otherPosition);
     }
 }
