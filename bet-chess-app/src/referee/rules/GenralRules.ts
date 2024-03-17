@@ -1,5 +1,5 @@
-import { Position, samePosition, Side } from "../../Constants";
-import { Piece } from "../../models/Piece";
+import {samePosition, Side } from "../../Constants";
+import { Piece, Position } from "../../models";
 
 // Check if the tile currently has a piece on it
 export const tileIsEmpty = (

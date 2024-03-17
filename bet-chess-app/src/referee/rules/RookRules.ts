@@ -1,10 +1,9 @@
+import {Side, samePosition } from "../../Constants";
+import { Piece, Position } from "../../models";
 import {
-  opponentOnTile,
   tileEmptyOrOpponent,
   tileIsEmpty,
 } from "./GenralRules";
-import {Position, Side, samePosition } from "../../Constants";
-import { Piece } from "../../models/Piece";
 
 export const rookMove = (
   initialPosition: Position,

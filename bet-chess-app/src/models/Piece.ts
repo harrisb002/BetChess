@@ -1,4 +1,5 @@
-import { PieceType, Position, Side } from "../Constants";
+import { PieceType, Side } from "../Constants";
+import { Position } from "../models/Position";
 
 export class Piece {
     image: string;

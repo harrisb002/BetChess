@@ -1,4 +1,5 @@
 import { Piece } from "./models/Piece";
+import { Position } from "./models/Position";
 
 export const X_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 export const Y_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
@@ -6,12 +7,6 @@ export const GRID_SIZE = 100;
 
 export function samePosition(pos1: Position, pos2: Position) {
   return pos1.x === pos2.x && pos1.y === pos2.y;
-}
-
-// Used to store the position of the pieces
-export interface Position {
-  x: number;
-  y: number;
 }
 
 // Used in piece logic in validating moves

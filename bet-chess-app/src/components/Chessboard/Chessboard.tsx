@@ -1,14 +1,14 @@
 import React, { useRef, useState } from "react";
 import "./Chessboard.css";
 import Tile from "../Tile/Tile";
+import { Piece, Position } from "../../models";
+
 import {
   X_AXIS,
   Y_AXIS,
   GRID_SIZE,
-  Position,
   samePosition,
 } from "../../Constants";
-import { Piece } from "../../models/Piece";
 
 interface Props {
   makeMove: (piece: Piece, position: Position) => boolean;
