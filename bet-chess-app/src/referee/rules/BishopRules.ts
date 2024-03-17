@@ -1,4 +1,4 @@
-import {Side, samePosition } from "../../Constants";
+import { Side } from "../../Constants";
 import { Piece, Position } from "../../models";
 import {
   tileEmptyOrOpponent,
@@ -19,12 +19,10 @@ export const bishopMove = (
       desiredPosition.y > initialPosition.y
     ) {
       // Get the squares the bishop has moved through
-      let prevPosition: Position = {
-        x: initialPosition.x + i,
-        y: initialPosition.y + i,
-      };
+      let prevPosition: Position = new Position(initialPosition.x + i, initialPosition.y + i);
+
       // Check if the tile is the where the piece is being moved to
-      if (samePosition(prevPosition, desiredPosition)) {
+      if (prevPosition.samePosition(desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -43,11 +41,8 @@ export const bishopMove = (
       desiredPosition.x > initialPosition.x &&
       desiredPosition.y < initialPosition.y
     ) {
-      let prevPosition: Position = {
-        x: initialPosition.x + i,
-        y: initialPosition.y - i,
-      };
-      if (samePosition(prevPosition, desiredPosition)) {
+      let prevPosition: Position = new Position(initialPosition.x + i, initialPosition.y - i);
+      if (prevPosition.samePosition(desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -66,12 +61,10 @@ export const bishopMove = (
       desiredPosition.x < initialPosition.x &&
       desiredPosition.y < initialPosition.y
     ) {
-      let prevPosition: Position = {
-        x: initialPosition.x - i,
-        y: initialPosition.y - i,
-      };
+      let prevPosition: Position = new Position(initialPosition.x - i, initialPosition.y - i);
+
       // Check if the tile is the where the piece is being moved to
-      if (samePosition(prevPosition, desiredPosition)) {
+      if (prevPosition.samePosition(desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -90,12 +83,9 @@ export const bishopMove = (
       desiredPosition.x < initialPosition.x &&
       desiredPosition.y > initialPosition.y
     ) {
-      let prevPosition: Position = {
-        x: initialPosition.x - i,
-        y: initialPosition.y + i,
-      };
+      let prevPosition: Position = new Position(initialPosition.x - i, initialPosition.y + i);
       // Check if the tile is the where the piece is being moved to
-      if (samePosition(prevPosition, desiredPosition)) {
+      if (prevPosition.samePosition(desiredPosition)) {
         //If tile has a opponent piece on it
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true; // Capture the piece
@@ -121,10 +111,7 @@ export const getAllBishopMoves = (
 
   // Moving up and to the Right
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: bishop.position.x + i,
-      y: bishop.position.y + i,
-    };
+    const destination: Position = new Position(bishop.position.x + i, bishop.position.y + i);
     if (tileIsEmpty(destination, boardState)) {
       // No piece in the way
       possibleMoves.push(destination);
@@ -140,10 +127,8 @@ export const getAllBishopMoves = (
 
   // Moving up and to the Left
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: bishop.position.x - i,
-      y: bishop.position.y + i,
-    };
+    const destination: Position = new Position(bishop.position.x - i, bishop.position.y + i);
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {
@@ -155,10 +140,8 @@ export const getAllBishopMoves = (
   }
   // Moving down and to the Right
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: bishop.position.x + i,
-      y: bishop.position.y - i,
-    };
+    const destination: Position = new Position(bishop.position.x + i, bishop.position.y - i);
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {
@@ -170,10 +153,8 @@ export const getAllBishopMoves = (
   }
   // Moving down and to the Left
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: bishop.position.x - i,
-      y: bishop.position.y - i,
-    };
+    const destination: Position = new Position(bishop.position.x - i, bishop.position.y - i);
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, bishop.side)) {

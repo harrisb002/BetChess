@@ -7,7 +7,6 @@ import {
   X_AXIS,
   Y_AXIS,
   GRID_SIZE,
-  samePosition,
 } from "../../Constants";
 
 interface Props {
@@ -20,10 +19,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
   // Save the grabbed piece in this variable
   const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
   // Used to set the x and y position of the peices when dropped to snap to grid
-  const [piecePosition, setPiecePosition] = useState<Position>({
-    x: -1,
-    y: -1,
-  });
+  const [piecePosition, setPiecePosition] = useState<Position>(new Position(-1, -1));
   const chessboardRef = useRef<HTMLDivElement>(null);
 
   // Functionality to interact with the piece
@@ -40,10 +36,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
         Math.ceil((event.clientY - chessboard.offsetTop - 800) / GRID_SIZE)
       );
       // Set the states of both x and y cordinates of the peice to save location and use in dropPiece function
-      setPiecePosition({
-        x: newX,
-        y: newY,
-      });
+      setPiecePosition(new Position(newX, newY));
 
       // Get the mouse x and y positions
       const x = event.clientX - GRID_SIZE / 2; // Calculate offset of where the piece is bieng grabbed from top left corner
@@ -118,7 +111,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
       const currPiece = pieces.find((piece) =>
-        samePosition(piece.position, piecePosition)
+        piece.position.samePosition(piecePosition)
       );
 
       // Find the piece being attacked to remove
@@ -126,7 +119,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
-        var success = makeMove(currPiece, { x, y });
+        var success = makeMove(currPiece, new Position(x, y));
 
         if (!success) {
           // reset the peice position if the piece was not actually moved
@@ -146,7 +139,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
       const number = j + i + 2;
       // Find in the pieces array each piece in its position defined and to use to place it on the Tile
       const piece = pieces.find((piece) =>
-        samePosition(piece.position, { x: i, y: j })
+        piece.position.samePosition(new Position(i, j))
       );
 
       // Set image if defined
@@ -156,14 +149,14 @@ export default function Chessboard({ makeMove, pieces }: Props) {
       // set active piece if not null and if it is then to undefined so that the highlights are removed when piece is inactive (dropped)
       let currPiece =
         activePiece != null
-          ? pieces.find((piece) => samePosition(piece.position, piecePosition))
+          ? pieces.find((piece) => piece.position.samePosition(piecePosition))
           : undefined;
 
       // If the current piece is not null then check if the tile is in the possible moves for the piece
       let highlights = currPiece?.possibleMoves
         ? currPiece.possibleMoves.some((piece) =>
-            samePosition(piece, { x: i, y: j })
-          )
+          piece.samePosition(new Position(i, j))
+        )
         : false;
 
       // Push the pieces to the board

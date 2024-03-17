@@ -16,4 +16,13 @@ export class Piece {
         this.side = side;
     }
 
+    // Compares two piece positions
+    samePiecePosition(otherPiece: Piece) : boolean {
+        return this.position.samePosition(otherPiece.position);
+    }
+    
+    // Overload to compare two positions
+    samePosition(otherPosition: Position) : boolean {
+        return this.position.samePosition(otherPosition);
+    }
 }

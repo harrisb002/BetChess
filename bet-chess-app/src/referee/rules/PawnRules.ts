@@ -1,4 +1,4 @@
-import {Side, samePosition } from "../../Constants";
+import { Side } from "../../Constants";
 import { Piece, Position } from "../../models";
 import {
   opponentOnTile,
@@ -21,10 +21,7 @@ export const pawnMove = (
   ) {
     if (
       tileIsEmpty(desiredPosition, boardState) &&
-      tileIsEmpty(
-        { x: desiredPosition.x, y: desiredPosition.y - pawnMovement },
-        boardState
-      )
+      tileIsEmpty(new Position(desiredPosition.x, desiredPosition.y - pawnMovement), boardState)
     ) {
       return true;
     }
@@ -64,30 +61,12 @@ export const getAllPawnMoves = (
   const specialRow = pawn.side === Side.WHITE ? 1 : 6;
   const pawnMovement = pawn.side === Side.WHITE ? 1 : -1;
 
-  const regularMove: Position = {
-    x: pawn.position.x,
-    y: pawn.position.y + pawnMovement,
-  };
-  const doubleJump: Position = {
-    x: regularMove.x,
-    y: regularMove.y + pawnMovement,
-  };
-  const attackLeft: Position = {
-    x: pawn.position.x - 1,
-    y: pawn.position.y + pawnMovement,
-  };
-  const attackRight: Position = {
-    x: pawn.position.x + 1,
-    y: pawn.position.y + pawnMovement,
-  };
-  const leftPosition: Position = {
-    x: pawn.position.x - 1,
-    y: pawn.position.y,
-  };
-  const rightPosition: Position = {
-    x: pawn.position.x + 1,
-    y: pawn.position.y,
-  };
+  const regularMove: Position = new Position(pawn.position.x, pawn.position.y)
+  const doubleJump: Position = new Position(pawn.position.x, pawn.position.y + pawnMovement)
+  const attackLeft: Position = new Position(pawn.position.x - 1, pawn.position.y + pawnMovement)
+  const attackRight: Position = new Position(pawn.position.x + 1, pawn.position.y + pawnMovement)
+  const leftPosition: Position = new Position(pawn.position.x - 1, pawn.position.y)
+  const rightPosition: Position = new Position(pawn.position.x + 1, pawn.position.y)
 
   if (tileIsEmpty(regularMove, boardState)) {
     possibleMoves.push(regularMove);
@@ -103,7 +82,7 @@ export const getAllPawnMoves = (
   } else if (tileIsEmpty(attackLeft, boardState)) {
     // Get the opponent pawn to the left and see if it made an enPassant move to allow special attack
     const leftPiece = boardState.find((pawn) =>
-      samePosition(pawn.position, leftPosition)
+      pawn.position.samePosition(leftPosition)
     );
     if (leftPiece != null && leftPiece.enPassant) {
       possibleMoves.push(attackLeft);
@@ -115,7 +94,7 @@ export const getAllPawnMoves = (
     possibleMoves.push(attackRight);
   } else if (tileIsEmpty(attackRight, boardState)) {
     const rightPiece = boardState.find((pawn) =>
-      samePosition(pawn.position, rightPosition)
+      pawn.position.samePosition(rightPosition)
     );
     if (rightPiece != null && rightPiece.enPassant) {
       possibleMoves.push(attackRight);

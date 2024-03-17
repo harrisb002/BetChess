@@ -1,4 +1,4 @@
-import {Side, samePosition } from "../../Constants";
+import { Side } from "../../Constants";
 import { Piece, Position } from "../../models";
 import {
   tileEmptyOrOpponent,
@@ -15,11 +15,9 @@ export const rookMove = (
   for (let i = 1; i < 8; i++) {
     // If goin down then = -1 else 1
     let factor = desiredPosition.y < initialPosition.y ? -1 : 1;
-    let prevPosition: Position = {
-      x: initialPosition.x,
-      y: initialPosition.y + i * factor,
-    };
-    if (samePosition(prevPosition, desiredPosition)) {
+    let prevPosition: Position = new Position(initialPosition.x, initialPosition.y + i * factor)
+
+    if (prevPosition.samePosition(desiredPosition)) {
       if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
         return true;
       }
@@ -34,11 +32,9 @@ export const rookMove = (
   if (initialPosition.y === desiredPosition.y) {
     for (let i = 1; i < 8; i++) {
       let factor = desiredPosition.x < initialPosition.x ? -1 : 1;
-      let prevPosition: Position = {
-        x: initialPosition.x + i * factor,
-        y: initialPosition.y,
-      };
-      if (samePosition(prevPosition, desiredPosition)) {
+      let prevPosition: Position = new Position(initialPosition.x + i * factor, initialPosition.y)
+
+      if (prevPosition.samePosition(desiredPosition)) {
         if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
           return true;
         }
@@ -61,10 +57,8 @@ export const getAllRookMoves = (
 
   // Moving Up
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: rook.position.x,
-      y: rook.position.y + i,
-    };
+    const destination: Position = new Position(rook.position.x, rook.position.y + i)
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, rook.side)) {
@@ -77,10 +71,8 @@ export const getAllRookMoves = (
 
   // Moving Down
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: rook.position.x,
-      y: rook.position.y - i,
-    };
+    const destination: Position = new Position(rook.position.x, rook.position.y - i)
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, rook.side)) {
@@ -93,10 +85,8 @@ export const getAllRookMoves = (
 
   // Moving Right
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: rook.position.x + i,
-      y: rook.position.y,
-    };
+    const destination: Position = new Position(rook.position.x + i, rook.position.y)
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, rook.side)) {
@@ -109,10 +99,8 @@ export const getAllRookMoves = (
 
   // Moving Left
   for (let i = 1; i < 8; i++) {
-    const destination: Position = {
-      x: rook.position.x - i,
-      y: rook.position.y,
-    };
+    const destination: Position = new Position(rook.position.x - i, rook.position.y)
+
     if (tileIsEmpty(destination, boardState)) {
       possibleMoves.push(destination);
     } else if (tileEmptyOrOpponent(destination, boardState, rook.side)) {

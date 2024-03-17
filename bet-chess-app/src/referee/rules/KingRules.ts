@@ -1,4 +1,4 @@
-import {Side, samePosition } from "../../Constants";
+import { Side } from "../../Constants";
 import { Piece, Position } from "../../models";
 import {
   opponentOnTile,
@@ -17,20 +17,18 @@ export const kingMove = (
       desiredPosition.x < initialPosition.x
         ? -1
         : desiredPosition.x > initialPosition.x
-        ? 1
-        : 0;
+          ? 1
+          : 0;
     let Yfactor =
       desiredPosition.y < initialPosition.y
         ? -1
         : desiredPosition.y > initialPosition.y
-        ? 1
-        : 0;
+          ? 1
+          : 0;
 
-    let prevPosition: Position = {
-      x: initialPosition.x + i * Xfactor,
-      y: initialPosition.y + i * Yfactor,
-    };
-    if (samePosition(prevPosition, desiredPosition)) {
+    let prevPosition: Position = new Position(initialPosition.x + i * Xfactor, initialPosition.y + i * Yfactor);
+
+    if (prevPosition.samePosition(desiredPosition)) {
       if (tileEmptyOrOpponent(prevPosition, boardState, side)) {
         return true;
       }
@@ -51,10 +49,7 @@ export const getAllKingMoves = (
 
   // Moving Up
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x,
-      y: king.position.y + i,
-    };
+    const destination: Position = new Position(king.position.x, king.position.y + i);
 
     // Bounds checking, if off board then dont add
     if (
@@ -78,10 +73,7 @@ export const getAllKingMoves = (
 
   // Moving Down
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x,
-      y: king.position.y - i,
-    };
+    const destination: Position = new Position(king.position.x, king.position.y - i)
 
     if (
       destination.x < 0 ||
@@ -104,11 +96,7 @@ export const getAllKingMoves = (
 
   // Moving Left
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x - i,
-      y: king.position.y,
-    };
-
+    const destination: Position = new Position(king.position.x - i, king.position.y)
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -130,11 +118,7 @@ export const getAllKingMoves = (
 
   // Moving Right
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x + i,
-      y: king.position.y,
-    };
-
+    const destination: Position = new Position(king.position.x + i, king.position.y)
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -156,11 +140,7 @@ export const getAllKingMoves = (
 
   // Moving to up-right corner
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x + i,
-      y: king.position.y + i,
-    };
-
+    const destination: Position = new Position(king.position.x + i, king.position.y + i)
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -182,11 +162,7 @@ export const getAllKingMoves = (
 
   // Moving up-left corner
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x - i,
-      y: king.position.y + i,
-    };
-
+    const destination: Position = new Position(king.position.x - i, king.position.y - i)
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -208,11 +184,7 @@ export const getAllKingMoves = (
 
   // Moving to bottom-Right corner
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x + i,
-      y: king.position.y - i,
-    };
-
+    const destination: Position = new Position(king.position.x + i, king.position.y - i)
     if (
       destination.x < 0 ||
       destination.x > 7 ||
@@ -234,11 +206,7 @@ export const getAllKingMoves = (
 
   // Moving to bottom-left corner
   for (let i = 1; i < 2; i++) {
-    const destination: Position = {
-      x: king.position.x - i,
-      y: king.position.y - i,
-    };
-
+    const destination: Position = new Position(king.position.x - i, king.position.y - i)
     if (
       destination.x < 0 ||
       destination.x > 7 ||

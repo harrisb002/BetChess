@@ -1,4 +1,4 @@
-import {Side } from "../../Constants";
+import { Side } from "../../Constants";
 import { Piece, Position } from "../../models";
 import {
   tileEmptyOrOpponent,
@@ -43,14 +43,8 @@ export const getAllKnightMoves = (
   for (let i = -1; i < 2; i += 2) {
     for (let j = -1; j < 2; j += 2) {
       // Same as logic above but storing in variables to use
-      const moveVertical: Position = {
-        x: knight.position.x + j,
-        y: knight.position.y + i * 2,
-      };
-      const moveHorizontal: Position = {
-        x: knight.position.x + i * 2,
-        y: knight.position.y + j,
-      };
+      const moveVertical: Position = new Position(knight.position.x + j, knight.position.y + i * 2)
+      const moveHorizontal: Position = new Position(knight.position.x + i * 2, knight.position.y + j)
 
       if (tileEmptyOrOpponent(moveHorizontal, boardState, knight.side)) {
         possibleMoves.push(moveHorizontal);
