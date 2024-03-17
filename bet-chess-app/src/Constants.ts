@@ -16,18 +16,18 @@ export interface Position {
 
 // Used in piece logic in validating moves
 export enum Side {
-  BLACK,
-  WHITE,
+  BLACK = 'b',
+  WHITE  = 'w',
 }
 
 // Used in piece logic in validating moves
 export enum PieceType {
-  PAWN,
-  KNIGHT,
-  BISHOP,
-  ROOK,
-  QUEEN,
-  KING,
+  PAWN = 'pawn',
+  KNIGHT = 'knight',
+  BISHOP = 'bishop',
+  ROOK = 'rook',
+  QUEEN = 'queen',
+  KING = 'king',
 }
 
 // Initialize the board
@@ -53,8 +53,8 @@ export const initialBoardState: Piece[] = [
   new Piece('assets/images/pawn_b.png', { x: 7, y: 6 }, PieceType.PAWN, Side.BLACK),
 
   //White rooks
-  new Piece('assets/images/rook_w.png', { x: 0, y: 0 }, PieceType.ROOK, Side.BLACK),
-  new Piece('assets/images/rook_w.png', { x: 7, y: 0 }, PieceType.ROOK, Side.BLACK),
+  new Piece('assets/images/rook_w.png', { x: 0, y: 0 }, PieceType.ROOK, Side.WHITE),
+  new Piece('assets/images/rook_w.png', { x: 7, y: 0 }, PieceType.ROOK, Side.WHITE),
 
   //Black rooks
   new Piece('assets/images/rook_b.png', { x: 0, y: 7 }, PieceType.ROOK, Side.BLACK),
