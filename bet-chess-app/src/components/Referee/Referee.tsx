@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
-import { Piece, Position } from "../../models";
-import { Pawn } from "../../models/Pawn";
 import {
   initialBoardState,
 } from "../../Constants";
@@ -17,7 +15,9 @@ import {
   pawnMove,
   rookMove,
 } from "../../referee/rules";
+import { Piece, Position } from "../../models";
 import { PieceType, Side } from "../../Types";
+import { Pawn } from "../../models/Pawn";
 
 export default function Referee() {
   // Pass initial board state to be called when component first rendered
@@ -66,9 +66,8 @@ export default function Referee() {
       const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if its the piece moved
         if (piece.samePiecePosition(pieceInPlay)) {
-          if (piece.isPawn) {
-            (piece as Pawn).enPassant = false; // Cast the piece to Pawn class
-          }
+          if (piece.isPawn)
+            (piece as Pawn).enPassant = false;
           piece.position.x = destination.x;
           piece.position.y = destination.y;
           currPieces.push(piece); // Push the updated pieces position
@@ -76,7 +75,7 @@ export default function Referee() {
           !piece.samePosition(new Position(destination.x, destination.y - pawnMovement))
         ) {
           if (piece.isPawn) {
-            (piece as Pawn).enPassant = false; // Cast the piece to Pawn class
+            (piece as Pawn).enPassant = false;
           }
           currPieces.push(piece); // Push the updated pieces position
         }
@@ -98,29 +97,27 @@ export default function Referee() {
           return currPieces;
         }
 
-        if (piece.samePiecePosition(pieceInPlay)) {
+        if (piece.samePosition(pieceInPlay.position)) {
           // If the current piece is the one being moved, update its position and enPassant status if it's a pawn.
-          if (piece.isPawn) {
-            (piece as Pawn).enPassant =
-              Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
-              piece.type === PieceType.PAWN;
+          (piece as Pawn).enPassant = Math.abs(pieceInPlay.position.y - destination.y) === 2;
 
-            piece.position = new Position(destination.x, destination.y)
-            // Check for pawn promotion.
-            let promotionRow = piece.side === Side.WHITE ? 7 : 0;
-            if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
-              // If the pawn reaches the opposite end, trigger the promotion modal.
-              modalRef.current?.classList.remove("hidden");
-              setPromotionPawn(piece);
-            }
-          } else if (piece.isPawn) {
-            // Reset enPassant status for all other pawns on the move.
-            (piece as Pawn).enPassant = false;
+          piece.position.x = destination.x;
+          piece.position.y = destination.y;
+
+          // Check for pawn promotion.
+          let promotionRow = piece.side === Side.WHITE ? 7 : 0;
+          if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
+            // If the pawn reaches the opposite end, trigger the promotion modal.
+            modalRef.current?.classList.remove("hidden");
+            setPromotionPawn(piece);
           }
-
-          // Add the current piece to the updated array, whether it was modified or not.
-          currPieces.push(piece);
+        } else if (piece.type === PieceType.PAWN) {
+          // Reset enPassant status for all other pawns on the move.
+          (piece as Pawn).enPassant = false;
         }
+
+        // Add the current piece to the updated array, whether it was modified or not.
+        currPieces.push(piece);
         return currPieces;
       }, [] as Piece[]);
 
@@ -135,6 +132,8 @@ export default function Referee() {
     // If the function reaches this point, the move was successful.
     return true;
   }
+
+
   function isEnPassant(
     initialPosition: Position,
     desiredPosition: Position,
@@ -265,7 +264,7 @@ export default function Referee() {
       currPieces.push(piece);
       return currPieces;
     }, [] as Piece[]);
-
+    console.log("Pieces before promotion", pieces)
     updateAllMoves();
     setPieces(newPieces); //Set the new pieces
 

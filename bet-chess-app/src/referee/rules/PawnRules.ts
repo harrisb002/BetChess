@@ -1,5 +1,6 @@
 import { Side } from "../../Types";
 import { Piece, Position } from "../../models";
+import { Pawn } from "../../models/Pawn";
 import {
   opponentOnTile,
   tileIsEmpty,
@@ -84,7 +85,7 @@ export const getAllPawnMoves = (
     const leftPiece = boardState.find((pawn) =>
       pawn.samePosition(leftPosition)
     );
-    if (leftPiece != null) {
+    if (leftPiece != null && (leftPiece as Pawn).enPassant) {
       possibleMoves.push(attackLeft);
     }
   }
@@ -96,7 +97,7 @@ export const getAllPawnMoves = (
     const rightPiece = boardState.find((pawn) =>
       pawn.samePosition(rightPosition)
     );
-    if (rightPiece != null) {
+    if (rightPiece != null && (rightPiece as Pawn).enPassant) {
       possibleMoves.push(attackRight);
     }
   }
