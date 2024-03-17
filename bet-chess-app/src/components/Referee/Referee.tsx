@@ -18,10 +18,11 @@ import {
 import { Piece, Position } from "../../models";
 import { PieceType, Side } from "../../Types";
 import { Pawn } from "../../models/Pawn";
+import { Board } from "../../models/Board";
 
 export default function Referee() {
   // Pass initial board state to be called when component first rendered
-  const [pieces, setPieces] = useState<Piece[]>(initialBoard);
+  const [pieces, setPieces] = useState<Board>(initialBoard);
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
   // Create referecne to the modal to open/hide it

@@ -1,9 +1,9 @@
 import { Piece } from "./Piece";
 
-export class Chessboard{
+export class Board{
     pieces: Piece[]; 
 
     constructor(pieces: Piece[]) {
-        this.pieces = [];
+        this.pieces = pieces;
     }
 }
