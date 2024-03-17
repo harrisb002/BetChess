@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import { Piece, Position } from "../../models";
+import { Pawn } from "../../models/Pawn";
 import {
-  PieceType,
-  Side,
   initialBoardState,
 } from "../../Constants";
 import {
@@ -18,6 +17,7 @@ import {
   pawnMove,
   rookMove,
 } from "../../referee/rules";
+import { PieceType, Side } from "../../Types";
 
 export default function Referee() {
   // Pass initial board state to be called when component first rendered
@@ -66,15 +66,17 @@ export default function Referee() {
       const updatedPieces = pieces.reduce((currPieces, piece) => {
         // Check if its the piece moved
         if (piece.samePiecePosition(pieceInPlay)) {
-          piece.enPassant = false;
+          if (piece.isPawn) {
+            (piece as Pawn).enPassant = false; // Cast the piece to Pawn class
+          }
           piece.position.x = destination.x;
           piece.position.y = destination.y;
           currPieces.push(piece); // Push the updated pieces position
         } else if (
           !piece.samePosition(new Position(destination.x, destination.y - pawnMovement))
         ) {
-          if (piece.type === PieceType.PAWN) {
-            piece.enPassant = false;
+          if (piece.isPawn) {
+            (piece as Pawn).enPassant = false; // Cast the piece to Pawn class
           }
           currPieces.push(piece); // Push the updated pieces position
         }
@@ -98,24 +100,27 @@ export default function Referee() {
 
         if (piece.samePiecePosition(pieceInPlay)) {
           // If the current piece is the one being moved, update its position and enPassant status if it's a pawn.
-          piece.enPassant =
-            Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
-            piece.type === PieceType.PAWN;
-          piece.position = new Position(destination.x, destination.y)
-          // Check for pawn promotion.
-          let promotionRow = piece.side === Side.WHITE ? 7 : 0;
-          if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
-            // If the pawn reaches the opposite end, trigger the promotion modal.
-            modalRef.current?.classList.remove("hidden");
-            setPromotionPawn(piece);
-          }
-        } else if (piece.type === PieceType.PAWN) {
-          // Reset enPassant status for all other pawns on the move.
-          piece.enPassant = false;
-        }
+          if (piece.isPawn) {
+            (piece as Pawn).enPassant =
+              Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
+              piece.type === PieceType.PAWN;
 
-        // Add the current piece to the updated array, whether it was modified or not.
-        currPieces.push(piece);
+            piece.position = new Position(destination.x, destination.y)
+            // Check for pawn promotion.
+            let promotionRow = piece.side === Side.WHITE ? 7 : 0;
+            if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
+              // If the pawn reaches the opposite end, trigger the promotion modal.
+              modalRef.current?.classList.remove("hidden");
+              setPromotionPawn(piece);
+            }
+          } else if (piece.isPawn) {
+            // Reset enPassant status for all other pawns on the move.
+            (piece as Pawn).enPassant = false;
+          }
+
+          // Add the current piece to the updated array, whether it was modified or not.
+          currPieces.push(piece);
+        }
         return currPieces;
       }, [] as Piece[]);
 
@@ -154,7 +159,8 @@ export default function Referee() {
             piece.position.x === desiredPosition.x &&
             // piece also needs to be one tile behind the piece that it is hitting
             piece.position.y === desiredPosition.y - pawnMovement &&
-            piece.enPassant
+            piece.isPawn &&
+            (piece as Pawn).enPassant
         );
         if (currPiece) {
           // Return it if the piece meets the criteria

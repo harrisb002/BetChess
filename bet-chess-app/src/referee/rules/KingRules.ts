@@ -1,4 +1,4 @@
-import { Side } from "../../Constants";
+import { Side } from "../../Types";
 import { Piece, Position } from "../../models";
 import {
   opponentOnTile,

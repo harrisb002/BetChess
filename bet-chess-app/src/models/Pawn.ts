@@ -1,6 +1,6 @@
-import { PieceType, Side } from "../Constants";
-import { Position } from "./Position";
+import { PieceType, Side } from "../Types";
 import { Piece } from "./Piece";
+import { Position } from "./Position";
 
 export class Pawn extends Piece {
     enPassant?: boolean; // This is nullable

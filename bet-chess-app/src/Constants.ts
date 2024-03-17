@@ -1,3 +1,4 @@
+import { PieceType, Side } from "./Types";
 import { Pawn } from "./models/Pawn";
 import { Piece } from "./models/Piece";
 import { Position } from "./models/Position";
@@ -6,21 +7,6 @@ export const X_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 export const Y_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export const GRID_SIZE = 100;
 
-// Used in piece logic in validating moves
-export enum Side {
-  BLACK = 'b',
-  WHITE = 'w',
-}
-
-// Used in piece logic in validating moves
-export enum PieceType {
-  PAWN = 'pawn',
-  KNIGHT = 'knight',
-  BISHOP = 'bishop',
-  ROOK = 'rook',
-  QUEEN = 'queen',
-  KING = 'king',
-}
 // Initialize the board
 export const initialBoardState: Piece[] = [
   //White Pawns

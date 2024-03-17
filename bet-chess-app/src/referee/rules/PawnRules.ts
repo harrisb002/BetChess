@@ -1,4 +1,4 @@
-import { Side } from "../../Constants";
+import { Side } from "../../Types";
 import { Piece, Position } from "../../models";
 import {
   opponentOnTile,
@@ -84,7 +84,7 @@ export const getAllPawnMoves = (
     const leftPiece = boardState.find((pawn) =>
       pawn.samePosition(leftPosition)
     );
-    if (leftPiece != null && leftPiece.enPassant) {
+    if (leftPiece != null) {
       possibleMoves.push(attackLeft);
     }
   }
@@ -96,7 +96,7 @@ export const getAllPawnMoves = (
     const rightPiece = boardState.find((pawn) =>
       pawn.samePosition(rightPosition)
     );
-    if (rightPiece != null && rightPiece.enPassant) {
+    if (rightPiece != null) {
       possibleMoves.push(attackRight);
     }
   }

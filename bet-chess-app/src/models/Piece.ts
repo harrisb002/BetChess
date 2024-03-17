@@ -1,4 +1,4 @@
-import { PieceType, Side } from "../Constants";
+import { PieceType, Side } from "../Types";
 import { Position } from "../models/Position";
 
 export class Piece {
@@ -15,21 +15,25 @@ export class Piece {
         this.side = side;
     }
 
-    isPawn() : boolean {
+    get isPawn() : boolean {
         return this.type === PieceType.PAWN;
     }
-    isKnight() : boolean {
+    get isKnight() : boolean {
         return this.type === PieceType.KNIGHT;
     }
-    isBishop() : boolean {
+    get isBishop() : boolean {
         return this.type === PieceType.BISHOP;
     }
-    isRook() : boolean {
+    get isRook() : boolean {
         return this.type === PieceType.ROOK;
     }
-    isQueen() : boolean {
+    get isQueen() : boolean {
         return this.type === PieceType.QUEEN;
     }
+    get isKing() : boolean {
+        return this.type === PieceType.KING
+    }
+
 
 
     // Compares two piece positions

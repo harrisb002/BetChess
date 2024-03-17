@@ -1,4 +1,4 @@
-import {Side } from "../../Constants";
+import { Side } from "../../Types";
 import { Piece, Position } from "../../models";
 
 // Check if the tile currently has a piece on it
