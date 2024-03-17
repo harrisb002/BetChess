@@ -16,6 +16,23 @@ export class Piece {
         this.side = side;
     }
 
+    isPawn() : boolean {
+        return this.type === PieceType.PAWN;
+    }
+    isKnight() : boolean {
+        return this.type === PieceType.KNIGHT;
+    }
+    isBishop() : boolean {
+        return this.type === PieceType.BISHOP;
+    }
+    isRook() : boolean {
+        return this.type === PieceType.ROOK;
+    }
+    isQueen() : boolean {
+        return this.type === PieceType.QUEEN;
+    }
+
+
     // Compares two piece positions
     samePiecePosition(otherPiece: Piece) : boolean {
         return this.position.samePosition(otherPiece.position);
