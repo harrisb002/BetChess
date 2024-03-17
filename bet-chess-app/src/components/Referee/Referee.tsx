@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import {
-  Piece,
   PieceType,
   Position,
   Side,
@@ -20,6 +19,7 @@ import {
   pawnMove,
   rookMove,
 } from "../../referee/rules";
+import { Piece } from "../../models/Piece";
 
 export default function Referee() {
   // Pass initial board state to be called when component first rendered

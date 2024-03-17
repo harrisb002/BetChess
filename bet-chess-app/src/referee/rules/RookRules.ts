@@ -3,7 +3,8 @@ import {
   tileEmptyOrOpponent,
   tileIsEmpty,
 } from "./GenralRules";
-import { Piece, Position, Side, samePosition } from "../../Constants";
+import {Position, Side, samePosition } from "../../Constants";
+import { Piece } from "../../models/Piece";
 
 export const rookMove = (
   initialPosition: Position,

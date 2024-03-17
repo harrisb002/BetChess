@@ -1,4 +1,5 @@
-import { Piece, Position, Side, samePosition } from "../../Constants";
+import {Position, Side, samePosition } from "../../Constants";
+import { Piece } from "../../models/Piece";
 import {
   opponentOnTile,
   tileEmptyOrOpponent,

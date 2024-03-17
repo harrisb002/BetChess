@@ -1,19 +1,11 @@
+import { Piece } from "./models/Piece";
+
 export const X_AXIS = ["a", "b", "c", "d", "e", "f", "g", "h"];
 export const Y_AXIS = ["1", "2", "3", "4", "5", "6", "7", "8"];
 export const GRID_SIZE = 100;
 
 export function samePosition(pos1: Position, pos2: Position) {
   return pos1.x === pos2.x && pos1.y === pos2.y;
-}
-
-// Used to store the starting position for the pieces
-export interface Piece {
-  image: string;
-  position: Position;
-  type: PieceType;
-  side: Side;
-  enPassant?: boolean; // This is nullable
-  possibleMoves?: Position[];
 }
 
 // Used to store the position of the pieces
@@ -40,15 +32,9 @@ export enum PieceType {
 
 // Initialize the board
 export const initialBoardState: Piece[] = [
-  {
-    image: `assets/images/pawn_b.png`,
-    position: {
-      x: 0,
-      y: 6,
-    },
-    type: PieceType.PAWN,
-    side: Side.BLACK,
-  },
+  new Piece('assets/images/pawn_b.png', { x: 0, y: 6 }, PieceType.PAWN, Side.BLACK),
+  new Piece('assets/images/pawn_b.png', { x: 1, y: 6 }, PieceType.ROOK, Side.BLACK),
+
   {
     image: `assets/images/pawn_b.png`,
     position: {

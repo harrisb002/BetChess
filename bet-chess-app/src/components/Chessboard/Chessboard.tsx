@@ -5,10 +5,10 @@ import {
   X_AXIS,
   Y_AXIS,
   GRID_SIZE,
-  Piece,
   Position,
   samePosition,
 } from "../../Constants";
+import { Piece } from "../../models/Piece";
 
 interface Props {
   makeMove: (piece: Piece, position: Position) => boolean;
