@@ -41,7 +41,7 @@ export const initialBoardState: Piece[] = [
   new Piece('assets/images/pawn_w.png', { x: 5, y: 1 }, PieceType.PAWN, Side.WHITE),
   new Piece('assets/images/pawn_w.png', { x: 6, y: 1 }, PieceType.PAWN, Side.WHITE),
   new Piece('assets/images/pawn_w.png', { x: 7, y: 1 }, PieceType.PAWN, Side.WHITE),
-  
+
   //Black Pawns
   new Piece('assets/images/pawn_b.png', { x: 0, y: 6 }, PieceType.PAWN, Side.BLACK),
   new Piece('assets/images/pawn_b.png', { x: 1, y: 6 }, PieceType.PAWN, Side.BLACK),
@@ -51,11 +51,11 @@ export const initialBoardState: Piece[] = [
   new Piece('assets/images/pawn_b.png', { x: 5, y: 6 }, PieceType.PAWN, Side.BLACK),
   new Piece('assets/images/pawn_b.png', { x: 6, y: 6 }, PieceType.PAWN, Side.BLACK),
   new Piece('assets/images/pawn_b.png', { x: 7, y: 6 }, PieceType.PAWN, Side.BLACK),
-  
+
   //White rooks
   new Piece('assets/images/rook_w.png', { x: 0, y: 0 }, PieceType.ROOK, Side.BLACK),
   new Piece('assets/images/rook_w.png', { x: 7, y: 0 }, PieceType.ROOK, Side.BLACK),
-    
+
   //Black rooks
   new Piece('assets/images/rook_b.png', { x: 0, y: 7 }, PieceType.ROOK, Side.BLACK),
   new Piece('assets/images/rook_b.png', { x: 7, y: 7 }, PieceType.ROOK, Side.BLACK),

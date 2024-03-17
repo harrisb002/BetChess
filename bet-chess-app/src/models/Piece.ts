@@ -9,7 +9,7 @@ export class Piece {
     possibleMoves?: Position[];
 
     constructor(image: string, position: Position, type: PieceType, side: Side) {
-        this.image = image;
+        this.image = `assets/images/${type}_${side}.png`;
         this.position = position;
         this.type = type;
         this.side = side;
