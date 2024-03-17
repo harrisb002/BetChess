@@ -87,7 +87,7 @@ export default function Referee() {
       setPieces(updatedPieces);
     } else if (validMove) {
       // Find if there's a piece at the destination (which would be captured if present).
-      const destinationPieceIndex = pieces.findIndex(piece => piece.samePiecePosition(pieceInPlay));
+      const destinationPieceIndex = pieces.findIndex(piece => piece.samePosition(destination));
 
       const updatedPieces = pieces.reduce((currPieces, piece, index) => {
         if (index === destinationPieceIndex) {
@@ -101,7 +101,7 @@ export default function Referee() {
           piece.enPassant =
             Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
             piece.type === PieceType.PAWN;
-          new Position(destination.x, destination.y)
+          piece.position = new Position(destination.x, destination.y)
           // Check for pawn promotion.
           let promotionRow = piece.side === Side.WHITE ? 7 : 0;
           if (destination.y === promotionRow && piece.type === PieceType.PAWN) {
@@ -230,7 +230,7 @@ export default function Referee() {
     // Need to loop through pieces and update them
     const newPieces = pieces.reduce((currPieces, piece) => {
       //Check if the current piece being updated it the promotion piece
-      if (piece.position.samePosition(promotionPawn.position)) {
+      if (piece.samePiecePosition(promotionPawn)) {
         piece.type = pieceType;
         // Determine the color of the piece being updated to choose correct image
         const side = piece.side === Side.WHITE ? "w" : "b";

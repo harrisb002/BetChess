@@ -25,7 +25,7 @@ export const opponentOnTile = (
 ): boolean => {
   // If the piece at this position is an opponent piece
   const piece = boardState.find(
-    (piece) => piece.position.samePosition(position) && piece.side !== side
+    (piece) => piece.samePosition(position) && piece.side !== side
   );
   if (piece) {
     return true;

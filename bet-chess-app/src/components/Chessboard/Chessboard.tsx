@@ -111,7 +111,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
 
       // If the move is valid and a piece is in the location then update the board to remove this piece being captured
       const currPiece = pieces.find((piece) =>
-        piece.position.samePosition(piecePosition)
+        piece.samePosition(piecePosition)
       );
 
       // Find the piece being attacked to remove
@@ -139,7 +139,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
       const number = j + i + 2;
       // Find in the pieces array each piece in its position defined and to use to place it on the Tile
       const piece = pieces.find((piece) =>
-        piece.position.samePosition(new Position(i, j))
+        piece.samePosition(new Position(i, j))
       );
 
       // Set image if defined
@@ -149,7 +149,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
       // set active piece if not null and if it is then to undefined so that the highlights are removed when piece is inactive (dropped)
       let currPiece =
         activePiece != null
-          ? pieces.find((piece) => piece.position.samePosition(piecePosition))
+          ? pieces.find((piece) => piece.samePosition(piecePosition))
           : undefined;
 
       // If the current piece is not null then check if the tile is in the possible moves for the piece
