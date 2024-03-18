@@ -65,7 +65,12 @@ export default function Referee() {
     if (destination.y === promotionRow && pieceInPlay.isPawn) {
       // If the pawn reaches the opposite end, trigger the promotion modal.
       modalRef.current?.classList.remove("hidden");
-      setPromotionPawn(pieceInPlay);
+      // Must update the position of the pawn being promoted
+      setPromotionPawn((prevPromotionPawn) => {
+        const clonePeiceInPlay = pieceInPlay.clone();
+        clonePeiceInPlay.position = destination.clone();
+        return clonePeiceInPlay;
+      });
     }
     // If the function reaches this point, the move was successful.
     return validMovePlayed;
@@ -156,40 +161,20 @@ export default function Referee() {
       clonedBoard.pieces = clonedBoard.pieces.reduce((currPieces, piece) => {
         //Check if the current piece being updated it the promotion piece
         if (piece.samePiecePosition(promotionPawn)) {
-          piece.type = pieceType;
-          // Determine the color of the piece being updated to choose correct image
-          const side = piece.side === Side.WHITE ? "w" : "b";
-          // Determine the piece type
-          let imageType = "";
-          switch (pieceType) {
-            case PieceType.KNIGHT: {
-              imageType = "knight";
-              break;
-            }
-            case PieceType.BISHOP: {
-              imageType = "bishop";
-              break;
-            }
-            case PieceType.ROOK: {
-              imageType = "rook";
-              break;
-            }
-            case PieceType.QUEEN: {
-              imageType = "queen";
-              break;
-            }
-          }
-          piece.image = `assets/images/${imageType}_${side}.png`;
+          // Must clone the piece into the type it is being converted into
+          // Constructor is determining the image, type, and side
+          currPieces.push(new Piece(piece.position.clone(), pieceType, piece.side))
+        } else {
+          // If it is not a promotion pawn, then just push the existing piece
+          currPieces.push(piece);
         }
-        currPieces.push(piece);
         return currPieces;
       }, [] as Piece[]);
 
+      // get all the moves for the new peices
+      clonedBoard.getAllMoves();
       return clonedBoard;
     })
-
-    // Update the board with the new possible moves
-    updateAllMoves();
     modalRef.current?.classList.add("hidden"); //Hide the modal
   }
 
