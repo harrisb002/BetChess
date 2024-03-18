@@ -22,6 +22,12 @@ export class Board {
         for (const piece of this.pieces) {
             piece.possibleMoves = this.getValidMoves(piece, this.pieces);
         }
+
+        // KING SAFTEY-Get all the moves for the king, and check if any of them would be getting attacked by enemy piece
+        const king = this.pieces.find(piece => piece.isKing && piece.side === Side.BLACK)
+        // Check if king or its moves are undefined
+        if(king?.possibleMoves === undefined) return;
+        for(const move of king.possibleMoves)
     };
 
     getValidMoves(piece: Piece, boardState: Piece[]): Position[] {
