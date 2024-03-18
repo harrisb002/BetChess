@@ -162,7 +162,7 @@ export const getAllKingMoves = (
 
   // Moving up-left corner
   for (let i = 1; i < 2; i++) {
-    const destination: Position = new Position(king.position.x - i, king.position.y - i)
+    const destination: Position = new Position(king.position.x - i, king.position.y + i)
     if (
       destination.x < 0 ||
       destination.x > 7 ||

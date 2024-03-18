@@ -27,7 +27,36 @@ export class Board {
         const king = this.pieces.find(piece => piece.isKing && piece.side === Side.BLACK)
         // Check if king or its moves are undefined
         if(king?.possibleMoves === undefined) return;
-        for(const move of king.possibleMoves)
+
+        // Get original position for the king
+        const originalPosition = king.position.clone();
+
+        // Simlating all the possible king moves
+        for(const move of king.possibleMoves) {
+            king.position = move;
+            let safe = true;
+
+            // Find out if the move is safe for the king
+            for(const piece of this.pieces) {
+                if(piece.side === Side.BLACK) continue;
+                if(piece.isPawn) {
+                    // Get all possible moves for pawn w/ the updated position of the king
+                    const allPossiblePawnMoves = this.getValidMoves(piece, this.pieces);
+                    if(allPossiblePawnMoves?.some(piece => piece.samePosition(move))){
+                        safe = false;
+                    }
+                }
+                if(piece.possibleMoves?.some(piece => piece.samePosition(move))){
+                    safe = false;
+                }
+            }
+
+            // King cant move in these positions, so remove them
+            if(!safe) {
+                king.possibleMoves = king.possibleMoves?.filter(move => !move.samePosition(move))
+            }
+        }
+        king.position = originalPosition;
     };
 
     getValidMoves(piece: Piece, boardState: Piece[]): Position[] {
