@@ -23,40 +23,61 @@ export class Board {
             piece.possibleMoves = this.getValidMoves(piece, this.pieces);
         }
 
+        this.safeKingMoves();
+    }
+
+
+    safeKingMoves() {
         // KING SAFTEY-Get all the moves for the king, and check if any of them would be getting attacked by enemy piece
         const king = this.pieces.find(piece => piece.isKing && piece.side === Side.BLACK)
         // Check if king or its moves are undefined
-        if(king?.possibleMoves === undefined) return;
-
-        // Get original position for the king
-        const originalPosition = king.position.clone();
+        if (king?.possibleMoves === undefined) return;
 
         // Simlating all the possible king moves
-        for(const move of king.possibleMoves) {
-            king.position = move;
+        for (const move of king.possibleMoves) {
+            const simulatedBoard = this.clone(); // Use a cloned board so its not referencing underline boardstate
+
+            // Check for any peice that may be atacking king
+            const pieceInPosition = simulatedBoard.pieces.find(piece => piece.samePosition(move));
+            // If their is a piece in the kings way then remove it to see ifonce captured it would be in check
+            if(pieceInPosition !== undefined) {
+                simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
+            }
+            // Make sure the king is not nnul before assigning it to the move
+            const simulatedKing = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === Side.BLACK);
+            if(simulatedKing === undefined) continue; // Make sure the king is not undefined, though by this point it should never be 
+            simulatedKing.position = move; // Now assign the simulated king to the move
+            
+            // Get all the opponent moves and to make sure they dont conflict with the kings moves
+            for (const enemy of simulatedBoard.pieces.filter(p => p.side === Side.WHITE)) {
+                enemy.possibleMoves = simulatedBoard.getValidMoves(enemy, simulatedBoard.pieces);
+            }
+            // Init as safe for king move
             let safe = true;
 
             // Find out if the move is safe for the king
-            for(const piece of this.pieces) {
-                if(piece.side === Side.BLACK) continue;
-                if(piece.isPawn) {
+            for (const piece of simulatedBoard.pieces) {
+                if (piece.side === Side.BLACK) continue;
+                if (piece.isPawn) {
                     // Get all possible moves for pawn w/ the updated position of the king
-                    const allPossiblePawnMoves = this.getValidMoves(piece, this.pieces);
-                    if(allPossiblePawnMoves?.some(piece => piece.samePosition(move))){
+                    const allPossiblePawnMoves = simulatedBoard.getValidMoves(piece, simulatedBoard.pieces);
+                    // If x-value is the same then dont need to check for pawn cause they only attack to the corners
+                    // But uf x-position is not the same and is attacking the king then it is not safe
+                    if (allPossiblePawnMoves?.some(possPawnMove => possPawnMove.x !== piece.position.x &&
+                        possPawnMove.samePosition(move))) {
                         safe = false;
                     }
-                }
-                if(piece.possibleMoves?.some(piece => piece.samePosition(move))){
+                } else if (piece.possibleMoves?.some(piece => piece.samePosition(move))) {
                     safe = false;
+                    break;
                 }
             }
 
             // King cant move in these positions, so remove them
-            if(!safe) {
-                king.possibleMoves = king.possibleMoves?.filter(move => !move.samePosition(move))
+            if (!safe) {
+                king.possibleMoves = king.possibleMoves?.filter(m => !m.samePosition(move))
             }
         }
-        king.position = originalPosition;
     };
 
     getValidMoves(piece: Piece, boardState: Piece[]): Position[] {
