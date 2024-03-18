@@ -18,7 +18,7 @@ export class Piece {
 
     // Used to return a copy of a piece to create a copy of the board to update UI
     clone(): Piece {
-        return new Piece(this.position, this.type, this.side, this.possibleMoves);
+        return new Piece(this.position.clone(), this.type, this.side, this.possibleMoves?.map(possibleMove => possibleMove.clone()));
     }
 
     get isPawn(): boolean {

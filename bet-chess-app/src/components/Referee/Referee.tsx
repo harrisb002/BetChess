@@ -33,6 +33,10 @@ export default function Referee() {
 
   // Returns the styling needed after a move has been made
   function makeMove(pieceInPlay: Piece, destination: Position): boolean {
+
+    // Force snap-back functionality on pieces using this bool
+    let validMovePlayed = false;
+
     // Check for valid move given if a piece is being attacked
     const validMove = isValidMove(
       pieceInPlay.position,
@@ -52,8 +56,8 @@ export default function Referee() {
     // update the UI when next move is made
     setBoard((prevBoard) => {
       // Making the next move
-      board.makeMove(isEnPassantMove, validMove, pieceInPlay, destination)
-      return board.copy(); // Copy the board and return it so React knows it has changed to update the board
+      validMovePlayed = board.makeMove(isEnPassantMove, validMove, pieceInPlay, destination)
+      return board.clone(); // Clone the board and return it so React knows it has changed to update the board
     })
 
     // Check for pawn promotion.
@@ -64,7 +68,7 @@ export default function Referee() {
       setPromotionPawn(pieceInPlay);
     }
     // If the function reaches this point, the move was successful.
-    return true;
+    return validMovePlayed;
   }
 
   function isEnPassant(

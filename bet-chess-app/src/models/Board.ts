@@ -12,13 +12,9 @@ export class Board {
     }
 
     // returns a copy of the board & pieces to update UI with new board
-    copy(): Board {
+    clone(): Board {
         //Create new array with the pieces of the board by cloning each piece in the board into the new copied board
-        const clonedPieces = [];
-        for (const piece of this.pieces) {
-            clonedPieces.push(piece.clone())
-        }
-        return new Board(clonedPieces)
+        return new Board(this.pieces.map(piece => piece.clone()));
     }
 
     getAllMoves() {
@@ -58,6 +54,8 @@ export class Board {
                 if (piece.samePiecePosition(pieceInPlay)) {
                     if (piece.isPawn)
                         (piece as Pawn).enPassant = false;
+
+                    // Does not update the reference to pieceInPlay because the piece is being copoed
                     piece.position.x = destination.x;
                     piece.position.y = destination.y;
                     currPieces.push(piece); // Push the updated pieces position
@@ -75,27 +73,18 @@ export class Board {
             // Update the possible moves inside Referee class
             this.getAllMoves();
         } else if (validMove) {
-            // Find if there's a piece at the destination (which would be captured if present).
-            const destinationPieceIndex = this.pieces.findIndex(piece => piece.samePosition(destination));
-
-            this.pieces = this.pieces.reduce((currPieces, piece, index) => {
-                if (index === destinationPieceIndex) {
-                    // If the current piece is the one at the destination (to be captured), skip adding it to the updated array.
-                    // This effectively removes the captured piece from the game state.
-                    return currPieces;
-                }
+            this.pieces = this.pieces.reduce((currPieces, piece) => {
+                // Piece that we are currently moving
                 if (piece.samePiecePosition(pieceInPlay)) {
-                    // If the current piece is the one being moved, update its position and enPassant status if it's a pawn.
-                    if (piece.isPawn) {
-                        (piece as Pawn).enPassant = Math.abs(pieceInPlay.position.y - destination.y) === 2;
-                    }
-
+                    //SPECIAL MOVE
+                    if (piece.isPawn)
+                        (piece as Pawn).enPassant =
+                            Math.abs(pieceInPlay.position.y - destination.y) === 2 &&
+                            piece.type === PieceType.PAWN;
                     piece.position.x = destination.x;
                     piece.position.y = destination.y;
                     currPieces.push(piece);
-
                 } else if (!piece.samePosition(destination)) {
-                    // Reset enPassant status for all other pawns on the move.
                     if (piece.isPawn) {
                         (piece as Pawn).enPassant = false;
                     }

@@ -119,7 +119,7 @@ export default function Chessboard({ makeMove, pieces }: Props) {
 
       //Only check to set pices for a valid move when there is a current piece being moved
       if (currPiece) {
-        var success = makeMove(currPiece, new Position(x, y));
+        var success = makeMove(currPiece.clone(), new Position(x, y));
 
         if (!success) {
           // reset the peice position if the piece was not actually moved
