@@ -12,8 +12,8 @@ export const pawnMove = (
   side: Side,
   boardState: Piece[]
 ): boolean => {
-  const specialRow = side === Side.WHITE ? 1 : 6;
-  const pawnMovement = side === Side.WHITE ? 1 : -1;
+  const specialRow = side === Side.ALLY ? 1 : 6;
+  const pawnMovement = side === Side.ALLY ? 1 : -1;
 
   if (
     initialPosition.x === desiredPosition.x &&
@@ -59,8 +59,8 @@ export const getAllPawnMoves = (
 ): Position[] => {
   const possibleMoves: Position[] = [];
 
-  const specialRow = pawn.side === Side.WHITE ? 1 : 6;
-  const pawnMovement = pawn.side === Side.WHITE ? 1 : -1;
+  const specialRow = pawn.side === Side.ALLY ? 1 : 6;
+  const pawnMovement = pawn.side === Side.ALLY ? 1 : -1;
 
   const regularMove: Position = new Position(pawn.position.x, pawn.position.y + pawnMovement)
   const doubleJump: Position = new Position(regularMove.x, regularMove.y + pawnMovement)

@@ -34,16 +34,18 @@ export default function Referee() {
   // Returns the styling needed after a move has been made
   function makeMove(pieceInPlay: Piece, destination: Position): boolean {
 
+    // If not possible moves then just return false
+    if(pieceInPlay.possibleMoves === undefined) return false;
+
     // Force snap-back functionality on pieces using this bool
     let validMovePlayed = false;
-
+    
     // Check for valid move given if a piece is being attacked
-    const validMove = isValidMove(
-      pieceInPlay.position,
-      destination,
-      pieceInPlay.type,
-      pieceInPlay.side
-    );
+    // If you can see the "dots" being displayed then you can move there
+    const validMove = pieceInPlay.possibleMoves?.some(move => move.samePosition(destination))
+
+    // Disallows somthing like dragging the pawn to the promotion sqaure immediately causing modal to open
+    if(!validMove) return false; 
 
     // Check for enPassant
     const isEnPassantMove = isEnPassant(
@@ -61,7 +63,7 @@ export default function Referee() {
     })
 
     // Check for pawn promotion.
-    let promotionRow = pieceInPlay.side === Side.WHITE ? 7 : 0;
+    let promotionRow = pieceInPlay.side === Side.ALLY ? 7 : 0;
     if (destination.y === promotionRow && pieceInPlay.isPawn) {
       // If the pawn reaches the opposite end, trigger the promotion modal.
       modalRef.current?.classList.remove("hidden");
@@ -84,14 +86,14 @@ export default function Referee() {
   ) {
 
     // Find the direction that the pawn is moving
-    const pawnMovement = side === Side.WHITE ? 1 : -1;
+    const pawnMovement = side === Side.ALLY ? 1 : -1;
 
     //Check if attacking piece is pawn
     if (type === PieceType.PAWN) {
       // Upper or bottom left corner || Upper or bottom right corner
       if (
         (desiredPosition.x - initialPosition.x === -1 || //Blacks EnPassant
-          desiredPosition.x - initialPosition.x === 1) && //Whites EnPassant
+          desiredPosition.x - initialPosition.x === 1) && //ALLYs EnPassant
         // If the spot the pawn has moved is on the same file as the opponents
         desiredPosition.y - initialPosition.y === pawnMovement
       ) {
@@ -179,7 +181,7 @@ export default function Referee() {
   }
 
   function promotionSide() {
-    return promotionPawn?.side === Side.WHITE ? "w" : "b";
+    return promotionPawn?.side === Side.ALLY ? "w" : "b";
   }
 
   return (

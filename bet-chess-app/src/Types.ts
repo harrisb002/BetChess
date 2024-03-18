@@ -1,7 +1,7 @@
 // Used in piece logic in validating moves
 export enum Side {
-    BLACK = 'b',
-    WHITE = 'w',
+    OPPONENT = 'b',
+    ALLY = 'w',
   }
   
   // Used in piece logic in validating moves

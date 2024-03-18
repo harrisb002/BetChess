@@ -22,14 +22,14 @@ export class Board {
         for (const piece of this.pieces) {
             piece.possibleMoves = this.getValidMoves(piece, this.pieces);
         }
-
+        // Make sure the king moves are safe
         this.safeKingMoves();
     }
 
 
     safeKingMoves() {
         // KING SAFTEY-Get all the moves for the king, and check if any of them would be getting attacked by enemy piece
-        const king = this.pieces.find(piece => piece.isKing && piece.side === Side.BLACK)
+        const king = this.pieces.find(piece => piece.isKing && piece.side === Side.OPPONENT)
         // Check if king or its moves are undefined
         if (king?.possibleMoves === undefined) return;
 
@@ -44,12 +44,12 @@ export class Board {
                 simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
             }
             // Make sure the king is not nnul before assigning it to the move
-            const simulatedKing = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === Side.BLACK);
+            const simulatedKing = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === Side.OPPONENT);
             if(simulatedKing === undefined) continue; // Make sure the king is not undefined, though by this point it should never be 
             simulatedKing.position = move; // Now assign the simulated king to the move
             
             // Get all the opponent moves and to make sure they dont conflict with the kings moves
-            for (const enemy of simulatedBoard.pieces.filter(p => p.side === Side.WHITE)) {
+            for (const enemy of simulatedBoard.pieces.filter(p => p.side === Side.ALLY)) {
                 enemy.possibleMoves = simulatedBoard.getValidMoves(enemy, simulatedBoard.pieces);
             }
             // Init as safe for king move
@@ -57,7 +57,7 @@ export class Board {
 
             // Find out if the move is safe for the king
             for (const piece of simulatedBoard.pieces) {
-                if (piece.side === Side.BLACK) continue;
+                if (piece.side === Side.OPPONENT) continue;
                 if (piece.isPawn) {
                     // Get all possible moves for pawn w/ the updated position of the king
                     const allPossiblePawnMoves = simulatedBoard.getValidMoves(piece, simulatedBoard.pieces);
@@ -66,6 +66,7 @@ export class Board {
                     if (allPossiblePawnMoves?.some(possPawnMove => possPawnMove.x !== piece.position.x &&
                         possPawnMove.samePosition(move))) {
                         safe = false;
+                        break;
                     }
                 } else if (piece.possibleMoves?.some(piece => piece.samePosition(move))) {
                     safe = false;
@@ -103,7 +104,7 @@ export class Board {
     }
 
     makeMove(isEnPassantMove: boolean, validMove: boolean, pieceInPlay: Piece, destination: Position): boolean {
-        const pawnMovement = pieceInPlay.side === Side.WHITE ? 1 : -1;
+        const pawnMovement = pieceInPlay.side === Side.ALLY ? 1 : -1;
         if (isEnPassantMove) {
             this.pieces = this.pieces.reduce((currPieces, piece) => {
                 // Check if its the piece moved
