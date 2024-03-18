@@ -149,38 +149,44 @@ export default function Referee() {
       return;
     }
 
-    // Need to loop through pieces and update them
-    board.pieces = board.pieces.reduce((currPieces, piece) => {
-      //Check if the current piece being updated it the promotion piece
-      if (piece.samePiecePosition(promotionPawn)) {
-        piece.type = pieceType;
-        // Determine the color of the piece being updated to choose correct image
-        const side = piece.side === Side.WHITE ? "w" : "b";
-        // Determine the piece type
-        let imageType = "";
-        switch (pieceType) {
-          case PieceType.KNIGHT: {
-            imageType = "knight";
-            break;
+    setBoard((prevBoard) => {
+      // Must make a new board to let react know the object has changed
+      const clonedBoard = board.clone();
+      // Need to loop through pieces and update them
+      clonedBoard.pieces = clonedBoard.pieces.reduce((currPieces, piece) => {
+        //Check if the current piece being updated it the promotion piece
+        if (piece.samePiecePosition(promotionPawn)) {
+          piece.type = pieceType;
+          // Determine the color of the piece being updated to choose correct image
+          const side = piece.side === Side.WHITE ? "w" : "b";
+          // Determine the piece type
+          let imageType = "";
+          switch (pieceType) {
+            case PieceType.KNIGHT: {
+              imageType = "knight";
+              break;
+            }
+            case PieceType.BISHOP: {
+              imageType = "bishop";
+              break;
+            }
+            case PieceType.ROOK: {
+              imageType = "rook";
+              break;
+            }
+            case PieceType.QUEEN: {
+              imageType = "queen";
+              break;
+            }
           }
-          case PieceType.BISHOP: {
-            imageType = "bishop";
-            break;
-          }
-          case PieceType.ROOK: {
-            imageType = "rook";
-            break;
-          }
-          case PieceType.QUEEN: {
-            imageType = "queen";
-            break;
-          }
+          piece.image = `assets/images/${imageType}_${side}.png`;
         }
-        piece.image = `assets/images/${imageType}_${side}.png`;
-      }
-      currPieces.push(piece);
-      return currPieces;
-    }, [] as Piece[]);
+        currPieces.push(piece);
+        return currPieces;
+      }, [] as Piece[]);
+
+      return clonedBoard;
+    })
 
     // Update the board with the new possible moves
     updateAllMoves();
