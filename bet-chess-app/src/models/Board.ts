@@ -14,7 +14,7 @@ export class Board {
     }
 
     // Get the team whose turn it is
-    get currentSide() : Side {
+    get currentSide(): Side {
         return this.totalTurns % 2 === 0 ? Side.OPPONENT : Side.ALLY;
     }
 
@@ -33,16 +33,16 @@ export class Board {
         this.safeKingMoves();
 
         //Now check all other current team moves
-        this.checkAllTeamMoves();
+        this.checkAllMovesKingSafety();
     }
 
     // Loop thru curr team pieces to check validity
-    checkAllTeamMoves() {
+    checkAllMovesKingSafety() {
         //Loop thru all curr sides pieces by a filter
-        for(const piece of this.pieces.filter(p => p.side === this.currentSide)) {
-            if(piece.possibleMoves === undefined) continue;
+        for (const piece of this.pieces.filter(p => p.side === this.currentSide)) {
+            if (piece.possibleMoves === undefined) continue;
             // Create a simulated board to simulate all the moves for each piece 
-            for(const move of piece.possibleMoves) {
+            for (const move of piece.possibleMoves) {
                 const simulatedBoard = this.clone();
 
                 //Clone each piece by first finding each piece based on position
@@ -50,9 +50,39 @@ export class Board {
                 const pieceClone = simulatedBoard.pieces.find(p => p.samePiecePosition(piece))!
                 //Now update the clone piece position to match the move
                 pieceClone.position = move.clone();
-                
+
+                //Get king with updated position (Also specify that it is not undefined with !)
+                const kingClone = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === simulatedBoard.currentSide)!
+
+                let safeKing = true;
+
+                //Get all moves for the current enemy piece
+                for (const opponent of simulatedBoard.pieces.filter(p => p.side !== simulatedBoard.currentSide)) {
+                    opponent.possibleMoves = simulatedBoard.getValidMoves(opponent, simulatedBoard.pieces) // Pass opponent and boardstate
+
+                    // Check validity of moves using the currently updated enemy moves
+                    // Find the Pawns to check diaganol attacks
+                    if (opponent.isPawn) {
+                        //Check x-pos for direction of movement to see if Pawn is threatening king
+                        if(opponent.possibleMoves.some(move => move.x !== opponent.position.x && move.samePosition(kingClone.position))) {
+                            safeKing = false;
+                            return;
+                        }
+                    } else { // If it is not a pawn, just check all moves made by all other pieces
+                        if(opponent.possibleMoves.some(move => move.samePosition(kingClone.position))){
+                            safeKing = false;
+                            return
+                        }
+                    }
+                }
+                //if not safe remove it from the possible moves
+                if(!safeKing){
+                    //Use reference to original king to remove the move as a possible move
+                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.samePosition(move))
+                }
+
             }
-        }   
+        }
     }
 
     safeKingMoves() {
@@ -68,14 +98,14 @@ export class Board {
             // Check for any peice that may be atacking king
             const pieceInPosition = simulatedBoard.pieces.find(piece => piece.samePosition(move));
             // If their is a piece in the kings way then remove it to see ifonce captured it would be in check
-            if(pieceInPosition !== undefined) {
+            if (pieceInPosition !== undefined) {
                 simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
             }
             // Make sure the king is not nnul before assigning it to the move
             const simulatedKing = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === simulatedBoard.currentSide);
-            if(simulatedKing === undefined) continue; // Make sure the king is not undefined, though by this point it should never be 
+            if (simulatedKing === undefined) continue; // Make sure the king is not undefined, though by this point it should never be 
             simulatedKing.position = move; // Now assign the simulated king to the move
-            
+
             // Get all the opponent moves and to make sure they dont conflict with the kings moves
             for (const enemy of simulatedBoard.pieces.filter(p => p.side !== simulatedBoard.currentSide)) {
                 enemy.possibleMoves = simulatedBoard.getValidMoves(enemy, simulatedBoard.pieces);
