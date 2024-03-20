@@ -3,13 +3,6 @@ import Chessboard from "../Chessboard/Chessboard";
 import {
   initialBoard,
 } from "../../Constants";
-import {
-  bishopMove,
-  kingMove,
-  knightMove,
-  pawnMove,
-  rookMove,
-} from "../../referee/rules";
 import { Piece, Position } from "../../models";
 import { PieceType, Side } from "../../Types";
 import { Pawn } from "../../models/Pawn";
@@ -33,19 +26,24 @@ export default function Referee() {
 
   // Returns the styling needed after a move has been made
   function makeMove(pieceInPlay: Piece, destination: Position): boolean {
+    // Check if the player is the one that is currently to move
+    if ((pieceInPlay.side === Side.ALLY && board.totalTurns % 2 !== 1)
+      || (pieceInPlay.side === Side.OPPONENT && board.totalTurns % 2 !== 0)) {
+      return false;
+    }
 
     // If not possible moves then just return false
-    if(pieceInPlay.possibleMoves === undefined) return false;
+    if (pieceInPlay.possibleMoves === undefined) return false;
 
     // Force snap-back functionality on pieces using this bool
     let validMovePlayed = false;
-    
+
     // Check for valid move given if a piece is being attacked
     // If you can see the "dots" being displayed then you can move there
     const validMove = pieceInPlay.possibleMoves?.some(move => move.samePosition(destination))
 
     // Disallows somthing like dragging the pawn to the promotion sqaure immediately causing modal to open
-    if(!validMove) return false; 
+    if (!validMove) return false;
 
     // Check for enPassant
     const isEnPassantMove = isEnPassant(
@@ -57,9 +55,11 @@ export default function Referee() {
 
     // update the UI when next move is made
     setBoard((prevBoard) => {
+      const cloneBoard = board.clone();
+      cloneBoard.totalTurns += 1; // Increment whose turn it is, before calculating valid moves so it is updated accordingly
       // Making the next move
-      validMovePlayed = board.makeMove(isEnPassantMove, validMove, pieceInPlay, destination)
-      return board.clone(); // Clone the board and return it so React knows it has changed to update the board
+      validMovePlayed = cloneBoard.makeMove(isEnPassantMove, validMove, pieceInPlay, destination)
+      return cloneBoard; // Retun new updatedboard 
     })
 
     // Check for pawn promotion.
@@ -116,41 +116,6 @@ export default function Referee() {
     return false;
   }
 
-  function isValidMove(
-    initialPosition: Position,
-    desiredPosition: Position,
-    type: PieceType,
-    side: Side
-  ) {
-    let validMove = false;
-    switch (type) {
-      case PieceType.PAWN:
-        validMove = pawnMove(initialPosition, desiredPosition, side, board.pieces);
-        break;
-      case PieceType.BISHOP:
-        validMove = bishopMove(initialPosition, desiredPosition, side, board.pieces);
-        break;
-
-      case PieceType.KNIGHT:
-        validMove = knightMove(initialPosition, desiredPosition, side, board.pieces);
-        break;
-
-      case PieceType.ROOK:
-        validMove = rookMove(initialPosition, desiredPosition, side, board.pieces);
-        break;
-
-      case PieceType.QUEEN:
-        validMove =
-          rookMove(initialPosition, desiredPosition, side, board.pieces) ||
-          bishopMove(initialPosition, desiredPosition, side, board.pieces);
-        break;
-      case PieceType.KING:
-        validMove = kingMove(initialPosition, desiredPosition, side, board.pieces);
-        break;
-    }
-    return validMove;
-  }
-
   function promote(pieceType: PieceType) {
     if (promotionPawn === undefined) {
       return;
@@ -186,7 +151,7 @@ export default function Referee() {
 
   return (
     <>
-    <p>{board.totalTurns}</p>
+      <p style={{ color: "white", fontSize: "32px" }}> {`${board.currentSide === 'w' ? "White" : "Black" } to move`}</p>
       <div id="promotion-modal" className="hidden" ref={modalRef}>
         <div className="modal-body">
           <img
