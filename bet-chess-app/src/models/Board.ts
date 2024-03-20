@@ -54,8 +54,6 @@ export class Board {
                 //Get king with updated position (Also specify that it is not undefined with !)
                 const kingClone = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === simulatedBoard.currentSide)!
 
-                let safeKing = true;
-
                 //Get all moves for the current enemy piece
                 for (const opponent of simulatedBoard.pieces.filter(p => p.side !== simulatedBoard.currentSide)) {
                     opponent.possibleMoves = simulatedBoard.getValidMoves(opponent, simulatedBoard.pieces) // Pass opponent and boardstate
@@ -64,21 +62,16 @@ export class Board {
                     // Find the Pawns to check diaganol attacks
                     if (opponent.isPawn) {
                         //Check x-pos for direction of movement to see if Pawn is threatening king
-                        if(opponent.possibleMoves.some(move => move.x !== opponent.position.x && move.samePosition(kingClone.position))) {
-                            safeKing = false;
-                            break;
+                        if (opponent.possibleMoves.some(move => move.x !== opponent.position.x && move.samePosition(kingClone.position))) {
+                            //Use reference to original king to remove the move as a possible move
+                            piece.possibleMoves = piece.possibleMoves?.filter(move => !move.samePosition(move))
                         }
                     } else { // If it is not a pawn, just check all moves made by all other pieces
-                        if(opponent.possibleMoves.some(move => move.samePosition(kingClone.position))){
-                            safeKing = false;
-                            break
+                        if (opponent.possibleMoves.some(move => move.samePosition(kingClone.position))) {
+                            //Use reference to original king to remove the move as a possible move
+                            piece.possibleMoves = piece.possibleMoves?.filter(move => !move.samePosition(move))
                         }
                     }
-                }
-                //if not safe remove it from the possible moves
-                if(!safeKing){
-                    //Use reference to original king to remove the move as a possible move
-                    piece.possibleMoves = piece.possibleMoves?.filter(move => !move.samePosition(move))
                 }
 
             }
