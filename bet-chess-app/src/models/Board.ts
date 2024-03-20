@@ -66,12 +66,12 @@ export class Board {
                         //Check x-pos for direction of movement to see if Pawn is threatening king
                         if(opponent.possibleMoves.some(move => move.x !== opponent.position.x && move.samePosition(kingClone.position))) {
                             safeKing = false;
-                            return;
+                            break;
                         }
                     } else { // If it is not a pawn, just check all moves made by all other pieces
                         if(opponent.possibleMoves.some(move => move.samePosition(kingClone.position))){
                             safeKing = false;
-                            return
+                            break
                         }
                     }
                 }
