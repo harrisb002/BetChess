@@ -45,6 +45,11 @@ export class Board {
             for (const move of piece.possibleMoves) {
                 const simulatedBoard = this.clone();
 
+                // Get rid of all the get the pieces that in the same position of the move
+                // This allows the attacking piece to be captured to combat a check
+                simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
+            
+
                 //Clone each piece by first finding each piece based on position
                 // Use ! to mark that pieceClone will be defined
                 const pieceClone = simulatedBoard.pieces.find(p => p.samePiecePosition(piece))!
