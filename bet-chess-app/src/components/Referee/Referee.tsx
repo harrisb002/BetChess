@@ -186,6 +186,7 @@ export default function Referee() {
 
   return (
     <>
+    <p>{board.totalTurns}</p>
       <div id="promotion-modal" className="hidden" ref={modalRef}>
         <div className="modal-body">
           <img

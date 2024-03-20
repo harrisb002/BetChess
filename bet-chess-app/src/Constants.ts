@@ -61,4 +61,4 @@ export const initialBoard: Board = new Board( [
   //Kings
   new Piece(new Position(4, 0), PieceType.KING, Side.ALLY),
   new Piece(new Position(4, 7), PieceType.KING, Side.OPPONENT),
-]);
+], 1);

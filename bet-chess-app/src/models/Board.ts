@@ -6,15 +6,17 @@ import { Position } from "./Position";
 
 export class Board {
     pieces: Piece[];
+    totalTurns: number;
 
-    constructor(pieces: Piece[]) {
+    constructor(pieces: Piece[], totalTurns: number) {
         this.pieces = pieces;
+        this.totalTurns = totalTurns;
     }
 
     // returns a copy of the board & pieces to update UI with new board
     clone(): Board {
         //Create new array with the pieces of the board by cloning each piece in the board into the new copied board
-        return new Board(this.pieces.map(piece => piece.clone()));
+        return new Board(this.pieces.map(piece => piece.clone()), this.totalTurns);
     }
 
     getAllMoves() {
