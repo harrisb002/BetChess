@@ -62,8 +62,8 @@ export default function Chessboard({ makeMove, pieces }: Props) {
       //Getting boundries on board so pieces cant move outside
       const minX = chessboard.offsetLeft - 25;
       const minY = chessboard.offsetTop - 25;
-      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 75;
-      const maxY = chessboard.offsetTop + chessboard.clientHeight - 75;
+      const maxX = chessboard.offsetLeft + chessboard.clientWidth - 80;
+      const maxY = chessboard.offsetTop + chessboard.clientHeight - 80;
 
       // Get the mouse s and y positions
       const x = event.clientX - 50; // Calculate offset of where the piece is bieng grabbed from top left corner
