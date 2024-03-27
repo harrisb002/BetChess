@@ -9,18 +9,18 @@ export class Piece {
     possibleMoves: Position[];
     hasMoved: boolean;
 
-    constructor(position: Position, type: PieceType, side: Side, hasMoved: boolean, possibleMoves: Position[] = []) {
+    constructor(position: Position, type: PieceType, hasMoved: boolean, side: Side, possibleMoves: Position[] = []) {
         this.image = `assets/images/${type}_${side}.png`;
         this.position = position;
         this.type = type;
+        this.hasMoved = hasMoved;
         this.side = side;
         this.possibleMoves = possibleMoves;
-        this.hasMoved = hasMoved;
     }
 
     // Used to return a copy of a piece to create a copy of the board to update UI
     clone(): Piece {
-        return new Piece(this.position.clone(), this.type, this.side, this.hasMoved, this.possibleMoves?.map(possibleMove => possibleMove.clone()));
+        return new Piece(this.position.clone(), this.type, this.hasMoved, this.side, this.possibleMoves?.map(possibleMove => possibleMove.clone()));
     }
 
     get isPawn(): boolean {

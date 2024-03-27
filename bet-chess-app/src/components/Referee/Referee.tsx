@@ -130,7 +130,7 @@ export default function Referee() {
         if (piece.samePiecePosition(promotionPawn)) {
           // Must clone the piece into the type it is being converted into
           // Constructor is determining the image, type, and side
-          currPieces.push(new Piece(piece.position.clone(), pieceType, piece.side, true))
+          currPieces.push(new Piece(piece.position.clone(), pieceType, true, piece.side))
         } else {
           // If it is not a promotion pawn, then just push the existing piece
           currPieces.push(piece);
@@ -151,7 +151,7 @@ export default function Referee() {
 
   return (
     <>
-      <p style={{ color: "white", fontSize: "32px" }}> {`${board.currentSide === 'w' ? "White" : "Black" } to move`}</p>
+      <p style={{ color: "white", fontSize: "32px" }}> {`${board.currentSide === 'w' ? "White" : "Black"} to move`}</p>
       <div id="promotion-modal" className="hidden" ref={modalRef}>
         <div className="modal-body">
           <img
