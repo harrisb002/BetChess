@@ -15,6 +15,7 @@ export default function Referee() {
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
+  const checkmateModalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     updateAllMoves();
@@ -152,7 +153,7 @@ export default function Referee() {
   return (
     <>
       <p style={{ color: "white", fontSize: "32px" }}> {`${board.currentSide === 'w' ? "White" : "Black"} to move`}</p>
-      <div id="promotion-modal" className="hidden" ref={modalRef}>
+      <div className="modal hidden" ref={modalRef}>
         <div className="modal-body">
           <img
             onClick={() => promote(PieceType.QUEEN)}
@@ -170,6 +171,14 @@ export default function Referee() {
             onClick={() => promote(PieceType.KNIGHT)}
             src={`/assets/images/knight_${promotionSide()}.png`}
           />
+        </div>
+        <div className="modal" ref={checkmateModalRef}>
+          <div className="modal-body">
+            <div className="checkmate-body">
+              <span>Winning team is</span>
+              <button>Play Again?</button>
+            </div>
+          </div>
         </div>
       </div>
       <Chessboard makeMove={makeMove} pieces={board.pieces} />

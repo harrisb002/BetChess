@@ -137,6 +137,7 @@ export class Board {
                 }
                 return piece;
             });
+            this.getAllMoves();
             return true; // Move was valid
         }
 
