@@ -34,10 +34,19 @@
     cursor: grabbing;
 }
 
-.tile-highlight::before {
+.tile-highlight:not(.chess-piece-tile)::before {
     content: " ";
     width: 36px;
     height: 36px;
     border-radius: 47%;
     background-color: rgb(194, 205, 205);
+}
+
+.tile-highlight.chess-piece-tile::before {
+    position: absolute;
+    border: 5px solid  rgba(0, 0, 0, 0.363);
+    content: " ";
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
 }
