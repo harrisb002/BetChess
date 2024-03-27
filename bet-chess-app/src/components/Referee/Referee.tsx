@@ -54,7 +54,7 @@ export default function Referee() {
     );
 
     // update the UI when next move is made
-    setBoard((prevBoard) => {
+    setBoard(() => {
       const cloneBoard = board.clone();
       cloneBoard.totalTurns += 1; // Increment whose turn it is, before calculating valid moves so it is updated accordingly
       // Making the next move
@@ -121,7 +121,7 @@ export default function Referee() {
       return;
     }
 
-    setBoard((prevBoard) => {
+    setBoard(() => {
       // Must make a new board to let react know the object has changed
       const clonedBoard = board.clone();
       // Need to loop through pieces and update them
@@ -130,7 +130,7 @@ export default function Referee() {
         if (piece.samePiecePosition(promotionPawn)) {
           // Must clone the piece into the type it is being converted into
           // Constructor is determining the image, type, and side
-          currPieces.push(new Piece(piece.position.clone(), pieceType, piece.side))
+          currPieces.push(new Piece(piece.position.clone(), pieceType, piece.side, true))
         } else {
           // If it is not a promotion pawn, then just push the existing piece
           currPieces.push(piece);

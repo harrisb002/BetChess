@@ -120,6 +120,7 @@ export class Board {
                     // Does not update the reference to pieceInPlay because the piece is being copoed
                     piece.position.x = destination.x;
                     piece.position.y = destination.y;
+                    piece.hasMoved = true; // Piece has moved
                     currPieces.push(piece); // Push the updated pieces position
                 } else if (
                     !piece.samePosition(new Position(destination.x, destination.y - pawnMovement))
@@ -145,6 +146,7 @@ export class Board {
                             piece.type === PieceType.PAWN;
                     piece.position.x = destination.x;
                     piece.position.y = destination.y;
+                    piece.hasMoved = true; 
                     currPieces.push(piece);
                 } else if (!piece.samePosition(destination)) {
                     if (piece.isPawn) {
