@@ -1,5 +1,5 @@
 import { PieceType, Side } from "../Types";
-import { getAllBishopMoves, getAllKingMoves, getAllKnightMoves, getAllPawnMoves, getAllRookMoves } from "../referee/rules";
+import { getAllBishopMoves, getAllKingMoves, getAllKnightMoves, getAllPawnMoves, getAllRookMoves, getCastlingMoves } from "../referee/rules";
 import { Pawn } from "./Pawn";
 import { Piece } from "./Piece";
 import { Position } from "./Position";
@@ -32,7 +32,7 @@ export class Board {
 
         //Getting the casting moves for the king
         for(const king of this.pieces.filter(piece => piece.isKing)) {
-            king.possibleMoves = this.getCastlingMoves(king, this.pieces)
+            king.possibleMoves = getCastlingMoves(king, this.pieces);
         }
 
         //Now check all of the current team moves are valid

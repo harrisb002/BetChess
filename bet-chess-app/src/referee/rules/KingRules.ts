@@ -255,22 +255,9 @@ export const getCastlingMoves = (king: Piece, boardState: Piece[]) => {
 
     // Get all enemy moves to make sure that they cant move there
     const opponentPieces = boardState.filter(piece => piece.side !== king.side);
-    let validMove = true;
 
-    //Loop through all the opponent pieces
-    for (const opponent of opponentPieces) {
-      // Make sure they have moves
-      if(opponent.possibleMoves === undefined) continue;
-      // Go through their moves
-      for(const move of opponent.possibleMoves) {
-        // Check if that move corresponds with the tiles between rook and king
-        if(tilesBetweenRookAndKing.some(tile => tile.samePosition(move))){
-          // If so then set castling to false
-          validMove = false
-        }
-      }
-    }
-    if(!validMove) continue;
+    //Loop through all the opponent pieces, check their possible move, for each check if they contain the positions between rook and king and if so, continue
+    if (opponentPieces.some(piece => piece.possibleMoves?.some(move => tilesBetweenRookAndKing.some(tile => tile.samePosition(move))))) continue;
   }
 
   return possibleMoves;
