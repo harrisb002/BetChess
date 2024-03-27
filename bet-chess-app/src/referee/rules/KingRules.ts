@@ -258,6 +258,10 @@ export const getCastlingMoves = (king: Piece, boardState: Piece[]) => {
 
     //Loop through all the opponent pieces, check their possible move, for each check if they contain the positions between rook and king and if so, continue
     if (opponentPieces.some(piece => piece.possibleMoves?.some(move => tilesBetweenRookAndKing.some(tile => tile.samePosition(move))))) continue;
+
+    // Now add the moves to possible moves
+    possibleMoves.push(rook.position.clone());
+
   }
 
   return possibleMoves;

@@ -32,7 +32,9 @@ export class Board {
 
         //Getting the casting moves for the king
         for(const king of this.pieces.filter(piece => piece.isKing)) {
-            king.possibleMoves = getCastlingMoves(king, this.pieces);
+            if(king.possibleMoves === undefined) continue;
+            // Add the possible moves by the king to the added castling moves
+            king.possibleMoves = [...king.possibleMoves, ...getCastlingMoves(king, this.pieces)];
         }
 
         //Now check all of the current team moves are valid
@@ -115,6 +117,11 @@ export class Board {
 
     makeMove(isEnPassantMove: boolean, validMove: boolean, pieceInPlay: Piece, destination: Position): boolean {
         const pawnMovement = pieceInPlay.side === Side.ALLY ? 1 : -1;
+
+        // Used for castling moves
+        
+
+
         if (isEnPassantMove) {
             this.pieces = this.pieces.reduce((currPieces, piece) => {
                 // Check if its the piece moved
