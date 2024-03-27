@@ -30,6 +30,11 @@ export class Board {
             piece.possibleMoves = this.getValidMoves(piece, this.pieces);
         }
 
+        //Getting the casting moves for the king
+        for(const king of this.pieces.filter(piece => piece.isKing)) {
+            king.possibleMoves = this.getCastlingMoves(king, this.pieces)
+        }
+
         //Now check all of the current team moves are valid
         this.checkAllMovesKingSafety();
 
