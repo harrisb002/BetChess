@@ -31,8 +31,8 @@ export class Board {
         }
 
         //Getting the casting moves for the king
-        for(const king of this.pieces.filter(piece => piece.isKing)) {
-            if(king.possibleMoves === undefined) continue;
+        for (const king of this.pieces.filter(piece => piece.isKing)) {
+            if (king.possibleMoves === undefined) continue;
             // Add the possible moves by the king to the added castling moves
             king.possibleMoves = [...king.possibleMoves, ...getCastlingMoves(king, this.pieces)];
         }
@@ -58,7 +58,7 @@ export class Board {
                 // Get rid of each piece that in the same position of the move
                 // This allows the attacking piece to be captured to combat a check
                 simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
-            
+
 
                 //Clone each piece by first finding each piece based on position
                 // Use ! to mark that pieceClone will be defined
@@ -117,10 +117,28 @@ export class Board {
 
     makeMove(isEnPassantMove: boolean, validMove: boolean, pieceInPlay: Piece, destination: Position): boolean {
         const pawnMovement = pieceInPlay.side === Side.ALLY ? 1 : -1;
+        // Get the piece on the tile where the piece is moving to
+        const destinationPiece = this.pieces.find(piece => piece.samePosition(destination));
 
         // Used for castling moves
-        
-
+        // Check piece is a king, its destination is a rook, and the rook is of the same team as the piece being moved
+        if (pieceInPlay.isKing && destinationPiece?.isRook && destinationPiece.side === pieceInPlay.side) {
+            // Find direction from rook to king by subtracting x-position of rooks position from king
+            const direction = (destinationPiece.position.x - pieceInPlay.position.x > 0) ? 1 : -1;        
+            const newKingXPos = pieceInPlay.position.x + direction * 2;
+            // Pos is right, else left
+            // No pieces are being taken so using map and just modify the new array with the new position of the rook and king
+            this.pieces = this.pieces.map(piece => {
+                // PieceInPlay will be the king
+                if (piece.samePiecePosition(pieceInPlay)) {
+                    piece.position.x = newKingXPos;
+                } else if (piece.samePiecePosition(destinationPiece)) { // destinationPiece is the rook
+                    piece.position.x = newKingXPos - direction;
+                }
+                return piece;
+            });
+            return true; // Move was valid
+        }
 
         if (isEnPassantMove) {
             this.pieces = this.pieces.reduce((currPieces, piece) => {
@@ -158,7 +176,7 @@ export class Board {
                             piece.type === PieceType.PAWN;
                     piece.position.x = destination.x;
                     piece.position.y = destination.y;
-                    piece.hasMoved = true; 
+                    piece.hasMoved = true;
                     currPieces.push(piece);
                 } else if (!piece.samePosition(destination)) {
                     if (piece.isPawn) {
