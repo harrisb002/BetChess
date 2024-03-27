@@ -29,11 +29,14 @@ export class Board {
         for (const piece of this.pieces) {
             piece.possibleMoves = this.getValidMoves(piece, this.pieces);
         }
-        // Make sure the king moves are safe
-        this.safeKingMoves();
 
-        //Now check all other current team moves
+        //Now check all of the current team moves are valid
         this.checkAllMovesKingSafety();
+
+        // Get rid of the possible moves for the side that is not moving
+        for (const piece of this.pieces.filter(piece => piece.side !== this.currentSide)) {
+            piece.possibleMoves = []
+        }
     }
 
     // Loop thru curr team pieces to check validity
@@ -45,7 +48,7 @@ export class Board {
             for (const move of piece.possibleMoves) {
                 const simulatedBoard = this.clone();
 
-                // Get rid of all the get the pieces that in the same position of the move
+                // Get rid of each piece that in the same position of the move
                 // This allows the attacking piece to be captured to combat a check
                 simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
             
@@ -59,7 +62,7 @@ export class Board {
                 //Get king with updated position (Also specify that it is not undefined with !)
                 const kingClone = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === simulatedBoard.currentSide)!
 
-                //Get all moves for the current enemy piece
+                //Get all moves for the enemy pieces
                 for (const opponent of simulatedBoard.pieces.filter(p => p.side !== simulatedBoard.currentSide)) {
                     opponent.possibleMoves = simulatedBoard.getValidMoves(opponent, simulatedBoard.pieces) // Pass opponent and boardstate
 
@@ -82,60 +85,6 @@ export class Board {
             }
         }
     }
-
-    safeKingMoves() {
-        // KING SAFTEY-Get all the moves for the king, and check if any of them would be getting attacked by enemy piece
-        const king = this.pieces.find(piece => piece.isKing && piece.side === this.currentSide)
-        // Check if king or its moves are undefined
-        if (king?.possibleMoves === undefined) return;
-
-        // Simlating all the possible king moves
-        for (const move of king.possibleMoves) {
-            const simulatedBoard = this.clone(); // Use a cloned board so its not referencing underline boardstate
-
-            // Check for any peice that may be atacking king
-            const pieceInPosition = simulatedBoard.pieces.find(piece => piece.samePosition(move));
-            // If their is a piece in the kings way then remove it to see ifonce captured it would be in check
-            if (pieceInPosition !== undefined) {
-                simulatedBoard.pieces = simulatedBoard.pieces.filter(piece => !piece.samePosition(move))
-            }
-            // Make sure the king is not nnul before assigning it to the move
-            const simulatedKing = simulatedBoard.pieces.find(piece => piece.isKing && piece.side === simulatedBoard.currentSide);
-            if (simulatedKing === undefined) continue; // Make sure the king is not undefined, though by this point it should never be 
-            simulatedKing.position = move; // Now assign the simulated king to the move
-
-            // Get all the opponent moves and to make sure they dont conflict with the kings moves
-            for (const enemy of simulatedBoard.pieces.filter(p => p.side !== simulatedBoard.currentSide)) {
-                enemy.possibleMoves = simulatedBoard.getValidMoves(enemy, simulatedBoard.pieces);
-            }
-            // Init as safe for king move
-            let safe = true;
-
-            // Find out if the move is safe for the king
-            for (const piece of simulatedBoard.pieces) {
-                if (piece.side === simulatedBoard.currentSide) continue; // If king is on the same team then do nothing
-                if (piece.isPawn) {
-                    // Get all possible moves for pawn w/ the updated position of the king
-                    const allPossiblePawnMoves = simulatedBoard.getValidMoves(piece, simulatedBoard.pieces);
-                    // If x-value is the same then dont need to check for pawn cause they only attack to the corners
-                    // But uf x-position is not the same and is attacking the king then it is not safe
-                    if (allPossiblePawnMoves?.some(possPawnMove => possPawnMove.x !== piece.position.x &&
-                        possPawnMove.samePosition(move))) {
-                        safe = false;
-                        break;
-                    }
-                } else if (piece.possibleMoves?.some(piece => piece.samePosition(move))) {
-                    safe = false;
-                    break;
-                }
-            }
-
-            // King cant move in these positions, so remove them
-            if (!safe) {
-                king.possibleMoves = king.possibleMoves?.filter(m => !m.samePosition(move))
-            }
-        }
-    };
 
     getValidMoves(piece: Piece, boardState: Piece[]): Position[] {
         switch (piece.type) {
