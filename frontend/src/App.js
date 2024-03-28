@@ -1,15 +1,13 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from './components/Dashboard/Navbar';
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { connect, getContract } from "./services/ethersService";
+
+import Navbar from "./components/Dashboard/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Referee from "./components/Referee/Referee";
 import AccountInfo from "./components/AccountInfo/AccountInfo";
-import { useState, useEffect } from "react";
-import { connect, getContract } from "./services/ethersService";
-import { Contract, Overrides } from "ethers";
-
-
 
 function App() {
   const [contract, setContract] = useState(null);
@@ -28,12 +26,6 @@ function App() {
     setConnected(true);
     getContract().then(({ contract, signer }) => {
       setContract(contract);
-
-      if (contract) {
-        signer.getAddress().then((address) => {
-          contract.members(address).then((result) => setIsMember(result));
-        });
-      }
     });
   };
 
@@ -51,8 +43,10 @@ function App() {
       return;
     }
 
+    const userAddress = contract.signer.getAddress();
+
     await contract
-      .join()
+      .createAccount(userAddress)
       .then(() => {
         alert("Joined");
         setIsMember(true);
@@ -63,11 +57,11 @@ function App() {
   return (
     <Router>
       <Navbar
-  connect={connectCallback}
-  connected={connected}
-  becomeMember={becomeMember}
-  isMember={isMember}
-/>
+        connect={connectCallback}
+        connected={connected}
+        becomeMember={becomeMember}
+        isMember={isMember}
+      />
       <div id="app">
         <Routes>
           <Route path="/" element={<Dashboard />} />

@@ -69,6 +69,7 @@ export interface ChessAccountInterface extends Interface {
       | "getAccounts"
       | "getBalance"
       | "getPreviousGames"
+      | "members"
   ): FunctionFragment;
 
   getEvent(
@@ -115,6 +116,10 @@ export interface ChessAccountInterface extends Interface {
     functionFragment: "getPreviousGames",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(
+    functionFragment: "members",
+    values: [AddressLike]
+  ): string;
 
   decodeFunctionResult(
     functionFragment: "accountGames",
@@ -137,6 +142,7 @@ export interface ChessAccountInterface extends Interface {
     functionFragment: "getPreviousGames",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
 }
 
 export namespace AccountCreatedEvent {
@@ -323,6 +329,8 @@ export interface ChessAccount extends BaseContract {
     "view"
   >;
 
+  members: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
@@ -383,6 +391,9 @@ export interface ChessAccount extends BaseContract {
     [ChessAccount.GameStructOutput[]],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "members"
+  ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
 
   getEvent(
     key: "AccountCreated"

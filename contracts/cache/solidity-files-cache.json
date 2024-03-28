@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/harrisb/Desktop/BetChess/contracts/contracts/ChessAccount.sol": {
-      "lastModificationDate": 1711651706647,
-      "contentHash": "0969723febcc5bc5a0b36a4f3feabc2a",
+      "lastModificationDate": 1711660980507,
+      "contentHash": "86b73e47969d551f0ad9852a30451aab",
       "sourceName": "contracts/ChessAccount.sol",
       "solcConfig": {
         "version": "0.8.24",

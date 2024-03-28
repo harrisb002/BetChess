@@ -13,7 +13,8 @@ const abi = [
   "function deposit(uint256 accountId) payable",
   "function getAccounts() view returns ((address owner, uint256 balance)[])",
   "function getBalance(uint256 accountId) view returns (uint256)",
-  "function getPreviousGames(uint256 accountId) view returns ((uint256 gameId, address player1, address player2, uint256 betAmount, address winner, uint256 timestamp)[])"
+  "function getPreviousGames(uint256 accountId) view returns ((uint256 gameId, address player1, address player2, uint256 betAmount, address winner, uint256 timestamp)[])",
+  "function members(address) view returns (bool)"
 ];
 
 //Contract address
