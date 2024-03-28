@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
-import {
-  initialBoard,
-} from "../../Constants";
+import { initialBoard } from "../../Constants";
 import { Piece, Position } from "../../models";
 import { PieceType, Side } from "../../Types";
 import { Pawn } from "../../models/Pawn";
@@ -28,8 +26,10 @@ export default function Referee() {
   // Returns the styling needed after a move has been made
   function makeMove(pieceInPlay: Piece, destination: Position): boolean {
     // Check if the player is the one that is currently to move
-    if ((pieceInPlay.side === Side.ALLY && board.totalTurns % 2 !== 1)
-      || (pieceInPlay.side === Side.OPPONENT && board.totalTurns % 2 !== 0)) {
+    if (
+      (pieceInPlay.side === Side.ALLY && board.totalTurns % 2 !== 1) ||
+      (pieceInPlay.side === Side.OPPONENT && board.totalTurns % 2 !== 0)
+    ) {
       return false;
     }
 
@@ -41,7 +41,9 @@ export default function Referee() {
 
     // Check for valid move given if a piece is being attacked
     // If you can see the "dots" being displayed then you can move there
-    const validMove = pieceInPlay.possibleMoves?.some(move => move.samePosition(destination))
+    const validMove = pieceInPlay.possibleMoves?.some((move) =>
+      move.samePosition(destination)
+    );
 
     // Disallows somthing like dragging the pawn to the promotion sqaure immediately causing modal to open
     if (!validMove) return false;
@@ -59,9 +61,14 @@ export default function Referee() {
       const cloneBoard = board.clone();
       cloneBoard.totalTurns += 1; // Increment whose turn it is, before calculating valid moves so it is updated accordingly
       // Making the next move
-      validMovePlayed = cloneBoard.makeMove(isEnPassantMove, validMove, pieceInPlay, destination)
-      return cloneBoard; // Retun new updatedboard 
-    })
+      validMovePlayed = cloneBoard.makeMove(
+        isEnPassantMove,
+        validMove,
+        pieceInPlay,
+        destination
+      );
+      return cloneBoard; // Retun new updatedboard
+    });
 
     // Check for pawn promotion.
     let promotionRow = pieceInPlay.side === Side.ALLY ? 7 : 0;
@@ -85,7 +92,6 @@ export default function Referee() {
     type: PieceType,
     side: Side
   ) {
-
     // Find the direction that the pawn is moving
     const pawnMovement = side === Side.ALLY ? 1 : -1;
 
@@ -131,7 +137,9 @@ export default function Referee() {
         if (piece.samePiecePosition(promotionPawn)) {
           // Must clone the piece into the type it is being converted into
           // Constructor is determining the image, type, and side
-          currPieces.push(new Piece(piece.position.clone(), pieceType, true, piece.side))
+          currPieces.push(
+            new Piece(piece.position.clone(), pieceType, true, piece.side)
+          );
         } else {
           // If it is not a promotion pawn, then just push the existing piece
           currPieces.push(piece);
@@ -142,7 +150,7 @@ export default function Referee() {
       // get all the moves for the new peices
       clonedBoard.getAllMoves();
       return clonedBoard;
-    })
+    });
     modalRef.current?.classList.add("hidden"); //Hide the modal
   }
 
@@ -152,8 +160,11 @@ export default function Referee() {
 
   return (
     <>
-      <p style={{ color: "white", fontSize: "32px" }}> {`${board.currentSide === 'w' ? "White" : "Black"} to move`}</p>
-      <div className="modal hidden" ref={modalRef}>
+      <p style={{ color: "white", fontSize: "32px" }}>
+        {" "}
+        {`${board.currentSide === "w" ? "White" : "Black"} to move`}
+      </p>
+      <div className="modal" ref={modalRef}>
         <div className="modal-body">
           <img
             onClick={() => promote(PieceType.QUEEN)}
@@ -175,7 +186,7 @@ export default function Referee() {
         <div className="modal" ref={checkmateModalRef}>
           <div className="modal-body">
             <div className="checkmate-body">
-              <span>Winning team is</span>
+              <span>Winning team is {board.winningTeam === Side.ALLY ? "WHITE" : "BLACK"}</span>
               <button>Play Again?</button>
             </div>
           </div>

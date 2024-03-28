@@ -43,3 +43,27 @@
     display: none;
 }
 
+.modal > .modal-body > .checkmate-body {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.modal > .modal-body > .checkmate-body > span {
+    color:rgb(255, 255, 255);
+    font-size: 32px;
+}
+
+.modal > .modal-body > .checkmate-body > button {
+    background-color: rgb(196,216,228);
+    border: none;
+    border-radius: 8px;
+    padding: 24px 48px;
+    font-size: 32px;
+    color: rgb(0, 0, 0);
+}
+
+.modal > .modal-body > .checkmate-body > button:hover {
+    cursor: pointer;
+}
+
