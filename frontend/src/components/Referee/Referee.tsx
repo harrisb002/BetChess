@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import { initialBoard } from "../../Constants";
 import { Piece, Position } from "../../models";
@@ -14,10 +14,6 @@ export default function Referee() {
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
   const checkmateModalRef = useRef<HTMLDivElement>(null);
-
-  function updateAllMoves() {
-    board.getAllMoves();
-  }
 
   // Returns the styling needed after a move has been made
   function makeMove(pieceInPlay: Piece, destination: Position): boolean {

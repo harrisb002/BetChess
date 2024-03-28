@@ -235,7 +235,7 @@ export const getCastlingMoves = (king: Piece, boardState: Piece[]) => {
   if (king.hasMoved) return possibleMoves; // Cant castle if king has moved
 
   //Get the rooks from the same side that have not moved yet
-  const rooks = boardState.filter(piece => piece.isRook && piece.side == king.side && !piece.hasMoved);
+  const rooks = boardState.filter(piece => piece.isRook && piece.side === king.side && !piece.hasMoved);
 
   // Check if their are no obstructions (pieces) to castling
   // The queen side rook should have 3 possible moves, the king side rook should have 2
