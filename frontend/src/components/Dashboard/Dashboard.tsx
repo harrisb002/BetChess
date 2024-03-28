@@ -5,11 +5,14 @@ export default function Dashboard() {
   return (
     <>
       <div>
-        <p>Dashboard</p>
+        <h1>Dashboard</h1>
         <nav>
           <ul>
             <li>
-              <Link to="/referee">Referee Page</Link> {/* Link to the Referee page */}
+              <Link to="/referee">Chessboard</Link> 
+            </li>
+            <li>
+              <Link to="/account">Account Info</Link> 
             </li>
           </ul>
         </nav>
