@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { createAccount } from '../../ethersService' ;
 
 const AccountInfo = () => {
-//   const [ownerAddress, setOwnerAddress] = useState('');
+  const [ownerAddress, setOwnerAddress] = useState('');
 
-//   const handleCreateAccount = async () => {
-//     try {
-//       await createAccount([ownerAddress]);
-//       alert('Account created successfully');
-//     } catch (error) {
-//       console.error('Error creating account:', error);
-//       alert('Failed to create account');
-//     }
-//   };
+  const handleCreateAccount = async () => {
+    try {
+      await createAccount([ownerAddress]);
+      alert('Account created successfully');
+    } catch (error) {
+      console.error('Error creating account:', error);
+      alert('Failed to create account');
+    }
+  };
 
 //   const handleGetAccounts = async () => {
 //     try {
@@ -25,10 +25,9 @@ const AccountInfo = () => {
 
   return (
     <div>
-      {/* <input type="text" value={ownerAddress} onChange={(e) => setOwnerAddress(e.target.value)} placeholder="Owner Address" /> */}
-      {/* <button onClick={handleCreateAccount}>Create Account</button>
-      <button onClick={handleGetAccounts}>Get Accounts</button> */}
-      {/* Display accounts or other UI elements here */}
+        <h1>Create Account</h1>
+      <input type="text" value={ownerAddress} onChange={(e) => setOwnerAddress(e.target.value)} placeholder="Owner Address" /> 
+      <button onClick={handleCreateAccount}>Create Account</button>
     </div>
   );
 };

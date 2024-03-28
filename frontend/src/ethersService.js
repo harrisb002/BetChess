@@ -1,6 +1,8 @@
-import { ethers } from 'ethers'; 
-
-const provider = new ethers.providers.Web3Provider(window.ethereum);
+import { ethers } from 'ethers';
+// or
+import { Web3Provider } from '@ethersproject/providers';
+// and then use
+const provider = new Web3Provider(window.ethereum);
 
 const abi = [
   "event AccountCreated(address owner, uint256 indexed id, uint256 timestamp)",
@@ -23,7 +25,6 @@ const address = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 let contract = null;
 
 async function getProviderOrSigner(signer = false) {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
   await provider.send("eth_requestAccounts", []); // Request access
   return signer ? provider.getSigner() : provider;
 }
