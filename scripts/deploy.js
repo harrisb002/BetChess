@@ -11,7 +11,6 @@ async function main() {
   const ChessAccount = await hre.ethers.deployContract("ChessAccount");
   const chessAccount = await ChessAccount.waitForDeployment();
 
-  console.log(chessAccount);
   await writeDeploymentInfo(chessAccount);
 }
 

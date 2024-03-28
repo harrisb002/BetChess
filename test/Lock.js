@@ -41,13 +41,15 @@ const {
      2) CANNOT create account with duplicate owners
      3) CANNOT create account with more than 1 owner (For now ;p)
   */
-    describe("Creating an account", () => {
-      it("Should allow creating a single user account", async () => {
-        const { chessAccount, addr0 } = await loadFixture(deployChessAccount);
-        //Using the instance of the smart contract, I will use it to tr and create an account
-        await chessAccount.connect(addr0).createAccount([]); //Will pass the object/s if necessary in params
-        const accounts = await chessAccount.connect(addr0).getAccounts(); //Get the number of accounts
-        expect(accounts.length).to.equal(1); //Should be equal to one after creating an owner
+     describe("Creating an account", function () {
+      it("Should allow creating a single user account", async function () {
+          const { chessAccount, addr0 } = await loadFixture(deployChessAccount);
+          // pass the address of addr0 when creating a new account.
+          await chessAccount.connect(addr0).createAccount(addr0.address);
+          const accounts = await chessAccount.getAccounts();
+          expect(accounts.length).to.equal(1);
+          // verify the owner of the created account is addr0
+          expect(accounts[0].owner).to.equal(addr0.address);
       });
-    });
+  });
 });
