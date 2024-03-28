@@ -1,7 +1,5 @@
 import { ethers } from 'ethers';
-// or
 import { Web3Provider } from '@ethersproject/providers';
-// and then use
 const provider = new Web3Provider(window.ethereum);
 
 const abi = [
@@ -43,7 +41,7 @@ export async function createAccount(owner) {
   return tx.wait(); // Wait for transaction to be mined
 }
 
-// export async function getAccounts() {
-//   const contract = await getContract();
-//   return contract.getAccounts();
-// }
+export async function getAccounts() {
+  const contract = await getContract();
+  return contract.getAccounts();
+}

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { createAccount } from '../../ethersService' ;
+import { createAccount, getAccounts } from '../../ethersService' ;
 
 const AccountInfo = () => {
   const [ownerAddress, setOwnerAddress] = useState('');
@@ -14,20 +14,21 @@ const AccountInfo = () => {
     }
   };
 
-//   const handleGetAccounts = async () => {
-//     try {
-//       const accounts = await getAccounts();
-//       console.log(accounts); // Or update the UI accordingly
-//     } catch (error) {
-//       console.error('Error fetching accounts:', error);
-//     }
-//   };
+  const handleGetAccounts = async () => {
+    try {
+      const accounts = await getAccounts();
+      console.log(accounts); 
+    } catch (error) {
+      console.error('Error fetching accounts:', error);
+    }
+  };
 
   return (
     <div>
         <h1>Create Account</h1>
       <input type="text" value={ownerAddress} onChange={(e) => setOwnerAddress(e.target.value)} placeholder="Owner Address" /> 
       <button onClick={handleCreateAccount}>Create Account</button>
+      <button onClick={handleGetAccounts}>Get Accounts</button>
     </div>
   );
 };
