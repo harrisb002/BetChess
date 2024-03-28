@@ -8,16 +8,12 @@ import { Board } from "../../models/Board";
 
 export default function Referee() {
   // Pass initial board state to be called when component first rendered
-  const [board, setBoard] = useState<Board>(initialBoard);
+  const [board, setBoard] = useState<Board>(initialBoard.clone());
   // Create state for when the promotion piece is updated
   const [promotionPawn, setPromotionPawn] = useState<Piece>();
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
   const checkmateModalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    updateAllMoves();
-  }, []); // Execute when component loads for the first time
 
   function updateAllMoves() {
     board.getAllMoves();
@@ -67,6 +63,13 @@ export default function Referee() {
         pieceInPlay,
         destination
       );
+      console.log(cloneBoard.winningTeam);
+
+      // If checkmate then remove hidden class from the checkmate modal
+      if (cloneBoard.winningTeam !== undefined) {
+        checkmateModalRef.current?.classList.remove("hidden");
+      }
+
       return cloneBoard; // Retun new updatedboard
     });
 
@@ -158,13 +161,18 @@ export default function Referee() {
     return promotionPawn?.side === Side.ALLY ? "w" : "b";
   }
 
+  function restartGame() {
+    checkmateModalRef.current?.classList.add("hidden");
+    setBoard(initialBoard.clone());
+  }
+
   return (
     <>
       <p style={{ color: "white", fontSize: "32px" }}>
         {" "}
         {`${board.currentSide === "w" ? "White" : "Black"} to move`}
       </p>
-      <div className="modal" ref={modalRef}>
+      <div className="modal hidden" ref={modalRef}>
         <div className="modal-body">
           <img
             onClick={() => promote(PieceType.QUEEN)}
@@ -183,15 +191,19 @@ export default function Referee() {
             src={`/assets/images/knight_${promotionSide()}.png`}
           />
         </div>
-        <div className="modal" ref={checkmateModalRef}>
-          <div className="modal-body">
-            <div className="checkmate-body">
-              <span>Winning team is {board.winningTeam === Side.ALLY ? "WHITE" : "BLACK"}</span>
-              <button>Play Again?</button>
-            </div>
+      </div>
+      <div className="modal hidden" ref={checkmateModalRef}>
+        <div className="modal-body">
+          <div className="checkmate-body">
+            <span>
+              Winning team is{" "}
+              {board.winningTeam === Side.ALLY ? "White" : "Black"}
+            </span>
+            <button onClick={restartGame}>Play again</button>
           </div>
         </div>
       </div>
+
       <Chessboard makeMove={makeMove} pieces={board.pieces} />
     </>
   );

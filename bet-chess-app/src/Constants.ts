@@ -62,3 +62,6 @@ export const initialBoard: Board = new Board([
   new Piece(new Position(4, 0), PieceType.KING, false, Side.ALLY),
   new Piece(new Position(4, 7), PieceType.KING, false, Side.OPPONENT),
 ], 1);
+
+// Get all moves upon restarting the game
+initialBoard.getAllMoves();
