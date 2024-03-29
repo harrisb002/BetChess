@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { connect, getContract } from "./services/ethersService";
 
-import Navbar from "./components/Dashboard/Navbar";
-import Dashboard from "./components/Dashboard/Dashboard";
-import Referee from "./components/Referee/Referee";
-import AccountInfo from "./components/AccountInfo/AccountInfo";
+import Navbar from "./Components/User/Dashboard/Navbar";
+import Dashboard from "./Components/User/Dashboard/Dashboard";
+import Referee from "./Components/Chess/Components/Referee/Referee";
+import AccountInfo from "./Components/User/AccountInfo/AccountInfo";
 
 function App() {
   const [contract, setContract] = useState(null);
