@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 
-const NavbarTop = ({ connect, connected }) => {
+const NavbarTop = ({ connect, connected, becomeMember, logedin, logout }) => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid>
@@ -11,8 +11,18 @@ const NavbarTop = ({ connect, connected }) => {
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav className="me-auto">
-            <Nav.Link href="/referee ">Chessboard</Nav.Link>
+            <Nav.Link href="/referee">Chessboard</Nav.Link>
             <Nav.Link href="/account">Account Info</Nav.Link>
+            {!logedin && (
+              <Button variant="success" onClick={becomeMember}>
+                Login
+              </Button>
+            )}
+            {logedin && (
+              <Button variant="success" onClick={logout}>
+                logout
+              </Button>
+            )}
           </Nav>
           <Nav>
             {!connected ? (

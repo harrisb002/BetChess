@@ -23,85 +23,29 @@ import type {
   TypedContractMethod,
 } from "./common";
 
-export declare namespace ChessAccount {
-  export type AccountStruct = { owner: AddressLike; balance: BigNumberish };
-
-  export type AccountStructOutput = [owner: string, balance: bigint] & {
-    owner: string;
-    balance: bigint;
-  };
-
-  export type GameStruct = {
-    gameId: BigNumberish;
-    player1: AddressLike;
-    player2: AddressLike;
-    betAmount: BigNumberish;
-    winner: AddressLike;
-    timestamp: BigNumberish;
-  };
-
-  export type GameStructOutput = [
-    gameId: bigint,
-    player1: string,
-    player2: string,
-    betAmount: bigint,
-    winner: string,
-    timestamp: bigint
-  ] & {
-    gameId: bigint;
-    player1: string;
-    player2: string;
-    betAmount: bigint;
-    winner: string;
-    timestamp: bigint;
-  };
-}
-
 export interface ChessAccountInterface extends Interface {
   getFunction(
     nameOrSignature:
-      | "accountGames"
       | "accounts"
-      | "approveBet"
-      | "bet"
       | "createAccount"
-      | "deposit"
+      | "getAccountInfo"
       | "getAccounts"
-      | "getBalance"
-      | "getPreviousGames"
       | "members"
+      | "userAccounts"
   ): FunctionFragment;
 
-  getEvent(
-    nameOrSignatureOrTopic:
-      | "AccountCreated"
-      | "Deposit"
-      | "GameCreated"
-      | "GameResult"
-  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AccountCreated"): EventFragment;
 
-  encodeFunctionData(
-    functionFragment: "accountGames",
-    values: [BigNumberish, BigNumberish]
-  ): string;
   encodeFunctionData(
     functionFragment: "accounts",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "approveBet",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "bet",
-    values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "createAccount",
-    values: [AddressLike]
+    values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "deposit",
+    functionFragment: "getAccountInfo",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -109,40 +53,32 @@ export interface ChessAccountInterface extends Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "getBalance",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getPreviousGames",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "members",
     values: [AddressLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "userAccounts",
+    values: [AddressLike, BigNumberish]
+  ): string;
 
-  decodeFunctionResult(
-    functionFragment: "accountGames",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "accounts", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "approveBet", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "bet", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createAccount",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "deposit", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getAccountInfo",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "getAccounts",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getBalance", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "getPreviousGames",
+    functionFragment: "userAccounts",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "members", data: BytesLike): Result;
 }
 
 export namespace AccountCreatedEvent {
@@ -159,70 +95,6 @@ export namespace AccountCreatedEvent {
   export interface OutputObject {
     owner: string;
     accountId: bigint;
-    timestamp: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace DepositEvent {
-  export type InputTuple = [
-    user: AddressLike,
-    value: BigNumberish,
-    timestamp: BigNumberish
-  ];
-  export type OutputTuple = [user: string, value: bigint, timestamp: bigint];
-  export interface OutputObject {
-    user: string;
-    value: bigint;
-    timestamp: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace GameCreatedEvent {
-  export type InputTuple = [
-    gameId: BigNumberish,
-    betAmount: BigNumberish,
-    player1: AddressLike,
-    player2: AddressLike,
-    timestamp: BigNumberish
-  ];
-  export type OutputTuple = [
-    gameId: bigint,
-    betAmount: bigint,
-    player1: string,
-    player2: string,
-    timestamp: bigint
-  ];
-  export interface OutputObject {
-    gameId: bigint;
-    betAmount: bigint;
-    player1: string;
-    player2: string;
-    timestamp: bigint;
-  }
-  export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
-  export type Filter = TypedDeferredTopicFilter<Event>;
-  export type Log = TypedEventLog<Event>;
-  export type LogDescription = TypedLogDescription<Event>;
-}
-
-export namespace GameResultEvent {
-  export type InputTuple = [
-    gameId: BigNumberish,
-    winner: AddressLike,
-    timestamp: BigNumberish
-  ];
-  export type OutputTuple = [gameId: bigint, winner: string, timestamp: bigint];
-  export interface OutputObject {
-    gameId: bigint;
-    winner: string;
     timestamp: bigint;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
@@ -274,126 +146,76 @@ export interface ChessAccount extends BaseContract {
     event?: TCEvent
   ): Promise<this>;
 
-  accountGames: TypedContractMethod<
-    [arg0: BigNumberish, arg1: BigNumberish],
+  accounts: TypedContractMethod<
+    [arg0: BigNumberish],
     [
-      [bigint, string, string, bigint, string, bigint] & {
-        gameId: bigint;
-        player1: string;
-        player2: string;
-        betAmount: bigint;
-        winner: string;
-        timestamp: bigint;
+      [string, string, bigint] & {
+        owner: string;
+        userName: string;
+        balance: bigint;
       }
     ],
     "view"
   >;
 
-  accounts: TypedContractMethod<
-    [arg0: BigNumberish],
-    [[string, bigint] & { owner: string; balance: bigint }],
-    "view"
-  >;
+  createAccount: TypedContractMethod<[userName: string], [void], "nonpayable">;
 
-  approveBet: TypedContractMethod<
-    [accountId: BigNumberish, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  bet: TypedContractMethod<
-    [accountId: BigNumberish, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-
-  createAccount: TypedContractMethod<
-    [newOwner: AddressLike],
-    [void],
-    "nonpayable"
-  >;
-
-  deposit: TypedContractMethod<[accountId: BigNumberish], [void], "payable">;
-
-  getAccounts: TypedContractMethod<
-    [],
-    [ChessAccount.AccountStructOutput[]],
-    "view"
-  >;
-
-  getBalance: TypedContractMethod<[accountId: BigNumberish], [bigint], "view">;
-
-  getPreviousGames: TypedContractMethod<
+  getAccountInfo: TypedContractMethod<
     [accountId: BigNumberish],
-    [ChessAccount.GameStructOutput[]],
+    [[string, bigint] & { userName: string; balance: bigint }],
     "view"
   >;
+
+  getAccounts: TypedContractMethod<[], [bigint[]], "view">;
 
   members: TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+
+  userAccounts: TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   getFunction<T extends ContractMethod = ContractMethod>(
     key: string | FunctionFragment
   ): T;
 
   getFunction(
-    nameOrSignature: "accountGames"
+    nameOrSignature: "accounts"
   ): TypedContractMethod<
-    [arg0: BigNumberish, arg1: BigNumberish],
+    [arg0: BigNumberish],
     [
-      [bigint, string, string, bigint, string, bigint] & {
-        gameId: bigint;
-        player1: string;
-        player2: string;
-        betAmount: bigint;
-        winner: string;
-        timestamp: bigint;
+      [string, string, bigint] & {
+        owner: string;
+        userName: string;
+        balance: bigint;
       }
     ],
     "view"
   >;
   getFunction(
-    nameOrSignature: "accounts"
-  ): TypedContractMethod<
-    [arg0: BigNumberish],
-    [[string, bigint] & { owner: string; balance: bigint }],
-    "view"
-  >;
-  getFunction(
-    nameOrSignature: "approveBet"
-  ): TypedContractMethod<
-    [accountId: BigNumberish, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
-    nameOrSignature: "bet"
-  ): TypedContractMethod<
-    [accountId: BigNumberish, amount: BigNumberish],
-    [void],
-    "nonpayable"
-  >;
-  getFunction(
     nameOrSignature: "createAccount"
-  ): TypedContractMethod<[newOwner: AddressLike], [void], "nonpayable">;
+  ): TypedContractMethod<[userName: string], [void], "nonpayable">;
   getFunction(
-    nameOrSignature: "deposit"
-  ): TypedContractMethod<[accountId: BigNumberish], [void], "payable">;
-  getFunction(
-    nameOrSignature: "getAccounts"
-  ): TypedContractMethod<[], [ChessAccount.AccountStructOutput[]], "view">;
-  getFunction(
-    nameOrSignature: "getBalance"
-  ): TypedContractMethod<[accountId: BigNumberish], [bigint], "view">;
-  getFunction(
-    nameOrSignature: "getPreviousGames"
+    nameOrSignature: "getAccountInfo"
   ): TypedContractMethod<
     [accountId: BigNumberish],
-    [ChessAccount.GameStructOutput[]],
+    [[string, bigint] & { userName: string; balance: bigint }],
     "view"
   >;
+  getFunction(
+    nameOrSignature: "getAccounts"
+  ): TypedContractMethod<[], [bigint[]], "view">;
   getFunction(
     nameOrSignature: "members"
   ): TypedContractMethod<[arg0: AddressLike], [boolean], "view">;
+  getFunction(
+    nameOrSignature: "userAccounts"
+  ): TypedContractMethod<
+    [arg0: AddressLike, arg1: BigNumberish],
+    [bigint],
+    "view"
+  >;
 
   getEvent(
     key: "AccountCreated"
@@ -401,27 +223,6 @@ export interface ChessAccount extends BaseContract {
     AccountCreatedEvent.InputTuple,
     AccountCreatedEvent.OutputTuple,
     AccountCreatedEvent.OutputObject
-  >;
-  getEvent(
-    key: "Deposit"
-  ): TypedContractEvent<
-    DepositEvent.InputTuple,
-    DepositEvent.OutputTuple,
-    DepositEvent.OutputObject
-  >;
-  getEvent(
-    key: "GameCreated"
-  ): TypedContractEvent<
-    GameCreatedEvent.InputTuple,
-    GameCreatedEvent.OutputTuple,
-    GameCreatedEvent.OutputObject
-  >;
-  getEvent(
-    key: "GameResult"
-  ): TypedContractEvent<
-    GameResultEvent.InputTuple,
-    GameResultEvent.OutputTuple,
-    GameResultEvent.OutputObject
   >;
 
   filters: {
@@ -434,39 +235,6 @@ export interface ChessAccount extends BaseContract {
       AccountCreatedEvent.InputTuple,
       AccountCreatedEvent.OutputTuple,
       AccountCreatedEvent.OutputObject
-    >;
-
-    "Deposit(address,uint256,uint256)": TypedContractEvent<
-      DepositEvent.InputTuple,
-      DepositEvent.OutputTuple,
-      DepositEvent.OutputObject
-    >;
-    Deposit: TypedContractEvent<
-      DepositEvent.InputTuple,
-      DepositEvent.OutputTuple,
-      DepositEvent.OutputObject
-    >;
-
-    "GameCreated(uint256,uint256,address,address,uint256)": TypedContractEvent<
-      GameCreatedEvent.InputTuple,
-      GameCreatedEvent.OutputTuple,
-      GameCreatedEvent.OutputObject
-    >;
-    GameCreated: TypedContractEvent<
-      GameCreatedEvent.InputTuple,
-      GameCreatedEvent.OutputTuple,
-      GameCreatedEvent.OutputObject
-    >;
-
-    "GameResult(uint256,address,uint256)": TypedContractEvent<
-      GameResultEvent.InputTuple,
-      GameResultEvent.OutputTuple,
-      GameResultEvent.OutputObject
-    >;
-    GameResult: TypedContractEvent<
-      GameResultEvent.InputTuple,
-      GameResultEvent.OutputTuple,
-      GameResultEvent.OutputObject
     >;
   };
 }

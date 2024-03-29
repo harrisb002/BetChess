@@ -12,7 +12,7 @@ import AccountInfo from "./components/AccountInfo/AccountInfo";
 function App() {
   const [contract, setContract] = useState(null);
   const [connected, setConnected] = useState(false);
-  const [isMember, setIsMember] = useState(false);
+  const [logedin, setLogedin] = useState(localStorage.getItem("isLogedIn") === "true");
 
   useEffect(() => {
     window.ethereum.request({ method: "eth_accounts" }).then((accounts) => {
@@ -42,17 +42,22 @@ function App() {
       alert("Please connect to metamask.");
       return;
     }
-
     const userAddress = contract.signer.getAddress();
 
     await contract
       .createAccount(userAddress)
       .then(() => {
         alert("Joined");
-        setIsMember(true);
+        localStorage.setItem("isLogedIn", "true");
       })
       .catch((error) => alert(error.message));
   };
+
+  const logout = () => {  
+    // Clear membership status from localStorage
+    localStorage.removeItem("isLogedIn");
+  };
+  
 
   return (
     <Router>
@@ -60,7 +65,8 @@ function App() {
         connect={connectCallback}
         connected={connected}
         becomeMember={becomeMember}
-        isMember={isMember}
+        logedin={logedin}
+        logout={logout}
       />
       <div id="app">
         <Routes>

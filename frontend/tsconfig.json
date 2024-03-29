@@ -21,6 +21,6 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
-, "../scripts", "src/services/ethersService.js"  ]
+    "src",
+    "../scripts", "src/services/ethersService.js"  ]
 }
