@@ -7,11 +7,13 @@ import { connect, getContract } from "./services/ethersService";
 import Navbar from "./Components/User/Dashboard/Navbar";
 import Dashboard from "./Components/User/Dashboard/Dashboard";
 import UpdateAccountInfo from "./Components/User/AccountInfo/UpdateAccount";
-import DisplayAllUsers from "./Components/User/AccountInfo/DisplayAllUsers";
+import AddUser from "./Components/User/AccountInfo/AddUser";
 import Referee from "./Components/Chess/Components/Referee/Referee";
+import UserInformation from "./Components/User/AccountInfo/UserInformation";
 
 function App() {
   const [contract, setContract] = useState(null);
+  const [userAddress, setUserAddress] = useState(null);
   const [connected, setConnected] = useState(false);
   const [logedin, setLogedin] = useState(localStorage.getItem("isLogedIn") === "true");
 
@@ -27,6 +29,7 @@ function App() {
     setConnected(true);
     getContract().then(({ contract, signer }) => {
       setContract(contract);
+      setUserAddress(signer);
     });
   };
 
@@ -73,8 +76,9 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/referee" element={<Referee />} />
+          <Route path="/addUser" element={<AddUser contract={contract}/>} />
           <Route path="/updateAccount" element={<UpdateAccountInfo contract={contract}/>} />
-          <Route path="/allUsers" element={<DisplayAllUsers contract={contract}/>} />
+          <Route path="/userInformation" element={<UserInformation contract={contract} userAddress={userAddress}/>} />
         </Routes>
       </div>
     </Router>

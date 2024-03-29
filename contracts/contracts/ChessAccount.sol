@@ -74,13 +74,19 @@ contract ChessAccount {
     }
 
     /**
-     * Returns the userName and balance for a given account ID.
+     * Returns all accounts for the given user address.
      */
     function getAccountInfo(
-        uint256 accountId
-    ) external view returns (string memory userName, uint balance) {
-        Account storage account = accounts[accountId];
-        return (account.userName, account.balance);
+        address userAddress
+    ) external view returns (Account[] memory) {
+        uint256[] memory accountIds = userAccounts[userAddress];
+        Account[] memory accountsInfo = new Account[](accountIds.length);
+
+        for (uint256 i = 0; i < accountIds.length; i++) {
+            accountsInfo[i] = accounts[accountIds[i]];
+        }
+
+        return accountsInfo;
     }
 
     /**
@@ -88,17 +94,5 @@ contract ChessAccount {
      */
     function getAccounts() external view returns (uint256[] memory) {
         return userAccounts[msg.sender];
-    }
-
-    /**
-     * Returns all account information of all users
-     */
-    function getAllAccounts() external view returns (Account[] memory) {
-        Account[] memory allAccounts = new Account[](nextAccountId - 1);
-        for (uint256 i = 1; i < nextAccountId; i++) {
-            Account storage account = accounts[i];
-            allAccounts[i - 1] = account;
-        }
-        return allAccounts;
     }
 }
