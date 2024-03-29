@@ -6,7 +6,9 @@ const abi = [
   "function createAccount(string userName)",
   "function getAccountInfo(uint256 accountId) view returns (string userName, uint256 balance)",
   "function getAccounts() view returns (uint256[])",
+  "function getAllAccounts() view returns ((address owner, string userName, uint256 balance)[])",
   "function members(address) view returns (bool)",
+  "function updateAccountInfo(uint256 accountId, string newUserName, uint256 newBalance)",
   "function userAccounts(address, uint256) view returns (uint256)"
 ];
 

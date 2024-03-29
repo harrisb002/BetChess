@@ -12,7 +12,8 @@ const NavbarTop = ({ connect, connected, becomeMember, logedin, logout }) => {
         <Navbar.Collapse>
           <Nav className="me-auto">
             <Nav.Link href="/referee">Chessboard</Nav.Link>
-            <Nav.Link href="/account">Account Info</Nav.Link>
+            <Nav.Link href="/updateAccount">Update Account Info</Nav.Link>
+            <Nav.Link href="/allUsers">Display All Users</Nav.Link>
             {!logedin && (
               <Button variant="success" onClick={becomeMember}>
                 Login

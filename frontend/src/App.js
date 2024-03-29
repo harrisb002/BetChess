@@ -6,8 +6,9 @@ import { connect, getContract } from "./services/ethersService";
 
 import Navbar from "./Components/User/Dashboard/Navbar";
 import Dashboard from "./Components/User/Dashboard/Dashboard";
+import UpdateAccountInfo from "./Components/User/AccountInfo/UpdateAccount";
+import DisplayAllUsers from "./Components/User/AccountInfo/DisplayAllUsers";
 import Referee from "./Components/Chess/Components/Referee/Referee";
-import AccountInfo from "./Components/User/AccountInfo/AccountInfo";
 
 function App() {
   const [contract, setContract] = useState(null);
@@ -72,7 +73,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/referee" element={<Referee />} />
-          <Route path="/account" element={<AccountInfo />} />
+          <Route path="/updateAccount" element={<UpdateAccountInfo contract={contract}/>} />
+          <Route path="/allUsers" element={<DisplayAllUsers contract={contract}/>} />
         </Routes>
       </div>
     </Router>

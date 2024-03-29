@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import "./Chessboard.css";
-import Tile from "../Tile/Tile";
+import Tile from '../Tile/Tile'
 import { Piece, Position } from "../../models";
 
 import {

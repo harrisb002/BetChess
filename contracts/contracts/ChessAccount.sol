@@ -32,7 +32,10 @@ contract ChessAccount {
 
     // Modifier to restrict function access to the account owner.
     modifier onlyAccountOwner(uint256 accountId) {
-        require(accounts[accountId].owner == msg.sender, "Not the account owner.");
+        require(
+            accounts[accountId].owner == msg.sender,
+            "Not the account owner."
+        );
         _;
     }
 
@@ -48,14 +51,34 @@ contract ChessAccount {
      */
     function createAccount(string memory userName) external hasNoAccount {
         uint256 accountId = nextAccountId++;
-        accounts[accountId] = Account({owner: msg.sender, userName: userName, balance: 0});
+        accounts[accountId] = Account({
+            owner: msg.sender,
+            userName: userName,
+            balance: 0
+        });
         userAccounts[msg.sender].push(accountId);
         members[msg.sender] = true;
         emit AccountCreated(msg.sender, accountId, block.timestamp);
     }
 
-    // New function to return userName and balance for a given account ID.
-    function getAccountInfo(uint256 accountId) external view returns (string memory userName, uint balance) {
+    /**
+     * Updates the account information.
+     */
+    function updateAccountInfo(
+        uint256 accountId,
+        string memory newUserName,
+        uint256 newBalance
+    ) external onlyAccountOwner(accountId) {
+        accounts[accountId].userName = newUserName;
+        accounts[accountId].balance = newBalance;
+    }
+
+    /**
+     * Returns the userName and balance for a given account ID.
+     */
+    function getAccountInfo(
+        uint256 accountId
+    ) external view returns (string memory userName, uint balance) {
         Account storage account = accounts[accountId];
         return (account.userName, account.balance);
     }
@@ -65,5 +88,17 @@ contract ChessAccount {
      */
     function getAccounts() external view returns (uint256[] memory) {
         return userAccounts[msg.sender];
+    }
+
+    /**
+     * Returns all account information of all users
+     */
+    function getAllAccounts() external view returns (Account[] memory) {
+        Account[] memory allAccounts = new Account[](nextAccountId - 1);
+        for (uint256 i = 1; i < nextAccountId; i++) {
+            Account storage account = accounts[i];
+            allAccounts[i - 1] = account;
+        }
+        return allAccounts;
     }
 }

@@ -9,10 +9,13 @@ export default function Dashboard() {
         <nav>
           <ul>
             <li>
-              <Link to="/referee">Chessboard</Link> 
+              <Link to="/referee">Chessboard</Link>
             </li>
             <li>
-              <Link to="/account">Account Info</Link> 
+              <Link to="/updateAccount">Update Account Info</Link>
+            </li>
+            <li>
+              <Link to="/allUsers">Display All Users</Link>
             </li>
           </ul>
         </nav>
