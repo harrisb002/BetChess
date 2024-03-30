@@ -5,7 +5,8 @@ import { Piece, Position } from "../../models";
 import { PieceType, Side } from "../../Types";
 import { Pawn } from "../../models/Pawn";
 import { Board } from "../../models/Board";
-import { useBot } from '../Bot/BotContext'; 
+import { BotComponent } from '../Bot/BotComponent';
+import { useBot } from '../Bot/BotContext';
 
 export default function Referee() {
   // Set the Bot if being used
@@ -21,7 +22,7 @@ export default function Referee() {
   useEffect(() => {
     if (isBotActive) {
       // Initialize bot or make a bot move if it's the bot's turn
-      
+
     }
   }, [isBotActive, board.totalTurns]);
 
@@ -212,6 +213,7 @@ export default function Referee() {
       </div>
 
       <Chessboard makeMove={makeMove} pieces={board.pieces} />
+      <BotComponent board={board} setBoard={setBoard} />
     </>
   );
 }
