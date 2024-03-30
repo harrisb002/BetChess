@@ -14,8 +14,8 @@ pragma solidity ^0.8.0;
 contract ChessAccount {
     event AccountCreated(
         address indexed owner,
-        uint256 accountId,
-        uint256 timestamp
+        uint256 indexed accountId,
+        uint256 indexed createdAt,
     );
 
     struct Account {
@@ -25,15 +25,15 @@ contract ChessAccount {
     }
 
     mapping(uint256 => Account) public accounts; // Account ID to Account mapping.
-    mapping(address => uint256[]) public userAccounts; // Address to list of Account IDs mapping.
+    mapping(address => uint256) public userAccounts; // Address to list of Account IDs mapping.
     mapping(address => bool) public members; // Tracks addresses that have accounts.
 
-    uint256 private nextAccountId = 1; // Incremental unique ID for new accounts.
+    uint256 private nextAccountId; // Incremental unique ID for new accounts.
 
-    // Modifier to restrict function access to the account owner.
-    modifier onlyAccountOwner(uint256 accountId) {
+    // Modifier to restrict function access to owner of account.
+    modifier onlyAccountOwner() {
         require(
-            accounts[accountId].owner == msg.sender,
+            accounts[userAccounts[msg.sender]].owner == msg.sender,
             "Not the account owner."
         );
         _;
@@ -50,49 +50,30 @@ contract ChessAccount {
      * Emits an AccountCreated event.
      */
     function createAccount(string memory userName) external hasNoAccount {
-        uint256 accountId = nextAccountId++;
-        accounts[accountId] = Account({
-            owner: msg.sender,
-            userName: userName,
-            balance: 0
-        });
-        userAccounts[msg.sender].push(accountId);
+        uint256 accountId = nextAccountId;
+        userAccounts[msg.sender].owner = msg.sender;
+        userAccounts[msg.sender].userName = userName;
+        userAccounts[msg.sender].balance = 0;
         members[msg.sender] = true;
+        nextAccountId++;
         emit AccountCreated(msg.sender, accountId, block.timestamp);
     }
 
     /**
-     * Updates the account information.
+     * Updates the account username.
      */
-    function updateAccountInfo(
-        uint256 accountId,
+    function updateUsernameInfo(
         string memory newUserName,
-        uint256 newBalance
-    ) external onlyAccountOwner(accountId) {
-        accounts[accountId].userName = newUserName;
-        accounts[accountId].balance = newBalance;
+    ) external onlyAccountOwner {
+        accounts[userAccounts[msg.sender]].username = newUserName;
     }
 
     /**
-     * Returns all accounts for the given user address.
+     * Returns all account info for the given user address.
      */
     function getAccountInfo(
         address userAddress
-    ) external view returns (Account[] memory) {
-        uint256[] memory accountIds = userAccounts[userAddress];
-        Account[] memory accountsInfo = new Account[](accountIds.length);
-
-        for (uint256 i = 0; i < accountIds.length; i++) {
-            accountsInfo[i] = accounts[accountIds[i]];
-        }
-
-        return accountsInfo;
-    }
-
-    /**
-     * Returns all account IDs owned by the caller.
-     */
-    function getAccounts() external view returns (uint256[] memory) {
-        return userAccounts[msg.sender];
+    ) external view onlyAccountOwner returns (Account memory) {
+        return accounts[userAccounts[msg.sender]];
     }
 }
