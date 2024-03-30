@@ -1,12 +1,15 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Chessboard from "../Chessboard/Chessboard";
 import { initialBoard } from "../../Constants";
 import { Piece, Position } from "../../models";
 import { PieceType, Side } from "../../Types";
 import { Pawn } from "../../models/Pawn";
 import { Board } from "../../models/Board";
+import { useBot } from '../Bot/BotContext'; 
 
 export default function Referee() {
+  // Set the Bot if being used
+  const { isBotActive } = useBot();
   // Pass initial board state to be called when component first rendered
   const [board, setBoard] = useState<Board>(initialBoard.clone());
   // Create state for when the promotion piece is updated
@@ -14,6 +17,14 @@ export default function Referee() {
   // Create referecne to the modal to open/hide it
   const modalRef = useRef<HTMLDivElement>(null);
   const checkmateModalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (isBotActive) {
+      // Initialize bot or make a bot move if it's the bot's turn
+      
+    }
+  }, [isBotActive, board.totalTurns]);
+
 
   // Returns the styling needed after a move has been made
   function makeMove(pieceInPlay: Piece, destination: Position): boolean {

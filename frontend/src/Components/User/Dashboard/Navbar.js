@@ -2,8 +2,11 @@ import { Button } from "react-bootstrap";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import { useBot } from '../../Chess/Components/Bot/BotContext'; // Adjust the path as necessary
 
 const NavbarTop = ({ connect, connected, becomeMember, logedin, logout }) => {
+  const { toggleBot } = useBot();
+
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container fluid>
@@ -11,7 +14,8 @@ const NavbarTop = ({ connect, connected, becomeMember, logedin, logout }) => {
         <Navbar.Toggle />
         <Navbar.Collapse>
           <Nav className="me-auto">
-            <Nav.Link href="/referee">Chessboard</Nav.Link>
+            <Nav.Link href="/referee">PLay Game</Nav.Link>
+            <Nav.Link onClick={() => toggleBot(true)} href="/referee?bot=true">Play With Bot</Nav.Link>
             <Nav.Link href="/addUser">Add User</Nav.Link>
             <Nav.Link href="/updateAccount">Update Account</Nav.Link>
             <Nav.Link href="/userInformation">User Info</Nav.Link>

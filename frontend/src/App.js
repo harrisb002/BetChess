@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { connect, getContract } from "./services/ethersService";
+import { BotProvider } from './Components/Chess/Components/Bot/BotContext';
 
 import Navbar from "./Components/User/Dashboard/Navbar";
 import Dashboard from "./Components/User/Dashboard/Dashboard";
@@ -57,31 +58,33 @@ function App() {
       .catch((error) => alert(error.message));
   };
 
-  const logout = () => {  
+  const logout = () => {
     // Clear membership status from localStorage
     localStorage.removeItem("isLogedIn");
   };
-  
+
 
   return (
-    <Router>
-      <Navbar
-        connect={connectCallback}
-        connected={connected}
-        becomeMember={becomeMember}
-        logedin={logedin}
-        logout={logout}
-      />
-      <div id="app">
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/referee" element={<Referee />} />
-          <Route path="/addUser" element={<AddUser contract={contract}/>} />
-          <Route path="/updateAccount" element={<UpdateAccountInfo contract={contract}/>} />
-          <Route path="/userInformation" element={<UserInformation contract={contract} userAddress={userAddress}/>} />
-        </Routes>
-      </div>
-    </Router>
+    <BotProvider>
+      <Router>
+        <Navbar
+          connect={connectCallback}
+          connected={connected}
+          becomeMember={becomeMember}
+          logedin={logedin}
+          logout={logout}
+        />
+        <div id="app">
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/referee" element={<Referee />} />
+            <Route path="/addUser" element={<AddUser contract={contract} />} />
+            <Route path="/updateAccount" element={<UpdateAccountInfo contract={contract} />} />
+            <Route path="/userInformation" element={<UserInformation contract={contract} userAddress={userAddress} />} />
+          </Routes>
+        </div>
+      </Router>
+    </BotProvider>
   );
 }
 
